@@ -11,32 +11,37 @@ public class ChessGame implements ChessGameInterface {
     public ChessGame() {}
 
     @Override
-    public void move(int startRow, int startCol, int endRow, int endCol) {
-
-    }
-
-    @Override
-    public void unexecuteLastMove() {
-
-    }
-
-    @Override
-    public boolean isCurrentPlayersPiece(int row, int col) {
+    public boolean doesSpaceContainAPieceOfTheCurrentPlayersColor(Space space) {
         return false;
     }
 
     @Override
-    public Set<Space> getAvailableMovesForPiece(int row, int col) {
+    public Set<Space> getAvailableMovesForPiece(Space space) {
         return null;
     }
 
     @Override
-    public boolean currentPlayerIsInCheckmate() {
+    public void move(Space start, Space end) {
+
+    }
+
+    @Override
+    public void undoLastMove() {
+
+    }
+
+    @Override
+    public boolean isCurrentPlayerInCheck() {
         return false;
     }
 
     @Override
-    public boolean gameIsInStaleMate() {
+    public boolean isCurrentPlayerInCheckmate() {
+        return false;
+    }
+
+    @Override
+    public boolean isGameInStalemate() {
         return false;
     }
 

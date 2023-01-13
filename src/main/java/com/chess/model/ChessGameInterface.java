@@ -4,55 +4,58 @@ import java.util.Set;
 
 public interface ChessGameInterface {
     /**
+     * @param space
+     * @return true if the space contains a piece of the current player's color, false otherwise.
+     */
+    public boolean doesSpaceContainAPieceOfTheCurrentPlayersColor(Space space);
+
+    /**
+     * Gives a set of the spaces that the piece at the given space can move to.
+     *
+     * @throws IllegalArgumentException if
+     *  - the space doesn't contain a piece, or
+     *  - the space contains a piece of the color of the inactive player.
+     * @param space
+     * @return
+     */
+    public Set<Space> getAvailableMovesForPiece(Space space);
+    public Set<Space> getAvailableMovesForPiece(int row, int col);
+
+    /**
      * Moves the piece at the startRow row and startCol column to the space at the endRow row and endCol column.
      *
      * @throws IllegalArgumentException if:
-     *  - the startRow row and startCol col don't contain the current player's piece, or
-     *  - the space at the endRow row and the endCol column isn't available for the piece at startRow row and startCol column, or
+     *  - the starting space doesn't contain the current player's piece, or
+     *  - the ending space isn't available, or
      *  - the game is over
-     * @param startRow
-     * @param startCol
-     * @param endRow
-     * @param endCol
+     * @param start
+     * @param end
      */
+    public void move(Space start, Space end);
     public void move(int startRow, int startCol, int endRow, int endCol);
 
     /**
      * Reverts the game to it's state prior to the last move that was made.
      */
-    public void unexecuteLastMove();
+    public void undoLastMove();
 
     /**
-     * @param row
-     * @param col
-     * @return true if the piece at the given row and col is the same color as the current player, false otherwise
+     * @return true if the current player is in check, false otherwise.
      */
-    public boolean isCurrentPlayersPiece(int row, int col);
+    public boolean isCurrentPlayerInCheck();
 
     /**
-     * Gives a set of the spaces that the piece at the given row and col can move to.
-     *
-     * @throws IllegalArgumentException if
-     *  - the space at the given row and column doesn't contain a piece, or
-     *  - the space at the given row and column contains a piece of the color of the inactive player.
-     * @param row
-     * @param col
-     * @return
+     * @return true if the current player is in checkmate, false otherwise.
      */
-    public Set<Space> getAvailableMovesForPiece(int row, int col);
+    public boolean isCurrentPlayerInCheckmate();
 
     /**
-     * @return true if the current player is in checkmate, false otherwise
+     * @return true if the game is in stalemate, false otherwise.
      */
-    public boolean currentPlayerIsInCheckmate();
+    public boolean isGameInStalemate();
 
     /**
-     * @return true if the game is in stalemate, false otherwise
-     */
-    public boolean gameIsInStaleMate();
-
-    /**
-     * @return the state of the board
+     * @return the state of the board as a 2D array of Pieces.
      */
     public Pieces[][] getBoardState();
 }

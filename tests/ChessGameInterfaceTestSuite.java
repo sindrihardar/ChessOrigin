@@ -84,7 +84,20 @@ public class ChessGameInterfaceTestSuite {
      * Spaces marked as 'true' in the 2D array should be present.
      */
     public void setContainsSpaces(Set<Space> set, boolean[][] spaces) {
+        int numberOfAvailableSpaces = 0;
+        for (boolean[] row : spaces)
+            for (boolean val : row)
+                numberOfAvailableSpaces += val ? 1 : 0;
 
+        Space[] expectedAvailableMoves = new Space[numberOfAvailableSpaces];
+
+        int k = 0;
+        for (int i = 0; i < spaces.length; i++)
+            for (int j = 0; j < spaces[0].length; i++)
+                if (spaces[i][j])
+                    expectedAvailableMoves[k++] = new Space(i, j);
+
+        setContainsSpaces(set, expectedAvailableMoves);
     }
 
     /*
