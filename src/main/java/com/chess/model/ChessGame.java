@@ -4,6 +4,12 @@ import java.util.Set;
 
 public class ChessGame implements ChessGameInterface {
 
+    public ChessGame(Pieces[][] board) {
+
+    }
+
+    public ChessGame() {}
+
     @Override
     public void move(int startRow, int startCol, int endRow, int endCol) {
 
