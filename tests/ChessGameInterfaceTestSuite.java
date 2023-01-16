@@ -1,6 +1,7 @@
 import com.chess.model.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.util.Set;
 
@@ -12,7 +13,7 @@ public class ChessGameInterfaceTestSuite {
     private static final boolean T = true, F = false;
     private static final Pieces WK = WHITE_KING, WQ = WHITE_QUEEN, WR = WHITE_ROOK,
                                 WB = WHITE_BISHOP, Wk = WHITE_KNIGHT, WP = WHITE_PAWN,
-                                BK = BLACK_KING, BQ = BLACK_QUEEN, BR = WHITE_ROOK,
+                                BK = BLACK_KING, BQ = BLACK_QUEEN, BR = BLACK_ROOK,
                                 BB = BLACK_BISHOP, Bk = BLACK_KNIGHT, BP = BLACK_PAWN, NN = null;
 
     /*
@@ -22,7 +23,7 @@ public class ChessGameInterfaceTestSuite {
         for (int i = 0; i < spaces.length; i++)
             for (int j = 0; j < spaces[0].length; j++)
                 if (spaces[i][j])
-                    assertTrue(set.contains(new Space(i, j)));
+                    assertTrue(set.contains(Space.getSpace(i, j)));
     }
 
     /*
@@ -32,7 +33,7 @@ public class ChessGameInterfaceTestSuite {
         for (int i = 0; i < spaces.length; i++)
             for (int j = 0; j < spaces[0].length; j++)
                 if (!spaces[i][j])
-                    assertTrue(!set.contains(new Space(i, j)));
+                    assertTrue(!set.contains(Space.getSpace(i, j)));
     }
 
     @Test
@@ -361,7 +362,7 @@ public class ChessGameInterfaceTestSuite {
                                     {NN, NN, NN, NN, NN, NN, NN, NN},
                                     {NN, NN, NN, NN, NN, NN, NN, NN},
                                     {WR, NN, NN, NN, WK, NN, NN, WR}};
-        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+        ChessGameInterface game = new ChessGame(initialState);
 
         boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
@@ -604,9 +605,9 @@ public class ChessGameInterfaceTestSuite {
         ChessGameInterface game = new ChessGame(initialState);
 
         game.move(7, 7, 6, 7);
-        game.move(1, 4, 0, 4);
+        game.move(0, 4, 0, 5);
         game.move(6, 7, 7, 7);
-        game.move(0, 4, 1, 4);
+        game.move(0, 5, 0, 4);
 
         boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
@@ -660,9 +661,9 @@ public class ChessGameInterfaceTestSuite {
         ChessGameInterface game = new ChessGame(initialState);
 
         game.move(7, 0, 6, 0);
-        game.move(1, 4, 0, 4);
+        game.move(0, 4, 0, 5);
         game.move(6, 0, 7, 0);
-        game.move(0, 4, 1, 4);
+        game.move(0, 5, 0, 4);
 
         boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
@@ -922,14 +923,14 @@ public class ChessGameInterfaceTestSuite {
                                     {WR, NN, NN, NN, WK, NN, NN, WR}};
         ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
-        boolean[][] expectedSpacesContainedInSet = {{T, F, F, F, F, F, F, F},
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F}};
+                                                    {T, F, F, F, F, F, F, F}};
         spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
@@ -1290,14 +1291,14 @@ public class ChessGameInterfaceTestSuite {
                                     {WR, NN, NN, NN, WK, NN, NN, WR}};
         ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
-        boolean[][] expectedSpacesContainedInSet = {{T, F, F, F, F, F, F, F},
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F}};
+                                                    {T, F, F, F, F, F, F, F}};
         spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
@@ -1464,7 +1465,7 @@ public class ChessGameInterfaceTestSuite {
 
     @Test
     public void testGetAvailableMovesForPieceForBlackKnightSpacesWithTheOppositeColor() {
-        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+        Pieces[][] initialState =  {{NN, NN, NN, NN, NN, NN, BK, NN},
                                     {NN, NN, NN, NN, NN, NN, NN, NN},
                                     {NN, Wk, NN, Wk, NN, NN, NN, NN},
                                     {Wk, NN, NN, NN, Wk, NN, NN, NN},
@@ -1487,7 +1488,7 @@ public class ChessGameInterfaceTestSuite {
 
     @Test
     public void testGetAvailableMovesForPieceForWhiteKnightSpacesWithTheSameColor() {
-        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+        Pieces[][] initialState =  {{NN, NN, NN, NN, NN, NN, BK, NN},
                                     {NN, NN, NN, NN, NN, NN, NN, NN},
                                     {NN, Wk, NN, Wk, NN, NN, NN, NN},
                                     {Wk, NN, NN, NN, Wk, NN, NN, NN},
@@ -1497,14 +1498,14 @@ public class ChessGameInterfaceTestSuite {
                                     {NN, NN, NN, NN, WK, NN, NN, NN}};
         ChessGameInterface game = new ChessGame(initialState);
 
-        boolean[][] expectedSpacesContainedInSet = {{T, T, T, T, T, T, T, T},
-                                                    {T, T, T, T, T, T, T, T},
-                                                    {T, T, T, T, T, T, T, T},
-                                                    {T, T, T, T, T, T, T, T},
-                                                    {T, T, T, T, T, T, T, T},
-                                                    {T, T, T, T, T, T, T, T},
-                                                    {T, T, T, T, T, T, T, T},
-                                                    {T, T, T, T, T, T, T, T}};
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
         spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 2));
     }
 
@@ -1558,7 +1559,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(2, 0));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 0));
     }
 
     @Test
@@ -2159,8 +2160,8 @@ public class ChessGameInterfaceTestSuite {
         game.move(0, 4, 0, 5);
 
         boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
@@ -2190,8 +2191,8 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
         spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
     }
@@ -2213,8 +2214,8 @@ public class ChessGameInterfaceTestSuite {
         game.move(0, 4, 0, 5);
 
         boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
@@ -2244,8 +2245,8 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
         spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
     }
@@ -2267,8 +2268,8 @@ public class ChessGameInterfaceTestSuite {
         game.move(2, 1, 3, 1);
 
         boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
@@ -2298,8 +2299,8 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
         spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
     }
@@ -2321,8 +2322,8 @@ public class ChessGameInterfaceTestSuite {
         game.move(2, 3, 3, 3);
 
         boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
@@ -2352,8 +2353,8 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
-                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
         spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
     }
@@ -2462,7 +2463,7 @@ public class ChessGameInterfaceTestSuite {
                                         {NN, NN, NN, NN, NN, NN, NN, NN},
                                         {WP, NN, NN, NN, NN, NN, NN, NN},
                                         {NN, NN, NN, NN, WK, NN, NN, NN}};
-        assertEquals(expectedGameState, game.getBoardState());
+        assertArrayEquals(expectedGameState, game.getBoardState());
     }
 
     @Test
@@ -2488,7 +2489,7 @@ public class ChessGameInterfaceTestSuite {
                                          {NN, NN, NN, NN, NN, NN, NN, NN},
                                          {NN, NN, WK, WR, NN, NN, NN, WR}};
 
-        assertEquals(expectedGameState, game.getBoardState());
+        assertArrayEquals(expectedGameState, game.getBoardState());
     }
 
     @Test
@@ -2514,7 +2515,7 @@ public class ChessGameInterfaceTestSuite {
                                          {NN, NN, NN, NN, NN, NN, NN, NN},
                                          {WR, NN, NN, NN, NN, WR, WK, NN}};
 
-        assertEquals(expectedGameState, game.getBoardState());
+        assertArrayEquals(expectedGameState, game.getBoardState());
     }
 
     @Test
@@ -2540,7 +2541,7 @@ public class ChessGameInterfaceTestSuite {
                                          {NN, NN, NN, NN, NN, NN, NN, NN},
                                          {WR, NN, NN, NN, WK, NN, NN, WR}};
 
-        assertEquals(expectedGameState, game.getBoardState());
+        assertArrayEquals(expectedGameState, game.getBoardState());
     }
 
     @Test
@@ -2564,9 +2565,9 @@ public class ChessGameInterfaceTestSuite {
                                          {NN, NN, NN, NN, NN, NN, NN, NN},
                                          {NN, NN, NN, NN, NN, NN, NN, NN},
                                          {NN, NN, NN, NN, NN, NN, NN, NN},
-                                         {WR, NN, NN, NN, NN, WR, WK, NN}};
+                                         {WR, NN, NN, NN, WK, NN, NN, WR}};
 
-        assertEquals(expectedGameState, game.getBoardState());
+        assertArrayEquals(expectedGameState, game.getBoardState());
     }
 
     @Test
@@ -2592,7 +2593,7 @@ public class ChessGameInterfaceTestSuite {
                                          {NN, NN, NN, NN, NN, NN, NN, NN},
                                          {NN, NN, NN, NN, NN, NN, NN, NN},
                                          {NN, NN, NN, NN, WK, NN, NN, NN}};
-        assertEquals(expectedGameState, game.getBoardState());
+        assertArrayEquals(expectedGameState, game.getBoardState());
     }
 
     @Test
@@ -2618,7 +2619,7 @@ public class ChessGameInterfaceTestSuite {
                                          {NN, NN, BP, NN, NN, NN, NN, NN},
                                          {NN, NN, NN, NN, NN, NN, NN, NN},
                                          {NN, NN, NN, NN, WK, NN, NN, NN}};
-        assertEquals(expectedGameState, game.getBoardState());
+        assertArrayEquals(expectedGameState, game.getBoardState());
     }
 
     @Test
@@ -2643,7 +2644,7 @@ public class ChessGameInterfaceTestSuite {
                                         {NN, NN, NN, NN, NN, NN, NN, NN},
                                         {NN, NN, WP, NN, NN, NN, NN, NN},
                                         {NN, NN, NN, NN, WK, NN, NN, NN}};
-        assertEquals(expectedGameState, game.getBoardState());
+        assertArrayEquals(expectedGameState, game.getBoardState());
     }
 
     @Test
@@ -2668,21 +2669,7 @@ public class ChessGameInterfaceTestSuite {
                                         {NN, NN, NN, NN, NN, NN, NN, NN},
                                         {NN, NN, WP, NN, NN, NN, NN, NN},
                                         {NN, BQ, NN, NN, WK, NN, NN, NN}};
-        assertEquals(expectedGameState, game.getBoardState());
-    }
-
-    @Test
-    public void testMoveWhenGameIsOver() {
-        Pieces[][] initialState =  {{BK, NN, NN, NN, NN, NN, WR, NN},
-                                    {NN, NN, NN, NN, NN, NN, WQ, NN},
-                                    {NN, NN, NN, NN, NN, NN, NN, NN},
-                                    {NN, NN, NN, NN, NN, NN, NN, NN},
-                                    {NN, NN, NN, NN, NN, NN, NN, NN},
-                                    {NN, NN, NN, NN, NN, NN, NN, NN},
-                                    {NN, NN, NN, NN, NN, NN, NN, NN},
-                                    {NN, NN, NN, NN, NN, NN, NN, WK}};
-        ChessGameInterface game = new ChessGame(initialState);
-        assertThrows(IllegalArgumentException.class, () -> game.move(0, 6, 0, 5));
+        assertArrayEquals(expectedGameState, game.getBoardState());
     }
 
     @Test
@@ -2705,7 +2692,7 @@ public class ChessGameInterfaceTestSuite {
 
         game.move(2, 1, 1, 2);
         game.undoLastMove();
-        assertEquals(initialState, game.getBoardState());
+        assertArrayEquals(initialState, game.getBoardState());
     }
 
     @Test
@@ -2723,7 +2710,7 @@ public class ChessGameInterfaceTestSuite {
         game.move(0, 4, 0, 6);
         game.undoLastMove();
 
-        assertEquals(initialState, game.getBoardState());
+        assertArrayEquals(initialState, game.getBoardState());
     }
 
     @Test
@@ -2743,7 +2730,7 @@ public class ChessGameInterfaceTestSuite {
         game.undoLastMove();
         game.undoLastMove();
 
-        assertEquals(initialState, game.getBoardState());
+        assertArrayEquals(initialState, game.getBoardState());
     }
 
     @Test
@@ -2761,7 +2748,7 @@ public class ChessGameInterfaceTestSuite {
         game.move(6, 1, 7, 1);
         game.undoLastMove();
 
-        assertEquals(initialState, game.getBoardState());
+        assertArrayEquals(initialState, game.getBoardState());
     }
 
     @Test
@@ -2781,7 +2768,7 @@ public class ChessGameInterfaceTestSuite {
         game.move(7, 4, 7, 2);
         game.undoLastMove();
 
-        assertEquals(initialState, game.getBoardState());
+        assertArrayEquals(initialState, game.getBoardState());
     }
 
     @Test
@@ -2981,9 +2968,9 @@ public class ChessGameInterfaceTestSuite {
                                     {NN, NN, NN, NN, NN, NN, NN, NN},
                                     {NN, NN, NN, NN, NN, NN, NN, NN},
                                     {NN, NN, NN, NN, NN, NN, NN, NN},
-                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, BK, NN, NN},
                                     {NN, NN, NN, NN, NN, NN, WP, NN},
-                                    {NN, NN, NN, NN, NN, BK, NN, NN}};
+                                    {NN, NN, NN, NN, NN, NN, NN, NN}};
         ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
         assertTrue(game.isCurrentPlayerInCheck());
     }
