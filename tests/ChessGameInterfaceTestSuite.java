@@ -16,7 +16,7 @@ public class ChessGameInterfaceTestSuite {
                                 BB = BLACK_BISHOP, Bk = BLACK_KNIGHT, BP = BLACK_PAWN, NN = null;
 
     /*
-     * Helper method to check if all of the spaces that are marked as true in spaces are contained in set.
+     * Helper method to check if all the spaces that are marked as true in spaces are contained in set.
      */
     public void spacesAreContainedInSet(boolean[][] spaces, Set<Space> set) {
         for (int i = 0; i < spaces.length; i++)

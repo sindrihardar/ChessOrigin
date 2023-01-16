@@ -28,22 +28,16 @@ One of them is for when the user clicks on a space on the board, the other is fo
 ![](resources/class_diagram_model_component.png)
 
 To construct the above class diagram, I started with an Object-Oriented Analysis (OOA), which led me to develop a ChessGame class, a Space class, and a Piece class.
-Each piece can be moved in a slightly different way, so I created an abstract class with concrete classes for each type of piece.
-To distribute the workload over the many classes, I chose to have the methods for moving pieces included in the Piece class and the corresponding subclasses.
-To move a piece, you call the move method in the ChessGame class, which calls the move method for the corresponding piece, which then operates on the ChessGame object.
-Cyclic dependencies like this are typically frowned upon in designs, but if we omit this, all the code for moving pieces will be in the ChessGame class which will clutter it.
-Therefore, I chose to keep the cyclic dependency as a trade-off.
+The Piece class is abstract, and each concrete sub class represents a type of piece.
+To distribute the workload amongst the different classes, I wanted the pieces to decide how movements on the board should occur, and which spaces they can move to.
+However, I didn't want the pieces to actually operate on the board.
+Thus, I followed the command design pattern and created the MoveCommand class. 
+The pieces construct a move command, which tells the game how a move should be executed.
+Then, the game executes the move command itself.
+This also supports the ability to undo moves that have been made.
 
-The Colors enumeration is used to keep track of the player's colors, and the Pieces enumeration is for returning the state of the board in the getBoardState() method and for setting the initial board in the ChessGame constructor.
-
-To build the initial board state, I chose to implement a builder class according to the builder design pattern. There's nothing particularly interesting here, that class just builds the board and the board's spaces.
-
-One of the most difficult aspects of this game to implement is that a player's turn can't end with them in check. 
-I chose to handle this by keeping track of how a board's state changes as moves are made with a memento class, as described in the memento design pattern.
-Typically, the memento class would store the entire state of the originator class, but this is unnecessary for my application since only a handful of spaces can be changed at a time.
-Therefore, the memento only keeps track of the set of spaces that were changed.
-When a move is made, the move method from the Piece class will return the original state of the spaces that were changed, which will then be stored in a MoveMomento object.
-To check if a move ends with the current player in check, we'll make the move, check if it ends in check, and then revert the state of the board back to the way it was prior to the move being made with the unexecuteLastMove method. 
+I also utilized the builder design pattern with the ChessBoard builder class.
+This can be used to construct the board for the game, as well as getting the state of the board from the game.
 
 ## Behavioral
 
@@ -58,12 +52,6 @@ Creating a diagram for each and every method would also take an obscene amount o
 
 ![](resources/get_available_moves_sequence_diagram.png)
 
-To get the available moves for a particular piece, we need to look at all of the spaces it could normally move to, check if that space isMovable() (which means that it does not contain a piece of the same color), and then make sure that the move wouldn't put the current player in check.
-Since each piece has different spaces that are available to move to, I've only included one method in the sequence diagram to understand how each of those methods would work.
-
 ### *move* Sequence Diagram
 
 ![](resources/move_sequence_diagram.png)
-
-To move a piece from one space to another on the board, the game will get the piece from the space that's being moved from and call the move method for it.
-Then, the game will create and store a momento so that it can revert back to the previous space if need be.
