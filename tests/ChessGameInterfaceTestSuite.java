@@ -1,981 +1,3156 @@
-import com.chess.model.ChessGame;
-import com.chess.model.ChessGameInterface;
-import com.chess.model.Pieces;
-import com.chess.model.Space;
+import com.chess.model.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
 import static com.chess.model.Pieces.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ChessGameInterfaceTestSuite {
     private ChessGameInterface game;
-
     private static final boolean T = true, F = false;
-
-    private static final Pieces[][] TEST_STATE_1 = {{BLACK_ROOK, BLACK_KNIGHT, BLACK_BISHOP, BLACK_QUEEN, BLACK_KING, BLACK_BISHOP, BLACK_KNIGHT, null},
-                                                    {BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, null, null, BLACK_PAWN, BLACK_PAWN, WHITE_PAWN},
-                                                    {null, WHITE_KNIGHT, null, null, BLACK_PAWN, null, null, null},
-                                                    {null, null, null, BLACK_PAWN, null, null, null, BLACK_ROOK},
-                                                    {null, WHITE_QUEEN, null, null, WHITE_PAWN, WHITE_BISHOP, WHITE_KNIGHT, null},
-                                                    {null, null, null, WHITE_PAWN, null, null, null, null},
-                                                    {WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, null, WHITE_BISHOP, WHITE_PAWN, BLACK_PAWN, null},
-                                                    {WHITE_ROOK, null, null, null, WHITE_KING, null, null, WHITE_ROOK}};
-
-    private static final Pieces[][] TEST_STATE_2 = {{BLACK_ROOK, BLACK_KNIGHT, BLACK_BISHOP, BLACK_QUEEN, null, BLACK_BISHOP, BLACK_KNIGHT, null},
-                                                    {BLACK_PAWN, null, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, null, null, WHITE_PAWN},
-                                                    {BLACK_PAWN, null, WHITE_KNIGHT, null, null, BLACK_PAWN, null, null},
-                                                    {null, BLACK_KING, null, null, null, null, BLACK_PAWN, null},
-                                                    {null, null, null, null, null, null, WHITE_KING, null},
-                                                    {null, WHITE_PAWN, WHITE_QUEEN, null, WHITE_BISHOP, null, null, null},
-                                                    {null, null, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, BLACK_PAWN},
-                                                    {null, WHITE_ROOK, null, null, null, WHITE_BISHOP, WHITE_KNIGHT, null}};
-
-    private static final Pieces[][] TEST_STATE_3 = {{BLACK_ROOK, null, null, null, BLACK_KING, null, null, BLACK_ROOK},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {WHITE_ROOK, null, null, null, WHITE_KING, null, null, WHITE_ROOK}};
-
-    private static final Pieces[][] TEST_STATE_4 = {{BLACK_ROOK, BLACK_KNIGHT, null, null, BLACK_KING, null, BLACK_KNIGHT, BLACK_ROOK},
-                                                    {null, null, null, null, WHITE_PAWN, null, null, null},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {null, null, null, null, BLACK_PAWN, null, null, null},
-                                                    {WHITE_ROOK, WHITE_KNIGHT, null, null, WHITE_KING, null, WHITE_KNIGHT, WHITE_ROOK}};
-
-    private static final Pieces[][] TEST_STATE_5 = {{BLACK_ROOK, null, null, null, BLACK_KING, null, null, BLACK_ROOK},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {BLACK_PAWN, null, null, null, WHITE_QUEEN, null, null, BLACK_PAWN},
-                                                    {WHITE_PAWN, null, null, null, BLACK_QUEEN, null, null, WHITE_PAWN},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {WHITE_ROOK, null, null, null, WHITE_KING, null, null, WHITE_ROOK}};
-
-    private static final Pieces[][] TEST_STATE_6 = {{BLACK_KING, null, null, null, null, null, null, null},
-                                                    {null, null, null, WHITE_QUEEN, null, null, null, null},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {null, null, WHITE_KING, null, null, null, null, null},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {null, null, null, null, null, null, null, null},
-                                                    {null, null, null, null, null, null, null, null}};
-
-    private static final Pieces[][] TEST_STATE_7 = {{BLACK_ROOK, null, null, null, BLACK_KING, null, null, BLACK_ROOK},
-                                                    {null, null, null, null, WHITE_PAWN, null, null, null},
-                                                    {null, null, null, null, WHITE_QUEEN, null, null, null},
-                                                    {BLACK_PAWN, null, null, null, null, null, null, BLACK_PAWN},
-                                                    {WHITE_PAWN, null, null, null, null, null, null, WHITE_PAWN},
-                                                    {null, null, null, null, BLACK_QUEEN, null, null, null},
-                                                    {null, null, null, null, BLACK_PAWN, null, null, null},
-                                                    {WHITE_ROOK, null, null, null, WHITE_KING, null, null, WHITE_ROOK}};
+    private static final Pieces WK = WHITE_KING, WQ = WHITE_QUEEN, WR = WHITE_ROOK,
+                                WB = WHITE_BISHOP, Wk = WHITE_KNIGHT, WP = WHITE_PAWN,
+                                BK = BLACK_KING, BQ = BLACK_QUEEN, BR = WHITE_ROOK,
+                                BB = BLACK_BISHOP, Bk = BLACK_KNIGHT, BP = BLACK_PAWN, NN = null;
 
     /*
-     * Helper method that checks if the given 2D array of spaces is contained in the given set of spaces.
-     *
-     * Spaces marked as 'true' in the 2D array should be present.
+     * Helper method to check if all of the spaces that are marked as true in spaces are contained in set.
      */
-    public void setContainsSpaces(Set<Space> set, boolean[][] spaces) {
-        int numberOfAvailableSpaces = 0;
-        for (boolean[] row : spaces)
-            for (boolean val : row)
-                numberOfAvailableSpaces += val ? 1 : 0;
-
-        Space[] expectedAvailableMoves = new Space[numberOfAvailableSpaces];
-
-        int k = 0;
+    public void spacesAreContainedInSet(boolean[][] spaces, Set<Space> set) {
         for (int i = 0; i < spaces.length; i++)
-            for (int j = 0; j < spaces[0].length; i++)
+            for (int j = 0; j < spaces[0].length; j++)
                 if (spaces[i][j])
-                    expectedAvailableMoves[k++] = new Space(i, j);
-
-        setContainsSpaces(set, expectedAvailableMoves);
+                    assertTrue(set.contains(new Space(i, j)));
     }
 
     /*
-     * Helper method that checks if the given 2D array of spaces is not contained in the given set of spaces.
-     *
-     * Spaces marked as 'true' in the 2D array should not be present.
+     * Helper method to check that all the spaces that are marked as false in spaces are not contained in set.
      */
-    public void setDoesNotContainSpaces(Set<Space> set, boolean[][] spaces) {
-        int numberOfUnavailableSpaces = 0;
-        for (boolean[] row : spaces)
-            for (boolean val : row)
-                numberOfUnavailableSpaces += val ? 1 : 0;
-
-        Space[] expectedUnavailableMoves = new Space[numberOfUnavailableSpaces];
-
-        int k = 0;
+    public void spacesAreNotContainedInSet(boolean[][] spaces, Set<Space> set) {
         for (int i = 0; i < spaces.length; i++)
-            for (int j = 0; j < spaces[0].length; i++)
-                if (spaces[i][j])
-                    expectedUnavailableMoves[k++] = new Space(i, j);
-
-        setDoesNotContainSpaces(set, expectedUnavailableMoves);
-    }
-
-    /*
-     * Helper method that checks if the given set of spaces contains the given list of spaces.
-     */
-    public void setContainsSpaces(Set<Space> set, Space[] spaces) {
-        for (Space space : spaces)
-            assertTrue(set.contains(space));
-    }
-
-    /*
-     * Helper method that checks if the given set of spaces does not contain the given list of spaces.
-     */
-    public void setDoesNotContainSpaces(Set<Space> set, Space[] spaces) {
-        for (Space space : spaces)
-            assertTrue(!set.contains(space));
-    }
-
-    /*
-     * Helper method that takes the complement of a 2D array of booleans.
-     */
-    public void complement(boolean[][] spaces) {
-        for (int i = 0; i < spaces.length; i++)
-            for (int j = 0; j < spaces[i].length; j++)
-                spaces[i][j] = !spaces[i][j];
-    }
-
-    @AfterEach
-    public void tearDown() {
-        game = null;
+            for (int j = 0; j < spaces[0].length; j++)
+                if (!spaces[i][j])
+                    assertTrue(!set.contains(new Space(i, j)));
     }
 
     @Test
-    public void test1() {
-        game = new ChessGame(TEST_STATE_1);
-
-        // check adjacent spaces for white king
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        Space[] expectedAvailableMoves = {new Space(7, 3), new Space(7, 5), new Space(6, 3)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
-
-        game.move(4, 1, 5, 1); // moves queen back a space so that it becomes black's turn
-
-        // check adjacent spaces for black king
-        availableMoves = game.getAvailableMovesForPiece(0, 4);
-        expectedAvailableMoves = new Space[] {new Space(1, 3), new Space(1, 4)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
+    public void testDoesSpaceContainPieceOfCurrentPlayersColorWhenRowIsInvalid() {
+        ChessGameInterface game = new ChessGame();
+        assertThrows(IllegalArgumentException.class, () -> game.doesSpaceContainAPieceOfTheCurrentPlayersColor(-1, 0));
     }
 
     @Test
-    public void test2() {
-        game = new ChessGame(TEST_STATE_1);
-
-        // check adjacent spaces for the white king that contain pieces of the same color
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        Space[] expectedUnavailableMoves = {new Space(6, 4), new Space(6, 5)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
-
-        game.move(4, 1, 5, 1); // moves queen back a space so that it becomes black's turn
-
-        // check adjacent spaces for the black king that contain pieces of the same color
-        availableMoves = game.getAvailableMovesForPiece(0, 4);
-        expectedUnavailableMoves = new Space[] {new Space(0, 3), new Space(0, 5), new Space(1, 5)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+    public void testDoesSpaceContainPieceOfCurrentPlayersColorWhenColumnIsInvalid() {
+        ChessGameInterface game = new ChessGame();
+        assertThrows(IllegalArgumentException.class, () -> game.doesSpaceContainAPieceOfTheCurrentPlayersColor(0, -1));
     }
 
     @Test
-    public void test3() {
-        game = new ChessGame(TEST_STATE_4);
-
-        // check adjacent spaces for the white king that contain pieces of the opposite color
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        Space[] expectedAvailableMoves = {new Space(6, 4)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
-
-        game.move(7, 1, 5, 2); // moves knight so that it becomes black's turn
-
-        // check adjacent spaces for the black king that contain pieces of the opposite color
-        availableMoves = game.getAvailableMovesForPiece(0, 4);
-        expectedAvailableMoves = new Space[] {new Space(1, 4)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
+    public void testDoesSpaceContainPieceOfCurrentPlayersColorForValidSelectionOfWhitePiece() {
+        ChessGameInterface game = new ChessGame();
+        assertTrue(game.doesSpaceContainAPieceOfTheCurrentPlayersColor(7, 0));
     }
 
     @Test
-    public void test4() {
-        game = new ChessGame(TEST_STATE_1);
-
-        // check adjacent spaces for the white king to make sure that spaces out of bounds aren't included
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        Space[] expectedUnavailableMoves = {new Space(8, 4), new Space(8, 3), new Space(8, 5)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
-
-        game.move(4, 1, 5, 1); // moves queen back a space so that it becomes black's turn
-
-        // check adjacent spaces for the white king to make sure that spaces out of bounds aren't included
-        availableMoves = game.getAvailableMovesForPiece(0, 4);
-        expectedUnavailableMoves = new Space[] {new Space(-1, 4), new Space(-1, 3), new Space(-1, 5)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+    public void testDoesSpaceContainPieceOfCurrentPlayersColorForValidSelectionOfBlackPiece() {
+        ChessGameInterface game = new ChessGame(Colors.BLACK);
+        assertTrue(game.doesSpaceContainAPieceOfTheCurrentPlayersColor(0, 0));
     }
 
     @Test
-    public void test5() {
-        game = new ChessGame(TEST_STATE_2);
-
-        // check adjacent spaces for the white king that would put it in check to make sure it can't move there
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(4, 6);
-        Space[] expectedUnavailableMoves = {new Space(4, 7), new Space(4, 5)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
-
-        game.move(7, 1, 6, 1); // moves rook up a space to make it black's turn
-
-        // check adjacent spaces for the black king that would put it in check to make sure it can't move there
-        availableMoves = game.getAvailableMovesForPiece(3, 1);
-        expectedUnavailableMoves = new Space[] {new Space(4, 0), new Space(4, 1), new Space(4, 2),
-                                                new Space(3, 0), new Space(3, 2), new Space(2, 1), new Space(2, 2)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+    public void testDoesSpaceContainPieceOfCurrentPlayersColorForEmptySpace() {
+        ChessGameInterface game = new ChessGame();
+        assertTrue(!game.doesSpaceContainAPieceOfTheCurrentPlayersColor(3, 0));
     }
 
     @Test
-    public void test6() {
-        game = new ChessGame(TEST_STATE_3);
-
-        game.move(7, 0, 6, 0); // moves rook up a space to make it black's turn
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(0, 4);
-        Space[] expectedAvailableMoves = {new Space(0, 6)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
+    public void testDoesSpaceContainPieceOfCurrentPlayersColorForOppositeColorWhenPlayerIsWhite() {
+        ChessGameInterface game = new ChessGame();
+        assertTrue(!game.doesSpaceContainAPieceOfTheCurrentPlayersColor(0, 0));
     }
 
     @Test
-    public void test7() {
-        game = new ChessGame(TEST_STATE_3);
-
-        game.move(7, 0, 6, 0); // moves rook up a space to make it black's turn
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(0, 4);
-        Space[] expectedAvailableMoves = {new Space(0, 2)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
+    public void testDoesSpaceContainPieceOfCurrentPlayersColorForOppositeColorWhenPlayerIsBlack() {
+        ChessGameInterface game = new ChessGame(Colors.BLACK);
+        assertTrue(!game.doesSpaceContainAPieceOfTheCurrentPlayersColor(7, 0));
     }
 
     @Test
-    public void test8() {
-        game = new ChessGame(TEST_STATE_3);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        Space[] expectedAvailableMoves = {new Space(7, 6)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
+    public void testGetAvailableMovesForPieceWhenRowIsInvalid() {
+        ChessGameInterface game = new ChessGame();
+        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForSpace(-1, 0));
     }
 
     @Test
-    public void test9() {
-        game = new ChessGame(TEST_STATE_3);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        Space[] expectedAvailableMoves = {new Space(7, 2)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
+    public void testGetAvailableMovesForPieceWhenColumnIsInvalid() {
+        ChessGameInterface game = new ChessGame();
+        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForSpace(0, -1));
     }
 
     @Test
-    public void test10() {
-        game = new ChessGame(TEST_STATE_4);
-
-        game.move(7, 0, 6, 0); // moves rook up a space to make it black's turn
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(0, 4);
-        Space[] expectedUnavailableMoves = {new Space(0, 6)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+    public void testGetAvailableMovesForPieceForOppositeColorWhenPlayerIsWhite() {
+        ChessGameInterface game = new ChessGame();
+        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForSpace(0, 0));
     }
 
     @Test
-    public void test11() {
-        game = new ChessGame(TEST_STATE_4);
-
-        game.move(7, 0, 6, 0); // moves rook up a space to make it black's turn
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(0, 4);
-        Space[] expectedUnavailableMoves = {new Space(0, 2)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+    public void testGetAvailableMovesForPieceForOppositeColorWhenPlayerIsBlack() {
+        ChessGameInterface game = new ChessGame(Colors.BLACK);
+        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForSpace(7, 0));
     }
 
     @Test
-    public void test12() {
-        game = new ChessGame(TEST_STATE_4);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        Space[] expectedUnavailableMoves = {new Space(7, 6)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+    public void testGetAvailableMovesForPieceForEmptySpace() {
+        ChessGameInterface game = new ChessGame();
+        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForSpace(2, 0));
     }
 
     @Test
-    public void test13() {
-        game = new ChessGame(TEST_STATE_4);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        Space[] expectedUnavailableMoves = {new Space(7, 2)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+    public void testGetAvailableMovesForPieceWhenGameIsOver() {
+        Pieces[][] initialState =  {{BK, NN, NN, NN, NN, NN, WR, NN},
+                                    {NN, NN, NN, NN, NN, NN, WQ, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, WK}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForSpace(0, 0));
     }
 
     @Test
-    public void test14() {
-        game = new ChessGame(TEST_STATE_5);
+    public void testGetAvailableMovesForPieceForWhiteKingsAdjacentSpaces() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {BK, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WR, NN, NN},
+                                    {NN, NN, NN, NN, WR, NN, NN, WK},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
 
-        game.move(7, 0, 6, 0); // moves rook up a space to make it black's turn
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(0, 4);
-        Space[] expectedUnavailableMoves = {new Space(0, 6)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, T, T},
+                                                    {F, F, F, F, F, F, T, F},
+                                                    {F, F, F, F, F, F, T, T}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 7));
     }
 
     @Test
-    public void test15() {
-        game = new ChessGame(TEST_STATE_5);
+    public void testGetAvailableMovesForPieceForBlackKingsAdjacentSpaces() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {BK, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WR, NN, NN},
+                                    {NN, NN, NN, NN, WR, NN, NN, WK},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
-        game.move(7, 0, 6, 0); // moves rook up a space to make it black's turn
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(0, 4);
-        Space[] expectedUnavailableMoves = {new Space(0, 2)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+        boolean[][] expectedSpacesContainedInSet = {{T, T, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {T, T, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 0));
     }
 
     @Test
-    public void test16() {
-        game = new ChessGame(TEST_STATE_5);
+    public void testGetAvailableMovesForPieceForWhiteKingsAdjacentSpacesWhenItPutsItInCheck() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, NN, NN, BR, NN},
+                                    {BK, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WR, NN, NN},
+                                    {NN, WR, NN, NN, NN, NN, NN, WK},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
 
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        Space[] expectedUnavailableMoves = {new Space(7, 6)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, T},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, T}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 7));
     }
 
     @Test
-    public void test17() {
-        game = new ChessGame(TEST_STATE_5);
+    public void testGetAvailableMovesForPieceForBlackKingsAdjacentSpacesWhenItPutsItInCheck() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, NN, NN, BR, NN},
+                                    {BK, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WR, NN, NN},
+                                    {NN, WR, NN, NN, NN, NN, NN, WK},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        Space[] expectedUnavailableMoves = {new Space(7, 2)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+        boolean[][] expectedSpacesContainedInSet = {{T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 0));
     }
 
     @Test
-    public void test18() {
-        game = new ChessGame(TEST_STATE_3);
+    public void testGetAvailableMovesForPieceForWhiteKingsAdjacentSpacesWithSameColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, NN, NN, BR, NN},
+                                    {BK, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BR, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, WR, NN},
+                                    {NN, WR, NN, NN, NN, NN, WK, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
 
-        game.move(7, 0, 6, 0);
-        game.move(0, 4, 1, 4);
-        game.move(6, 0, 7, 0);
-        game.move(1, 4, 0, 4);
-        game.move(7, 0, 6, 0);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(0, 4);
-        Space[] expectedUnavailableMoves = {new Space(0, 6)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, T, F, T},
+                                                    {F, F, F, F, F, T, F, T},
+                                                    {F, F, F, F, F, T, T, T}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 6));
     }
 
     @Test
-    public void test19() {
-        game = new ChessGame(TEST_STATE_3);
+    public void testGetAvailableMovesForPieceForBlackKingsAdjacentSpacesWithSameColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, NN, NN, BR, NN},
+                                    {BK, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BR, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, WR, NN},
+                                    {NN, WR, NN, NN, NN, NN, WK, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
-        game.move(7, 0, 6, 0);
-        game.move(0, 4, 1, 4);
-        game.move(6, 0, 7, 0);
-        game.move(1, 4, 0, 4);
-        game.move(7, 0, 6, 0);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(0, 4);
-        Space[] expectedUnavailableMoves = {new Space(0, 2)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+        boolean[][] expectedSpacesContainedInSet = {{T, T, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 0));
     }
 
     @Test
-    public void test20() {
-        game = new ChessGame(TEST_STATE_3);
+    public void testGetAvailableMovesForPieceForWhiteKingRightCastle() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, T, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackKingRightCastle() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, T, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhiteKingLeftCastle() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackKingLeftCastle() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, T, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhiteKingRightCastleWhenItPutsItInCheck() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, BR, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, T, T, T, F, F},
+                                                    {F, F, T, T, F, T, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackKingRightCastleWhenItPutsItInCheck() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, WR, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, T, T, F, T, F, F},
+                                                    {F, F, F, T, T, T, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhiteKingLeftCastleWhenItPutsItInCheck() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, BR, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, T, T, T, F, F},
+                                                    {F, F, F, T, F, T, T, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackKingLeftCastleWhenItPutsItInCheck() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WR, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, T, F, T, T, F},
+                                                    {F, F, F, T, T, T, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhiteKingToCastleWhenInCheck() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, BQ, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, T, F, T, F, F},
+                                                    {F, F, F, T, F, T, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackKingToCastleWhenInCheck() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WQ, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, T, F, T, F, F},
+                                                    {F, F, F, T, F, T, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhiteKingToCastleWhenSpacesAreNotEmpty() {
+        Pieces[][] initialState =  {{BR, Bk, NN, NN, BK, NN, Bk, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, Wk, NN, NN, WK, NN, Wk, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, T, T, T, F, F},
+                                                    {F, F, F, T, F, T, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackKingToCastleWhenSpacesAreNotEmpty() {
+        Pieces[][] initialState =  {{BR, Bk, NN, NN, BK, NN, Bk, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, Wk, NN, NN, WK, NN, Wk, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, T, F, T, F, F},
+                                                    {F, F, F, T, T, T, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhiteKingToCastleWhenKingHasBeenMoved() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
         game.move(7, 4, 6, 4);
         game.move(0, 4, 1, 4);
         game.move(6, 4, 7, 4);
         game.move(1, 4, 0, 4);
 
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        Space[] expectedUnavailableMoves = {new Space(7, 6)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, T, T, T, F, F},
+                                                    {F, F, F, T, F, T, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
     }
 
     @Test
-    public void test21() {
-        game = new ChessGame(TEST_STATE_3);
+    public void testGetAvailableMovesForPieceForBlackKingToCastleWhenKingHasBeenMoved() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
-        game.move(7, 4, 6, 4);
         game.move(0, 4, 1, 4);
-        game.move(6, 4, 7, 4);
+        game.move(7, 4, 6, 4);
         game.move(1, 4, 0, 4);
+        game.move(6, 4, 7, 4);
 
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        Space[] expectedUnavailableMoves = {new Space(7, 2)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, T, F, T, F, F},
+                                                    {F, F, F, T, T, T, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
     }
 
     @Test
-    public void test22() {
-        game = new ChessGame(TEST_STATE_3);
-
-        game.move(7, 0, 6, 0);
-        game.move(0, 7, 1, 7);
-        game.move(6, 0, 7, 0);
-        game.move(1, 7, 0, 7);
-        game.move(7, 0, 6, 0);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(0, 4);
-        Space[] expectedUnavailableMoves = {new Space(0, 6)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
-    }
-
-    @Test
-    public void test23() {
-        game = new ChessGame(TEST_STATE_3);
-
-        game.move(7, 0, 6, 0);
-        game.move(0, 0, 1, 0);
-        game.move(6, 0, 7, 0);
-        game.move(1, 0, 0, 0);
-        game.move(7, 0, 6, 0);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(0, 4);
-        Space[] expectedUnavailableMoves = {new Space(0, 2)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
-    }
-
-    @Test
-    public void test24() {
-        game = new ChessGame(TEST_STATE_3);
+    public void testGetAvailableMovesForPieceForWhiteKingToCastleWhenRightRookHasBeenMoved() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
         game.move(7, 7, 6, 7);
-        game.move(0, 4, 1, 4);
-        game.move(6, 7, 7, 7);
         game.move(1, 4, 0, 4);
+        game.move(6, 7, 7, 7);
+        game.move(0, 4, 1, 4);
 
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        Space[] expectedUnavailableMoves = {new Space(7, 6)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, T, T, T, F, F},
+                                                    {F, F, T, T, F, T, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
     }
 
     @Test
-    public void test25() {
-        game = new ChessGame(TEST_STATE_3);
+    public void testGetAvailableMovesForPieceForBlackKingToCastleWhenRightRookHasBeenMoved() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        game.move(0, 7, 1, 7);
+        game.move(7, 4, 6, 4);
+        game.move(1, 7, 0, 7);
+        game.move(6, 4, 7, 4);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, T, T, F, T, F, F},
+                                                    {F, F, F, T, T, T, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhiteKingToCastleWhenLeftRookHasBeenMoved() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
         game.move(7, 0, 6, 0);
-        game.move(0, 4, 1, 4);
-        game.move(6, 0, 7, 0);
         game.move(1, 4, 0, 4);
+        game.move(6, 0, 7, 0);
+        game.move(0, 4, 1, 4);
 
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        Space[] expectedUnavailableMoves = {new Space(7, 2)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, T, T, T, F, F},
+                                                    {F, F, F, T, F, T, T, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
     }
 
     @Test
-    public void test26() {
-        game = new ChessGame(TEST_STATE_7);
+    public void testGetAvailableMovesForPieceForBlackKingToCastleWhenLeftRookHasBeenMoved() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        Space[] expectedUnavailableMoves = {new Space(7, 2)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
-    }
-
-    @Test
-    public void test27() {
-        game = new ChessGame(TEST_STATE_5);
-
-        Space[] expectedUnavailableMoves = new Space[56];
-        for (int i = 0; i < 6; i++)
-            for (int j = 0; j < 8; j++)
-                expectedUnavailableMoves[i * 8 + j] = new Space(i, j);
-        expectedUnavailableMoves[6 * 8] = new Space(6, 0);
-        expectedUnavailableMoves[6 * 8 + 1] = new Space(6, 1);
-        expectedUnavailableMoves[6 * 8 + 2] = new Space(6, 2);
-        expectedUnavailableMoves[6 * 8 + 3] = new Space(6, 6);
-        expectedUnavailableMoves[6 * 8 + 4] = new Space(6, 7);
-        expectedUnavailableMoves[6 * 8 + 5] = new Space(7, 1);
-        expectedUnavailableMoves[6 * 8 + 6] = new Space(7, 2);
-        expectedUnavailableMoves[6 * 8 + 7] = new Space(7, 7);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 4);
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
-    }
-
-    @Test
-    public void test28() {
-        game = new ChessGame(TEST_STATE_5);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(3, 4);
-        Space[] expectedAvailableMoves = {new Space(4, 3), new Space(5, 2), new Space(6, 1),
-                                          new Space(2, 5), new Space(1, 6), new Space(0, 7)};
-        setDoesNotContainSpaces(availableMoves, expectedAvailableMoves);
-
-        game.move(3, 4, 2, 4); // move the white queen up to switch to black's turn
-
-        availableMoves = game.getAvailableMovesForPiece(4, 4);
-        expectedAvailableMoves = new Space[] {new Space(5, 5), new Space(6, 6), new Space(7, 7),
-                                 new Space(3, 3), new Space(2, 2), new Space(1, 1)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
-    }
-
-    @Test
-    public void test29() {
-        game = new ChessGame(TEST_STATE_7);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(2, 4);
-        Space[] expectedAvailableMoves = {new Space(3, 3), new Space(4, 2), new Space(5, 1), new Space(6, 0)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
-    }
-
-    @Test
-    public void test30() {
-        game = new ChessGame(TEST_STATE_7);
-
-        game.move(2, 4, 3, 4); // moves the white queen down a space so that it's black's turn
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(5, 4);
-        Space[] expectedAvailableMoves = {new Space(4, 5), new Space(3, 6), new Space(2, 7)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
-    }
-
-    @Test
-    public void test31() {
-        game = new ChessGame(TEST_STATE_7);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(2, 4);
-        Space[] expectedAvailableMoves = {new Space(1, 5), new Space(0, 6)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
-    }
-
-    @Test
-    public void test32() {
-        game = new ChessGame(TEST_STATE_7);
-
-        game.move(2, 4, 3, 4); // moves the white queen down a space so that it's black's turn
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(5, 4);
-        Space[] expectedAvailableMoves = {new Space(6, 5), new Space(7, 6)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
-    }
-
-    @Test
-    public void test33() {
-        game = new ChessGame(TEST_STATE_5);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(3, 4);
-        Space[] expectedAvailableMoves = {new Space(3, 5), new Space(3, 6), new Space(3, 3),
-                                          new Space(3, 2), new Space(3, 1), new Space(2, 4),
-                                          new Space(1, 4)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
-    }
-
-    @Test
-    public void test34() {
-        game = new ChessGame(TEST_STATE_7);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(2, 4);
-        Space[] expectedAvailableMoves = {new Space(2, 3), new Space(2, 2), new Space(2, 1),
-                                          new Space(2, 0), new Space(2, 5), new Space(2, 6),
-                                          new Space(2, 7)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
-    }
-
-    @Test
-    public void test35() {
-        game = new ChessGame(TEST_STATE_5);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(3, 4);
-        Space[] expectedUnavailableMoves = {new Space(7, 0)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
-    }
-
-    @Test
-    public void test36() {
-        game = new ChessGame(TEST_STATE_5);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(3, 4);
-        Space[] expectedAvailableMoves = {new Space(0, 7)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
-    }
-
-    @Test
-    public void test37() {
-        game = new ChessGame(TEST_STATE_2);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(5, 2);
-        Space[] expectedUnavailableMoves = {new Space(6, 2)};
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
-    }
-
-    @Test
-    public void test38() {
-        game = new ChessGame(TEST_STATE_5);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(3, 4);
-        Space[] expectedAvailableMoves = {new Space(4, 4)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
-    }
-
-    @Test
-    public void test39() {
-        game = new ChessGame();
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 3);
-        assertTrue(availableMoves.size() == 0);
-    }
-
-    @Test
-    public void test40() {
-        game = new ChessGame(TEST_STATE_2);
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(5, 4);
-        Space[] expectedAvailableMoves = {new Space(4, 3), new Space(3, 2), new Space(2, 1), new Space(4, 6)};
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
-    }
-
-    @Test
-    public void test41() {
-        game = new ChessGame(TEST_STATE_2);
-
-        boolean[][] unavailableSpaces = {{T, T, T, T, T, T, T, T},
-                                         {F, T, T, T, T, T, T, T},
-                                         {T, F, T, T, T, T, T, T},
-                                         {T, T, F, T, T, T, F, T},
-                                         {T, T, T, F, T, F, T, T},
-                                         {T, T, T, T, T, T, T, T},
-                                         {T, T, T, T, T, T, T, T}};
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(5, 4);
-        setDoesNotContainSpaces(availableMoves, unavailableSpaces);
-    }
-
-    @Test
-    public void test42() {
-        game = new ChessGame(TEST_STATE_3);
-
-        boolean[][] unavailableSpaces = {{T, F, F, F, F, F, F, F},
-                                         {T, F, F, F, F, F, F, F},
-                                         {T, F, F, F, F, F, F, F},
-                                         {T, F, F, F, F, F, F, F},
-                                         {T, F, F, F, F, F, F, F},
-                                         {T, F, F, F, F, F, F, F},
-                                         {F, T, T, T, F, F, F, F}};
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 0);
-        setContainsSpaces(availableMoves, unavailableSpaces);
-    }
-
-    @Test
-    public void test43() {
-        game = new ChessGame(TEST_STATE_3);
-
-        boolean[][] unavailableSpaces = {{T, F, F, F, F, F, F, F},
-                                        {T, F, F, F, F, F, F, F},
-                                        {T, F, F, F, F, F, F, F},
-                                        {T, F, F, F, F, F, F, F},
-                                        {T, F, F, F, F, F, F, F},
-                                        {T, F, F, F, F, F, F, F},
-                                        {F, T, T, T, F, F, F, F}};
-
-        complement(unavailableSpaces);
-        boolean[][] availableSpaces = unavailableSpaces;
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 0);
-        setDoesNotContainSpaces(availableMoves, unavailableSpaces);
-    }
-
-    @Test
-    public void test44() {
-        game = new ChessGame(TEST_STATE_4);
-
-        boolean[][] availableSpacesBottomLeftWhiteKnight = {{F, F, F, F, F, F, F, F},
-                                                            {F, F, F, F, F, F, F, F},
-                                                            {F, F, F, F, F, F, F, F},
-                                                            {F, F, F, F, F, F, F, F},
-                                                            {F, F, F, F, F, F, F, F},
-                                                            {T, F, T, F, F, F, F, F},
-                                                            {F, F, F, T, F, F, F, F},
-                                                            {F, F, F, F, F, F, F, F}};
-        boolean[][] availableSpacesBottomRightWhiteKnight = {{F, F, F, F, F, F, F, F},
-                                                            {F, F, F, F, F, F, F, F},
-                                                            {F, F, F, F, F, F, F, F},
-                                                            {F, F, F, F, F, F, F, F},
-                                                            {F, F, F, F, F, F, F, F},
-                                                            {F, F, F, F, F, T, F, T},
-                                                            {F, F, F, F, T, F, F, F},
-                                                            {F, F, F, F, F, F, F, F}};
-        boolean[][] availableSpacesTopLeftBlackKnight = {{F, F, F, F, F, F, F, F},
-                                                        {F, F, F, T, F, F, F, F},
-                                                        {T, F, T, F, F, F, F, F},
-                                                        {F, F, F, F, F, F, F, F},
-                                                        {F, F, F, F, F, F, F, F},
-                                                        {F, F, F, F, F, F, F, F},
-                                                        {F, F, F, F, F, F, F, F},
-                                                        {F, F, F, F, F, F, F, F}};
-        boolean[][] availableSpacesTopRightBlackKnight = {{F, F, F, F, F, F, F, F},
-                                                         {F, F, F, F, T, F, F, F},
-                                                         {F, F, F, F, F, T, F, T},
-                                                         {F, F, F, F, F, F, F, F},
-                                                         {F, F, F, F, F, F, F, F},
-                                                         {F, F, F, F, F, F, F, F},
-                                                         {F, F, F, F, F, F, F, F},
-                                                         {F, F, F, F, F, F, F, F}};
-
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 1);
-        setDoesNotContainSpaces(availableMoves, availableSpacesBottomLeftWhiteKnight);
-        availableMoves = game.getAvailableMovesForPiece(7, 6);
-        setDoesNotContainSpaces(availableMoves, availableSpacesBottomRightWhiteKnight);
-
+        game.move(0, 0, 1, 0);
         game.move(7, 4, 6, 4);
+        game.move(1, 0, 0, 0);
+        game.move(6, 4, 7, 4);
 
-        availableMoves = game.getAvailableMovesForPiece(0, 1);
-        setDoesNotContainSpaces(availableMoves, availableSpacesTopLeftBlackKnight);
-        availableMoves = game.getAvailableMovesForPiece(6, 1);
-        setDoesNotContainSpaces(availableMoves, availableSpacesTopRightBlackKnight);
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, T, F, T, T, F},
+                                                    {F, F, F, T, T, T, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
     }
 
     @Test
-    public void test45() {
-        game = new ChessGame(TEST_STATE_4);
+    public void testGetAvailableMovesForPieceForWhiteQueenEmptyDiagonalSpaces() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WQ, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
-        Space[] expectedUnavailableMoves = {new Space(8, 3)};
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(7, 1);
-        setDoesNotContainSpaces(availableMoves, expectedUnavailableMoves);
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
+                                                    {F, F, F, T, F, F, F, T},
+                                                    {F, F, F, F, T, F, T, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, T, F, T, F},
+                                                    {F, F, F, T, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(5, 5));
     }
 
     @Test
-    public void test46() {
-        game = new ChessGame(TEST_STATE_2);
+    public void testGetAvailableMovesForPieceForBlackQueenEmptyDiagonalSpaces() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, BQ, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
-        Space[] expectedAvailableMoves = {new Space(0, 1), new Space(0, 3)};
-        Set<Space> availableMoves = game.getAvailableMovesForPiece(2, 2);
-        setContainsSpaces(availableMoves, expectedAvailableMoves);
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, T, F},
+                                                    {F, T, F, F, F, T, F, F},
+                                                    {F, F, T, F, T, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, T, F, T, F, F, F},
+                                                    {F, T, F, F, F, T, F, F},
+                                                    {F, F, F, F, F, F, T, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 3));
     }
 
     @Test
-    public void test47() {
+    public void testGetAvailableMovesForPieceForWhiteQueenDiagonalSpacesWithOppositeColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WQ, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(5, 5));
     }
 
     @Test
-    public void test48() {
+    public void testGetAvailableMovesForPieceForBlackQueenDiagonalSpacesWithOppositeColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, BQ, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 3));
     }
 
     @Test
-    public void test49() {
+    public void testGetAvailableMovesForPieceForWhiteQueenDiagonalSpacesWithSameColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WQ, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(5, 5));
     }
 
     @Test
-    public void test50() {
+    public void testGetAvailableMovesForPieceForBlackQueenDiagonalSpacesWithSameColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, BQ, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{T, T, T, T, T, T, T, F},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 3));
     }
 
     @Test
-    public void test51() {
+    public void testGetAvailableMovesForPieceForWhiteQueenRectangularEmptySpaces() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BB, NN, NN, NN, NN, NN, NN},
+                                    {WQ, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, T, T, T, T, T, T, T},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test52() {
+    public void testGetAvailableMovesForPieceForBlackQueenRectangularEmptySpaces() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {BQ, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, T, T, T, T, T, T, T},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test53() {
+    public void testGetAvailableMovesForPieceForWhiteQueenRectangularSpacesWithOppositeColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BB, NN, NN, NN, NN, NN, NN},
+                                    {WQ, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test54() {
+    public void testGetAvailableMovesForPieceForBlackQueenRectangularSpacesWithOppositeColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {BQ, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test55() {
+    public void testGetAvailableMovesForPieceForWhiteQueenRectangularSpacesWithSameColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BB, NN, NN, NN, NN, NN, NN},
+                                    {WQ, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {F, T, T, T, T, T, T, T}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test56() {
+    public void testGetAvailableMovesForPieceForBlackQueenRectangularSpacesWithSameColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {BQ, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test57() {
+    public void testGetAvailableMovesForPieceForWhiteQueenUnavailableSpaces() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, BB, NN, NN, NN, NN, NN},
+                                    {BR, NN, NN, NN, NN, NN, NN, NN},
+                                    {WQ, NN, NN, NN, WB, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
+                                                    {T, T, F, F, F, F, F, F},
+                                                    {F, T, T, T, F, F, F, F},
+                                                    {T, T, F, F, F, F, F, F},
+                                                    {T, F, T, F, F, F, F, F},
+                                                    {F, F, F, T, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test58() {
+    public void testGetAvailableMovesForPieceForBlackQueenUnavailableSpaces() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, BB, NN, NN, NN, NN, NN},
+                                    {BR, NN, NN, NN, NN, NN, NN, NN},
+                                    {BQ, NN, NN, NN, WB, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {F, T, T, T, T, F, F, F},
+                                                    {T, T, F, F, F, F, F, F},
+                                                    {T, F, T, F, F, F, F, F},
+                                                    {T, F, F, T, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test59() {
+    public void testGetAvailableMovesForPieceForWhiteBishopEmptyDiagonalSpaces() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WB, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
+                                                    {F, F, F, T, F, F, F, T},
+                                                    {F, F, F, F, T, F, T, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, T, F, T, F},
+                                                    {F, F, F, T, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(5, 5));
     }
 
     @Test
-    public void test60() {
+    public void testGetAvailableMovesForPieceForBlackBishopEmptyDiagonalSpaces() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, BB, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, T, F},
+                                                    {F, T, F, F, F, T, F, F},
+                                                    {F, F, T, F, T, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, T, F, T, F, F, F},
+                                                    {F, T, F, F, F, T, F, F},
+                                                    {F, F, F, F, F, F, T, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 3));
     }
 
     @Test
-    public void test61() {
+    public void testGetAvailableMovesForPieceForWhiteBishopDiagonalSpacesWithOppositeColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WB, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(5, 5));
     }
 
     @Test
-    public void test62() {
+    public void testGetAvailableMovesForPieceForBlackBishopDiagonalSpacesWithOppositeColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, BB, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 3));
     }
 
     @Test
-    public void test63() {
+    public void testGetAvailableMovesForPieceForWhiteBishopDiagonalSpacesWithSameColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WB, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(5, 5));
     }
 
     @Test
-    public void test64() {
+    public void testGetAvailableMovesForPieceForBlackBishopDiagonalSpacesWithSameColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, BB, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{T, T, T, T, T, T, T, F},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 3));
     }
 
     @Test
-    public void test65() {
+    public void testGetAvailableMovesForPieceForWhiteBishopUnavailableSpaces() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, BB, NN, NN, NN, NN, NN},
+                                    {BR, NN, NN, NN, NN, NN, NN, NN},
+                                    {WB, NN, NN, NN, WB, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
+                                                    {F, F, F, T, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test66() {
+    public void testGetAvailableMovesForPieceForBlackBishopUnavailableSpaces() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, BB, NN, NN, NN, NN, NN},
+                                    {BR, NN, NN, NN, NN, NN, NN, NN},
+                                    {BB, NN, NN, NN, WB, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
+                                                    {F, F, F, T, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test67() {
+    public void testGetAvailableMovesForPieceForWhiteRookRectangularEmptySpaces() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BB, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, T, T, T, T, T, T, T},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test68() {
+    public void testGetAvailableMovesForPieceForBlackRookRectangularEmptySpaces() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {BR, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, T, T, T, T, T, T, T},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test69() {
+    public void testGetAvailableMovesForPieceForWhiteRookRectangularSpacesWithOppositeColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BB, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test70() {
+    public void testGetAvailableMovesForPieceForBlackRookRectangularSpacesWithOppositeColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {BR, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test71() {
+    public void testGetAvailableMovesForPieceForWhiteRookRectangularSpacesWithSameColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BB, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {F, T, T, T, T, T, T, T}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test72() {
+    public void testGetAvailableMovesForPieceForBlackRookRectangularSpacesWithSameColor() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {BR, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test73() {
+    public void testGetAvailableMovesForPieceForWhiteRookUnavailableSpaces() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, BB, NN, NN, NN, NN, NN},
+                                    {BR, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WB, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, T, T, T, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test74() {
+    public void testGetAvailableMovesForPieceForBlackRookUnavailableSpaces() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, BB, NN, NN, NN, NN, NN},
+                                    {BR, NN, NN, NN, NN, NN, NN, NN},
+                                    {BR, NN, NN, NN, WB, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, T, T, T, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
     }
 
     @Test
-    public void test75() {
+    public void testGetAvailableMovesForPieceForWhiteKnightEmptySpaces() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, Wk, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, T, F, F, F, F},
+                                                    {T, F, F, F, T, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, T, F, F, F},
+                                                    {F, T, F, T, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 2));
     }
 
     @Test
-    public void test76() {
+    public void testGetAvailableMovesForPieceForBlackKnightEmptySpaces() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, Bk, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, T, F, F, F, F},
+                                                    {T, F, F, F, T, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, T, F, F, F},
+                                                    {F, T, F, T, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 2));
     }
 
     @Test
-    public void test77() {
+    public void testGetAvailableMovesForPieceForWhiteKnightSpacesWithTheOppositeColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, Bk, NN, Bk, NN, NN, NN, NN},
+                                    {Bk, NN, NN, NN, Bk, NN, NN, NN},
+                                    {NN, NN, Wk, NN, NN, NN, NN, NN},
+                                    {Bk, NN, NN, NN, Bk, NN, NN, NN},
+                                    {NN, Bk, NN, Bk, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, T, F, F, F, F},
+                                                    {T, F, F, F, T, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, T, F, F, F},
+                                                    {F, T, F, T, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 2));
     }
 
     @Test
-    public void test78() {
+    public void testGetAvailableMovesForPieceForBlackKnightSpacesWithTheOppositeColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, Wk, NN, Wk, NN, NN, NN, NN},
+                                    {Wk, NN, NN, NN, Wk, NN, NN, NN},
+                                    {NN, NN, Bk, NN, NN, NN, NN, NN},
+                                    {Wk, NN, NN, NN, Wk, NN, NN, NN},
+                                    {NN, Wk, NN, Wk, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, T, F, F, F, F},
+                                                    {T, F, F, F, T, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, T, F, F, F},
+                                                    {F, T, F, T, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 2));
     }
 
     @Test
-    public void test79() {
+    public void testGetAvailableMovesForPieceForWhiteKnightSpacesWithTheSameColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, Wk, NN, Wk, NN, NN, NN, NN},
+                                    {Wk, NN, NN, NN, Wk, NN, NN, NN},
+                                    {NN, NN, Wk, NN, NN, NN, NN, NN},
+                                    {Wk, NN, NN, NN, Wk, NN, NN, NN},
+                                    {NN, Wk, NN, Wk, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 2));
     }
 
     @Test
-    public void test80() {
+    public void testGetAvailableMovesForPieceForBlackKnightSpacesWithTheSameColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, Bk, NN, Bk, NN, NN, NN, NN},
+                                    {Bk, NN, NN, NN, Bk, NN, NN, NN},
+                                    {NN, NN, Bk, NN, NN, NN, NN, NN},
+                                    {Bk, NN, NN, NN, Bk, NN, NN, NN},
+                                    {NN, Bk, NN, Bk, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T},
+                                                    {T, T, T, T, T, T, T, T}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 2));
     }
 
     @Test
-    public void test81() {
+    public void testGetAvailableMovesForPieceForWhitePawnEmptySpaceInFront() {
+        ChessGameInterface game = new ChessGame();
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 0));
     }
 
     @Test
-    public void test82() {
+    public void testGetAvailableMovesForPieceForBlackPawnEmptySpaceInFront() {
+        ChessGameInterface game = new ChessGame(Colors.BLACK);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(2, 0));
     }
 
     @Test
-    public void test83() {
+    public void testGetAvailableMovesForPieceForWhitePawnFrontSpaceContainsPieceOfSameColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, WP, NN, NN, NN, NN, NN, NN},
+                                    {NN, WP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 1));
     }
 
     @Test
-    public void test84() {
+    public void testGetAvailableMovesForPieceForBlackPawnFrontSpaceContainsPieceOfSameColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
     }
 
     @Test
-    public void test85() {
+    public void testGetAvailableMovesForPieceForWhitePawnFrontSpaceContainsPieceOfOppositeColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, WP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 1));
     }
 
     @Test
-    public void test86() {
+    public void testGetAvailableMovesForPieceForBlackPawnFrontSpaceContainsPieceOfOppositeColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, WP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
     }
 
     @Test
-    public void test87() {
+    public void testGetAvailableMovesForPieceForWhitePawnTwoEmptySpacesInFrontIfPawnWasMoved() {
+        ChessGameInterface game = new ChessGame();
 
+        game.move(6, 0, 5, 0);
+        game.move(1, 0, 2, 0);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(5, 0));
     }
 
     @Test
-    public void test88() {
+    public void testGetAvailableMovesForPieceForBlackPawnTwoEmptySpacesInFrontIfPawnWasMoved() {
+        ChessGameInterface game = new ChessGame(Colors.BLACK);
 
+        game.move(1, 0, 2, 0);
+        game.move(6, 0, 5, 0);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(2, 0));
     }
 
     @Test
-    public void test89() {
+    public void testGetAvailableMovesForPieceForWhitePawnTwoEmptySpacesInFront() {
+        ChessGameInterface game = new ChessGame();
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 0));
     }
 
     @Test
-    public void test90() {
+    public void testGetAvailableMovesForPieceForBlackPawnTwoEmptySpacesInFront() {
+        ChessGameInterface game = new ChessGame(Colors.BLACK);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 0));
+    }
+
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhitePawnTwoSpacesInFrontWithPieceOfSameColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 2));
     }
 
     @Test
-    public void test91() {
+    public void testGetAvailableMovesForPieceForBlackPawnTwoSpacesInFrontWithPieceOfSameColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
 
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhitePawnTwoSpacesInFrontWithPieceOfOppositeColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, BP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 2));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackPawnTwoSpacesInFrontWithPieceOfOppositeColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, WP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhitePawnTwoSpacesInFrontWhenFirstSpaceContainsPieceOfSameColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 2));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackPawnTwoSpacesInFrontWhenFirstSpaceContainsPieceOfSameColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhitePawnTwoSpacesInFrontWhenFirstSpaceContainsPieceOfOppositeColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, WP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, BP, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 2));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackPawnTwoSpacesInFrontWhenFirstSpaceContainsPieceOfOppositeColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, WP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhitePawnDiagonalWithOppositeColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, WP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, BP, BP, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, T, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 2));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackPawnDiagonalWithOppositeColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {WP, WP, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, T, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhitePawnDiagonalWithSameColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, WP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, WP, BP, WP, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 2));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackPawnDiagonalWithSameColor() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {BP, WP, BP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhitePawnEmptyDiagonal() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, WP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, BP, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 2));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackPawnEmptyDiagonal() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, WP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhitePawnEmptyLeftDiagonalWithAdjacentPawnMovedTwoSpacesLastTurn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        game.move(1, 1, 3, 1);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, T, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(3, 2));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackPawnEmptyLeftDiagonalWithAdjacentPawnMovedTwoSpacesLastTurn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(6, 2, 4, 2);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, T, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhitePawnEmptyRightDiagonalWithAdjacentPawnMovedTwoSpacesLastTurn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, BP, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        game.move(1, 3, 3, 3);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, T, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(3, 2));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackPawnEmptyRightDiagonalWithAdjacentPawnMovedTwoSpacesLastTurn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WP, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(6, 0, 4, 0);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {T, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhitePawnEmptyLeftDiagonalWithAdjacentPawnMovedTwoSpacesNotOnLastTurn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        game.move(1, 1, 3, 1);
+        game.move(7, 4, 7, 5);
+        game.move(0, 4, 0, 5);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(3, 2));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackPawnEmptyLeftDiagonalWithAdjacentPawnMovedTwoSpacesNotOnLastTurn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(6, 2, 4, 2);
+        game.move(0, 4, 0, 5);
+        game.move(7, 4, 7, 5);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhitePawnEmptyRightDiagonalWithAdjacentPawnMovedTwoSpacesNotOnLastTurn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, BP, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        game.move(1, 3, 3, 3);
+        game.move(7, 4, 7, 5);
+        game.move(0, 4, 0, 5);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(3, 2));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackPawnEmptyRightDiagonalWithAdjacentPawnMovedTwoSpacesNotOnLastTurn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WP, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(6, 0, 4, 0);
+        game.move(0, 4, 0, 5);
+        game.move(7, 4, 7, 5);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhitePawnEmptyLeftDiagonalWithAdjacentPawnMovedOneSpaceLastTurn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        game.move(1, 1, 2, 1);
+        game.move(7, 4, 7, 5);
+        game.move(2, 1, 3, 1);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(3, 2));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackPawnEmptyLeftDiagonalWithAdjacentPawnMovedOneSpaceLastTurn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(6, 2, 5, 2);
+        game.move(0, 4, 0, 5);
+        game.move(5, 2, 4, 2);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhitePawnEmptyRightDiagonalWithAdjacentPawnMovedOneSpaceLastTurn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, BP, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        game.move(1, 3, 2, 3);
+        game.move(7, 4, 7, 5);
+        game.move(2, 3, 3, 3);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(3, 2));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForBlackPawnEmptyRightDiagonalWithAdjacentPawnMovedOneSpaceLastTurn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WP, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(6, 0, 5, 0);
+        game.move(0, 4, 0, 5);
+        game.move(5, 0, 4, 0);
+
+        boolean[][] expectedSpacesContainedInSet = {{F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F},
+                                                    {F, F, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
+    }
+
+    @Test
+    public void testGetAvailableMovesForPieceForWhitePromotedPawn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, WP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WP, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(1, 1, 0, 1);
+        game.move(0, 4, 1, 4);
+
+        boolean[][] expectedSpacesContainedInSet = {{T, F, T, T, T, T, T, T},
+                                                    {T, T, T, F, F, F, F, F},
+                                                    {F, T, F, T, F, F, F, F},
+                                                    {F, T, F, F, T, F, F, F},
+                                                    {F, T, F, F, F, T, F, F},
+                                                    {F, T, F, F, F, F, T, F},
+                                                    {F, T, F, F, F, F, F, T},
+                                                    {F, T, F, F, F, F, F, F}};
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 1));
+    }
+
+    @Test
+    public void testMoveWhenStartingRowIsInvalid() {
+        ChessGameInterface game = new ChessGame();
+
+        assertThrows(IllegalArgumentException.class, () -> game.move(-1, 0, 0,  0));
+    }
+
+    @Test
+    public void testMoveWhenStartingColumnIsInvalid() {
+        ChessGameInterface game = new ChessGame();
+
+        assertThrows(IllegalArgumentException.class, () -> game.move(0, -1, 0,  0));
+    }
+
+    @Test
+    public void testMoveWhenEndingRowIsInvalid() {
+        ChessGameInterface game = new ChessGame();
+
+        assertThrows(IllegalArgumentException.class, () -> game.move(0, 0, -1,  0));
+    }
+
+    @Test
+    public void testMoveWhenEndingColumnIsInvalid() {
+        ChessGameInterface game = new ChessGame();
+
+        assertThrows(IllegalArgumentException.class, () -> game.move(0, 0, 0,  -1));
+    }
+
+    @Test
+    public void testMoveWhenStartingSpaceIsEmpty() {
+        ChessGameInterface game = new ChessGame();
+
+        assertThrows(IllegalArgumentException.class, () -> game.move(2, 0, 3,  0));
+    }
+
+    @Test
+    public void testMoveWhenStartingSpaceContainsOppositeColorWhenPlayerIsWhite() {
+        ChessGameInterface game = new ChessGame();
+
+        assertThrows(IllegalArgumentException.class, () -> game.move(1, 0, 3,  0));
+    }
+
+    @Test
+    public void testMoveWhenStartingSpaceContainsOppositeColorWhenPlayerIsBlack() {
+        ChessGameInterface game = new ChessGame(Colors.BLACK);
+
+        assertThrows(IllegalArgumentException.class, () -> game.move(6, 0, 4,  0));
+    }
+
+    @Test
+    public void testMoveWhenEndingSpaceIsNotAvailable() {
+        ChessGameInterface game = new ChessGame();
+
+        assertThrows(IllegalArgumentException.class, () -> game.move(6, 0, 3,  0));
+    }
+
+    @Test
+    public void testMoveForStandardMove() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, BP, NN, NN, NN, NN, NN},
+                                    {NN, WP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WP, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(2, 1, 1, 2);
+
+        Pieces[][] expectedGameState = {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                        {NN, NN, WP, NN, NN, NN, NN, NN},
+                                        {NN, NN, NN, NN, NN, NN, NN, NN},
+                                        {NN, NN, NN, NN, NN, NN, NN, NN},
+                                        {NN, NN, NN, NN, NN, NN, NN, NN},
+                                        {NN, NN, NN, NN, NN, NN, NN, NN},
+                                        {WP, NN, NN, NN, NN, NN, NN, NN},
+                                        {NN, NN, NN, NN, WK, NN, NN, NN}};
+        assertEquals(expectedGameState, game.getBoardState());
+    }
+
+    @Test
+    public void testMoveForWhiteKingLeftCastle() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(7, 4, 7, 2);
+
+        Pieces[][] expectedGameState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, WK, WR, NN, NN, NN, WR}};
+
+        assertEquals(expectedGameState, game.getBoardState());
+    }
+
+    @Test
+    public void testMoveForWhiteKingRightCastle() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(7, 4, 7, 6);
+
+        Pieces[][] expectedGameState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {WR, NN, NN, NN, NN, WR, WK, NN}};
+
+        assertEquals(expectedGameState, game.getBoardState());
+    }
+
+    @Test
+    public void testMoveForBlackKingLeftCastle() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        game.move(0, 4, 0, 2);
+
+        Pieces[][] expectedGameState =  {{NN, NN, BK, BR, NN, NN, NN, BR},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {WR, NN, NN, NN, WK, NN, NN, WR}};
+
+        assertEquals(expectedGameState, game.getBoardState());
+    }
+
+    @Test
+    public void testMoveForBlackKingRightCastle() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        game.move(0, 4, 0, 6);
+
+        Pieces[][] expectedGameState =  {{BR, NN, NN, NN, NN, BR, BK, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {WR, NN, NN, NN, NN, WR, WK, NN}};
+
+        assertEquals(expectedGameState, game.getBoardState());
+    }
+
+    @Test
+    public void testMoveCapturesEnPassantForWhitePawn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, BP, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        game.move(1, 3, 3, 3);
+        game.move(3, 2, 2, 3);
+
+        Pieces[][] expectedGameState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, WP, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, WK, NN, NN, NN}};
+        assertEquals(expectedGameState, game.getBoardState());
+    }
+
+    @Test
+    public void testMoveCapturesEnPassantForBlackPawn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(6, 2, 4, 2);
+        game.move(4, 1, 5, 2);
+
+        Pieces[][] expectedGameState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, BP, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, NN, NN, NN, NN},
+                                         {NN, NN, NN, NN, WK, NN, NN, NN}};
+        assertEquals(expectedGameState, game.getBoardState());
+    }
+
+    @Test
+    public void testMoveWhitePromotion() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(1, 2, 0, 2);
+
+        Pieces[][] expectedGameState = {{NN, NN, WQ, NN, BK, NN, NN, NN},
+                                        {NN, NN, NN, NN, NN, NN, NN, NN},
+                                        {NN, NN, NN, NN, NN, NN, NN, NN},
+                                        {NN, NN, NN, NN, NN, NN, NN, NN},
+                                        {NN, BP, NN, NN, NN, NN, NN, NN},
+                                        {NN, NN, NN, NN, NN, NN, NN, NN},
+                                        {NN, NN, WP, NN, NN, NN, NN, NN},
+                                        {NN, NN, NN, NN, WK, NN, NN, NN}};
+        assertEquals(expectedGameState, game.getBoardState());
+    }
+
+    @Test
+    public void testMoveBlackPromotion() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        game.move(6, 1, 7, 1);
+
+        Pieces[][] expectedGameState = {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                        {NN, NN, WP, NN, NN, NN, NN, NN},
+                                        {NN, NN, NN, NN, NN, NN, NN, NN},
+                                        {NN, NN, NN, NN, NN, NN, NN, NN},
+                                        {NN, BP, NN, NN, NN, NN, NN, NN},
+                                        {NN, NN, NN, NN, NN, NN, NN, NN},
+                                        {NN, NN, WP, NN, NN, NN, NN, NN},
+                                        {NN, BQ, NN, NN, WK, NN, NN, NN}};
+        assertEquals(expectedGameState, game.getBoardState());
+    }
+
+    @Test
+    public void testMoveWhenGameIsOver() {
+        Pieces[][] initialState =  {{BK, NN, NN, NN, NN, NN, WR, NN},
+                                    {NN, NN, NN, NN, NN, NN, WQ, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, WK}};
+        ChessGameInterface game = new ChessGame(initialState);
+        assertThrows(IllegalArgumentException.class, () -> game.move(0, 6, 0, 5));
+    }
+
+    @Test
+    public void testUndoLastMoveWhenThereWasNoPreviousMove() {
+        ChessGameInterface game = new ChessGame();
+        assertThrows(IllegalArgumentException.class, () -> game.undoLastMove());
+    }
+
+    @Test
+    public void testUndoLastMoveForStandardMove() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, BP, NN, NN, NN, NN, NN},
+                                    {NN, WP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WP, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(2, 1, 1, 2);
+        game.undoLastMove();
+        assertEquals(initialState, game.getBoardState());
+    }
+
+    @Test
+    public void testUndoLastMoveForCastle() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        game.move(0, 4, 0, 6);
+        game.undoLastMove();
+
+        assertEquals(initialState, game.getBoardState());
+    }
+
+    @Test
+    public void testUndoLastMoveForEnPassant() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(6, 2, 4, 2);
+        game.move(4, 1, 5, 2);
+        game.undoLastMove();
+        game.undoLastMove();
+
+        assertEquals(initialState, game.getBoardState());
+    }
+
+    @Test
+    public void testUndoLastMoveForPromotion() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, BP, WP, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WK, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+
+        game.move(6, 1, 7, 1);
+        game.undoLastMove();
+
+        assertEquals(initialState, game.getBoardState());
+    }
+
+    @Test
+    public void testUndoLastMoveResetsMovementStatusForPiecesMovedFromLastTurn() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(7, 0, 7, 1);
+        game.undoLastMove();
+        game.move(7, 4, 7, 2);
+        game.undoLastMove();
+
+        assertEquals(initialState, game.getBoardState());
+    }
+
+    @Test
+    public void testUndoLastMoveResetsMovementStatusForPiecesMovedNotFromLastTurn() {
+        Pieces[][] initialState =  {{BR, NN, NN, NN, BK, NN, NN, BR},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WR, NN, NN, NN, WK, NN, NN, WR}};
+        ChessGameInterface game = new ChessGame(initialState);
+
+        game.move(7, 0, 7, 1);
+        game.move(0, 0, 0, 1);
+        game.move(7, 1, 7, 0);
+        game.move(0, 1, 0, 0);
+        game.move(7, 0, 7, 1);
+        game.undoLastMove();
+
+        assertThrows(IllegalArgumentException.class, () -> game.move(7, 4, 7, 2));
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckWhiteKingByBlackKing() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, WK, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+        assertTrue(game.isCurrentPlayerInCheck());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckWhiteKingByBlackQueen() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, BQ, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WK, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+        assertTrue(game.isCurrentPlayerInCheck());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckWhiteKingByBlackRook() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, BR, NN, NN, WK, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+        assertTrue(game.isCurrentPlayerInCheck());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckWhiteKingByBlackBishop() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, BB, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WK, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+        assertTrue(game.isCurrentPlayerInCheck());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckWhiteKingByBlackKnight() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, Bk, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WK, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+        assertTrue(game.isCurrentPlayerInCheck());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckWhiteKingByBlackPawn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, BP, NN},
+                                    {NN, NN, NN, NN, NN, WK, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+        assertTrue(game.isCurrentPlayerInCheck());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckWhiteKingWhenNotInCheck() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WK, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+        assertTrue(!game.isCurrentPlayerInCheck());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckBlackKingByWhiteKing() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, WK, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+        assertTrue(game.isCurrentPlayerInCheck());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckBlackKingByWhiteQueen() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, WK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, WQ, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, BK, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+        assertTrue(game.isCurrentPlayerInCheck());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckBlackKingByWhiteRook() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, WK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WR, NN, NN, BK, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+        assertTrue(game.isCurrentPlayerInCheck());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckBlackKingByWhiteBishop() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, WK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, WB, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, BK, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+        assertTrue(game.isCurrentPlayerInCheck());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckBlackKingByWhiteKnight() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, WK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, Wk, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, BK, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+        assertTrue(game.isCurrentPlayerInCheck());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckBlackKingByWhitePawn() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, WK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, WP, NN},
+                                    {NN, NN, NN, NN, NN, BK, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+        assertTrue(game.isCurrentPlayerInCheck());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckBlackKingWhenNotInCheck() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WK, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+        assertTrue(!game.isCurrentPlayerInCheck());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckMateWhenWhiteIsInCheckMate() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, BR, NN, NN, NN, NN, NN},
+                                    {NN, NN, BR, NN, NN, WK, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+        assertTrue(game.isCurrentPlayerInCheckmate());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckMateWhenBlackIsInCheckMate() {
+        Pieces[][] initialState =  {{NN, NN, WR, NN, BK, NN, NN, NN},
+                                    {NN, NN, WR, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WK, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+        assertTrue(game.isCurrentPlayerInCheckmate());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckMateWhenWhiteIsInStaleMate() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, BQ, NN, NN, NN, NN, NN},
+                                    {WK, NN, NN, NN, NN, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+        assertTrue(!game.isCurrentPlayerInCheckmate());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckMateWhenBlackIsInStaleMate() {
+        Pieces[][] initialState =  {{BK, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WQ, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WK, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+        assertTrue(!game.isCurrentPlayerInCheckmate());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckMateWhenWhiteIsInCheckAndHasMovesLeft() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, BQ, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WK, NN, NN, NN, NN, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+        assertTrue(!game.isCurrentPlayerInCheckmate());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInCheckMateWhenBlackIsInCheckAndHasMovesLeft() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WQ, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, BQ, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {WK, NN, NN, NN, NN, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+        assertTrue(!game.isCurrentPlayerInCheckmate());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInStaleMateWhenWhiteIsInStaleMate() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, BQ, NN, NN, NN, NN, NN},
+                                    {WK, NN, NN, NN, NN, NN, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+        assertTrue(game.isGameInStalemate());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInStaleMateWhenBlackIsInStaleMate() {
+        Pieces[][] initialState =  {{BK, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, WQ, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WK, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+        assertTrue(game.isGameInStalemate());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInStaleMateWhenWhiteIsInCheckMate() {
+        Pieces[][] initialState =  {{NN, NN, NN, NN, BK, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, BR, NN, NN, NN, NN, NN},
+                                    {NN, NN, BR, NN, NN, WK, NN, NN}};
+        ChessGameInterface game = new ChessGame(initialState);
+        assertTrue(!game.isGameInStalemate());
+    }
+
+    @Test
+    public void testIsCurrentPlayerInStaleMateWhenBlackIsInCheckMate() {
+        Pieces[][] initialState =  {{NN, NN, WR, NN, BK, NN, NN, NN},
+                                    {NN, NN, WR, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, NN, NN, NN},
+                                    {NN, NN, NN, NN, NN, WK, NN, NN}};
+        ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
+        assertTrue(!game.isGameInStalemate());
+    }
+
+    @Test
+    public void testIsGameInStalemateWhenWhiteNotInCheckAndHasMovesLeft() {
+        ChessGameInterface game = new ChessGame();
+        assertTrue(!game.isGameInStalemate());
+    }
+
+    @Test
+    public void testIsGameInStalemateWhenBlackNotInCheckAndHasMovesLeft() {
+        ChessGameInterface game = new ChessGame(Colors.BLACK);
+        assertTrue(!game.isGameInStalemate());
     }
 }

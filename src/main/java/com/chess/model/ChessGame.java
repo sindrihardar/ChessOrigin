@@ -1,27 +1,37 @@
 package com.chess.model;
 
+import java.util.List;
 import java.util.Set;
 
 public class ChessGame implements ChessGameInterface {
+    public ChessGame(Colors color, Pieces[][] board) {
+
+    }
 
     public ChessGame(Pieces[][] board) {
 
     }
 
-    public ChessGame() {}
+    public ChessGame(Colors color) {
+
+    }
+
+    public ChessGame() {
+
+    }
 
     @Override
-    public boolean doesSpaceContainAPieceOfTheCurrentPlayersColor(Space space) {
+    public boolean doesSpaceContainAPieceOfTheCurrentPlayersColor(int row, int col) {
         return false;
     }
 
     @Override
-    public Set<Space> getAvailableMovesForPiece(Space space) {
+    public Set<Space> getAvailableMovesForSpace(int row, int col) {
         return null;
     }
 
     @Override
-    public void move(Space start, Space end) {
+    public void move(int startRow, int startCol, int endRow, int endCol) {
 
     }
 
@@ -48,5 +58,25 @@ public class ChessGame implements ChessGameInterface {
     @Override
     public Pieces[][] getBoardState() {
         return new Pieces[0][];
+    }
+
+    @Override
+    public List<Pieces> getActiveWhitePieces() {
+        return null;
+    }
+
+    @Override
+    public List<Pieces> getActiveBlackPieces() {
+        return null;
+    }
+
+    @Override
+    public List<Pieces> getCapturedWhitePieces() {
+        return null;
+    }
+
+    @Override
+    public List<Pieces> getCapturedBlackPieces() {
+        return null;
     }
 }

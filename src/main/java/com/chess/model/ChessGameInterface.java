@@ -1,25 +1,32 @@
 package com.chess.model;
 
+import java.util.List;
 import java.util.Set;
 
+/*
+ *  Note that the following methods use 0-indexed rows and columns to refer to the spaces on the chess board.
+ */
 public interface ChessGameInterface {
     /**
-     * @param space
-     * @return true if the space contains a piece of the current player's color, false otherwise.
+     * @throws IllegalArgumentException if either row or col are not between 0 and 7 (inclusive).
+     * @param row
+     * @param col
+     * @return true if the space at (row, col) contains a piece of the current player's color, false otherwise.
      */
-    public boolean doesSpaceContainAPieceOfTheCurrentPlayersColor(Space space);
+    public boolean doesSpaceContainAPieceOfTheCurrentPlayersColor(int row, int col);
 
     /**
      * Gives a set of the spaces that the piece at the given space can move to.
      *
      * @throws IllegalArgumentException if
      *  - the space doesn't contain a piece, or
-     *  - the space contains a piece of the color of the inactive player.
-     * @param space
+     *  - the space contains a piece of the color of the inactive player, or
+     *  - the game is over.
+     * @param row
+     * @param col
      * @return
      */
-    public Set<Space> getAvailableMovesForPiece(Space space);
-    public Set<Space> getAvailableMovesForPiece(int row, int col);
+    public Set<Space> getAvailableMovesForSpace(int row, int col);
 
     /**
      * Moves the piece at the startRow row and startCol column to the space at the endRow row and endCol column.
@@ -28,10 +35,11 @@ public interface ChessGameInterface {
      *  - the starting space doesn't contain the current player's piece, or
      *  - the ending space isn't available, or
      *  - the game is over
-     * @param start
-     * @param end
+     * @param startRow
+     * @param startCol
+     * @param endRow
+     * @param endCol
      */
-    public void move(Space start, Space end);
     public void move(int startRow, int startCol, int endRow, int endCol);
 
     /**
@@ -58,4 +66,24 @@ public interface ChessGameInterface {
      * @return the state of the board as a 2D array of Pieces.
      */
     public Pieces[][] getBoardState();
+
+    /**
+     * @return a list of the white pieces on the board, sorted in descending order.
+     */
+    public List<Pieces> getActiveWhitePieces();
+
+    /**
+     * @return a list of the black pieces on the board, sorted in descending order.
+     */
+    public List<Pieces> getActiveBlackPieces();
+
+    /**
+     * @return a list of the captured white pieces, sorted in descending order.
+     */
+    public List<Pieces> getCapturedWhitePieces();
+
+    /**
+     * @return a list of the captured black pieces, sorted in descending order.
+     */
+    public List<Pieces> getCapturedBlackPieces();
 }
