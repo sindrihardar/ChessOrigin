@@ -1,25 +1,28 @@
 package com.chess.view;
 
-import com.chess.presenter.ChessBoardSpacePresenter;
-import com.chess.presenter.ChessGamePresenter;
+import com.chess.presenter.ChessBoardPresenter;
 import javafx.beans.binding.Bindings;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 
-public class ChessGameScene extends Scene {
-    private TilePane board = new TilePane();
-    private ChessGamePresenter presenter = new ChessGamePresenter();
+public class ChessBoardScene extends Scene implements Observer {
+    private StackPane boardContainer;
+    private TilePane board;
+    private ChessBoardPresenter presenter;
 
-    public ChessGameScene() {
+    public ChessBoardScene() {
         super(new Pane());
         Pane root = (Pane) getRoot();
+        presenter = new ChessBoardPresenter();
         setUpBoard(root);
         addSpacesToBoard();
         root.getChildren().add(board);
     }
 
     public void setUpBoard(Pane root) {
+        board = new TilePane();
         board.setPrefColumns(8);
         board.prefTileHeightProperty().bind(Bindings.min(root.heightProperty(), root.widthProperty()).divide(8));
         board.prefTileWidthProperty().bind(board.prefTileHeightProperty());
@@ -30,11 +33,16 @@ public class ChessGameScene extends Scene {
     public void addSpacesToBoard() {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                ChessGameSpaceNode spaceNode = new ChessGameSpaceNode(i, j, presenter.getSpacePresenter(i, j), presenter);
+                ChessBoardTileNode spaceNode = new ChessBoardTileNode(i, j, presenter.getSpacePresenter(i, j), presenter);
                 board.getChildren().add(spaceNode);
                 spaceNode.minHeightProperty().bind(board.prefTileHeightProperty());
                 spaceNode.minWidthProperty().bind(board.prefTileWidthProperty());
             }
         }
+    }
+
+    @Override
+    public void update() {
+
     }
 }

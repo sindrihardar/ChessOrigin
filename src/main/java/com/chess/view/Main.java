@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
     @Override
     public void start(Stage stage) {
-        Scene scene = new ChessGameScene();
+        Scene scene = new ChessBoardScene();
         stage.setTitle("Chess");
         stage.setScene(scene);
         setUpStage(stage);

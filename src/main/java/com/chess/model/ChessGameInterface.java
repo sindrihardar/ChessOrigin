@@ -86,4 +86,9 @@ public interface ChessGameInterface {
      * @return a list of the captured black pieces, sorted in descending order.
      */
     public List<Pieces> getCapturedBlackPieces();
+
+    /**
+     * @return the current player's color.
+     */
+    public Colors getCurrentPlayerColor();
 }

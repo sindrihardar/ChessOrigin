@@ -148,6 +148,11 @@ public class ChessGame implements ChessGameInterface {
         return convertListToEnumeration(capturedBlackPieces);
     }
 
+    @Override
+    public Colors getCurrentPlayerColor() {
+        return currentPlayersColor;
+    }
+
     public List<Pieces> convertListToEnumeration(List<Piece> pieces) {
         List<Pieces> converted = new LinkedList<>();
         for (Piece p : pieces)

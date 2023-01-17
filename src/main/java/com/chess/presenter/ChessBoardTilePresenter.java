@@ -2,28 +2,24 @@ package com.chess.presenter;
 
 import com.chess.model.Pieces;
 import com.chess.view.Observer;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class ChessBoardSpacePresenter implements Observable {
+public class ChessBoardTilePresenter implements Observable {
     private int row, col;
-    private boolean selectable, hoveredOver, available;
+    private boolean hoveredOver, available, containsPieceOfCurrentPlayersColor;
     private Pieces piece;
-    private ObjectProperty<Image> image;
     private List<Observer> observers;
 
-    public ChessBoardSpacePresenter(int row, int col, Pieces piece) {
+    public ChessBoardTilePresenter(int row, int col, Pieces piece, boolean containsPieceOfCurrentPlayersColor) {
         this.row = row;
         this.col = col;
         this.piece = piece;
-        selectable = false;
+        this.containsPieceOfCurrentPlayersColor = containsPieceOfCurrentPlayersColor;
         hoveredOver = false;
         available = false;
-        image = new SimpleObjectProperty<>(selectImage(piece));
         observers = new LinkedList<>();
         notifyObservers();
     }
@@ -45,8 +41,9 @@ public class ChessBoardSpacePresenter implements Observable {
     }
 
     public void setPiece(Pieces piece) {
+        if (this.piece == piece)
+            return;
         this.piece = piece;
-        image.set(selectImage(piece));
         notifyObservers();
     }
 
@@ -87,7 +84,7 @@ public class ChessBoardSpacePresenter implements Observable {
     }
 
     public String getStyle() {
-        if (hoveredOver)
+        if (hoveredOver && (available || containsPieceOfCurrentPlayersColor))
             return "-fx-background-color: red;";
         if (row % 2 == col % 2) {
             if (available)
@@ -103,17 +100,24 @@ public class ChessBoardSpacePresenter implements Observable {
     }
 
     public void setAvailable(boolean available) {
+        if (this.available == available)
+            return;
         this.available = available;
         notifyObservers();
     }
 
     public void setHoveredOver(boolean hoveredOver) {
+        if (this.hoveredOver == hoveredOver)
+            return;
         this.hoveredOver = hoveredOver;
         notifyObservers();
     }
 
-    public boolean getHoveredOver() {
-        return hoveredOver;
+    public void setContainsPieceOfCurrentPlayersColor(boolean containsPieceOfCurrentPlayersColor) {
+        if (this.containsPieceOfCurrentPlayersColor == containsPieceOfCurrentPlayersColor)
+            return;
+        this.containsPieceOfCurrentPlayersColor = containsPieceOfCurrentPlayersColor;
+        notifyObservers();
     }
 
     @Override
