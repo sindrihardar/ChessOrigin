@@ -2382,7 +2382,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, T, F, F, F, F, T, F},
                                                     {F, T, F, F, F, F, F, T},
                                                     {F, T, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 1));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 1));
     }
 
     @Test
