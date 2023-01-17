@@ -38,7 +38,16 @@ public class Pawn extends Piece {
     }
 
     @Override
+    public void setSpace(Space space) {
+        super.setSpace(space);
+        if (promoted)
+            promotedPiece.setSpace(space);
+    }
+
+    @Override
     public MoveCommand createMoveCommand(Space space) {
+        if (promoted)
+            return promotedPiece.createMoveCommand(space);
         if (space.getCol() != getSpace().getCol() && game.getPieceAt(space) == null)
             return createEnPassantMoveCommand(space);
         return createStandardMoveCommand(space);
@@ -55,6 +64,8 @@ public class Pawn extends Piece {
 
     @Override
     public Set<Space> getPotentiallyAvailableSpaces() {
+        if (promoted)
+            return promotedPiece.getPotentiallyAvailableSpaces();
         Set<Space> potentiallyAvailableSpaces = new HashSet<>();
         addOneSpaceForward(potentiallyAvailableSpaces);
         addTwoSpacesForward(potentiallyAvailableSpaces);

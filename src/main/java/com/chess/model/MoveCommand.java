@@ -23,7 +23,7 @@ public class MoveCommand {
         for (Pair<Space, Space> movement : movements) {
             Piece p = game.getPieceAt(movement.getKey());
             int row = movement.getValue().getRow();
-            if (p instanceof Pawn && (p.getColor() == Colors.BLACK && row == 7 || p.getColor() == Colors.WHITE && row == 0))
+            if (p instanceof Pawn && !((Pawn) p).wasPromoted() && (p.getColor() == Colors.BLACK && row == 7 || p.getColor() == Colors.WHITE && row == 0))
                 promotion = true;
         }
     }

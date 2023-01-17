@@ -241,7 +241,7 @@ public class ChessGame implements ChessGameInterface {
                     break;
                 }
                 Piece p = board.getOrDefault(diagonalSpace, null);
-                if (p instanceof Queen && p.getColor() != board.get(space).getColor() || p instanceof Bishop && p.getColor() != board.get(space).getColor())
+                if (p instanceof Queen && p.getColor() != board.get(space).getColor() || p instanceof Bishop && p.getColor() != board.get(space).getColor() || pieceIsAPromotedPawnQueenWithOppositeColor(p, board.get(space).getColor()))
                     return true;
                 else if (p != null)
                     break;
@@ -263,7 +263,8 @@ public class ChessGame implements ChessGameInterface {
                     break;
                 }
                 Piece p = board.getOrDefault(diagonalSpace, null);
-                if (p instanceof Queen && p.getColor() != board.get(space).getColor() || p instanceof Rook && p.getColor() != board.get(space).getColor())
+                if (p instanceof Queen && p.getColor() != board.get(space).getColor() || p instanceof Rook && p.getColor() != board.get(space).getColor() ||
+                    pieceIsAPromotedPawnQueenWithOppositeColor(p, board.get(space).getColor()))
                     return true;
                 else if (p != null)
                     break;
@@ -308,6 +309,13 @@ public class ChessGame implements ChessGameInterface {
                 return true;
         }
         return false;
+    }
+
+    private boolean pieceIsAPromotedPawnQueenWithOppositeColor(Piece p, Colors color) {
+        if (!(p instanceof Pawn))
+            return false;
+        Pawn pawn = (Pawn) p;
+        return pawn.wasPromoted() && pawn.getPromotedPiece() instanceof Queen && pawn.getColor() != color;
     }
 
     private void updateCurrentPlayerHasMovesFlag() {
