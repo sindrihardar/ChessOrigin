@@ -1,4 +1,4 @@
-package com.chess.model;
+package com.chess.model.util;
 
 public class Pair <A, B> {
     A key;

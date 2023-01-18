@@ -1,11 +1,11 @@
 import com.chess.model.*;
-import org.junit.jupiter.api.AfterEach;
+import com.chess.model.util.Colors;
+import com.chess.model.util.Pieces;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
 
 import java.util.Set;
 
-import static com.chess.model.Pieces.*;
+import static com.chess.model.util.Pieces.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ChessGameInterfaceTestSuite {
@@ -19,93 +19,93 @@ public class ChessGameInterfaceTestSuite {
     /*
      * Helper method to check if all the spaces that are marked as true in spaces are contained in set.
      */
-    public void spacesAreContainedInSet(boolean[][] spaces, Set<Space> set) {
+    public void spacesAreContainedInSet(boolean[][] spaces, Set<Tile> set) {
         for (int i = 0; i < spaces.length; i++)
             for (int j = 0; j < spaces[0].length; j++)
                 if (spaces[i][j])
-                    assertTrue(set.contains(Space.getSpace(i, j)));
+                    assertTrue(set.contains(Tile.getTile(i, j)));
     }
 
     /*
      * Helper method to check that all the spaces that are marked as false in spaces are not contained in set.
      */
-    public void spacesAreNotContainedInSet(boolean[][] spaces, Set<Space> set) {
+    public void spacesAreNotContainedInSet(boolean[][] spaces, Set<Tile> set) {
         for (int i = 0; i < spaces.length; i++)
             for (int j = 0; j < spaces[0].length; j++)
                 if (!spaces[i][j])
-                    assertTrue(!set.contains(Space.getSpace(i, j)));
+                    assertTrue(!set.contains(Tile.getTile(i, j)));
     }
 
     @Test
     public void testDoesSpaceContainPieceOfCurrentPlayersColorWhenRowIsInvalid() {
         ChessGameInterface game = new ChessGame();
-        assertThrows(IllegalArgumentException.class, () -> game.doesSpaceContainAPieceOfTheCurrentPlayersColor(-1, 0));
+        assertThrows(IllegalArgumentException.class, () -> game.doesTileContainPieceOfCurrentPlayersColor(-1, 0));
     }
 
     @Test
     public void testDoesSpaceContainPieceOfCurrentPlayersColorWhenColumnIsInvalid() {
         ChessGameInterface game = new ChessGame();
-        assertThrows(IllegalArgumentException.class, () -> game.doesSpaceContainAPieceOfTheCurrentPlayersColor(0, -1));
+        assertThrows(IllegalArgumentException.class, () -> game.doesTileContainPieceOfCurrentPlayersColor(0, -1));
     }
 
     @Test
     public void testDoesSpaceContainPieceOfCurrentPlayersColorForValidSelectionOfWhitePiece() {
         ChessGameInterface game = new ChessGame();
-        assertTrue(game.doesSpaceContainAPieceOfTheCurrentPlayersColor(7, 0));
+        assertTrue(game.doesTileContainPieceOfCurrentPlayersColor(7, 0));
     }
 
     @Test
     public void testDoesSpaceContainPieceOfCurrentPlayersColorForValidSelectionOfBlackPiece() {
         ChessGameInterface game = new ChessGame(Colors.BLACK);
-        assertTrue(game.doesSpaceContainAPieceOfTheCurrentPlayersColor(0, 0));
+        assertTrue(game.doesTileContainPieceOfCurrentPlayersColor(0, 0));
     }
 
     @Test
     public void testDoesSpaceContainPieceOfCurrentPlayersColorForEmptySpace() {
         ChessGameInterface game = new ChessGame();
-        assertTrue(!game.doesSpaceContainAPieceOfTheCurrentPlayersColor(3, 0));
+        assertTrue(!game.doesTileContainPieceOfCurrentPlayersColor(3, 0));
     }
 
     @Test
     public void testDoesSpaceContainPieceOfCurrentPlayersColorForOppositeColorWhenPlayerIsWhite() {
         ChessGameInterface game = new ChessGame();
-        assertTrue(!game.doesSpaceContainAPieceOfTheCurrentPlayersColor(0, 0));
+        assertTrue(!game.doesTileContainPieceOfCurrentPlayersColor(0, 0));
     }
 
     @Test
     public void testDoesSpaceContainPieceOfCurrentPlayersColorForOppositeColorWhenPlayerIsBlack() {
         ChessGameInterface game = new ChessGame(Colors.BLACK);
-        assertTrue(!game.doesSpaceContainAPieceOfTheCurrentPlayersColor(7, 0));
+        assertTrue(!game.doesTileContainPieceOfCurrentPlayersColor(7, 0));
     }
 
     @Test
     public void testGetAvailableMovesForPieceWhenRowIsInvalid() {
         ChessGameInterface game = new ChessGame();
-        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForSpace(-1, 0));
+        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForTile(-1, 0));
     }
 
     @Test
     public void testGetAvailableMovesForPieceWhenColumnIsInvalid() {
         ChessGameInterface game = new ChessGame();
-        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForSpace(0, -1));
+        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForTile(0, -1));
     }
 
     @Test
     public void testGetAvailableMovesForPieceForOppositeColorWhenPlayerIsWhite() {
         ChessGameInterface game = new ChessGame();
-        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForSpace(0, 0));
+        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForTile(0, 0));
     }
 
     @Test
     public void testGetAvailableMovesForPieceForOppositeColorWhenPlayerIsBlack() {
         ChessGameInterface game = new ChessGame(Colors.BLACK);
-        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForSpace(7, 0));
+        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForTile(7, 0));
     }
 
     @Test
     public void testGetAvailableMovesForPieceForEmptySpace() {
         ChessGameInterface game = new ChessGame();
-        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForSpace(2, 0));
+        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForTile(2, 0));
     }
 
     @Test
@@ -119,7 +119,7 @@ public class ChessGameInterfaceTestSuite {
                                     {NN, NN, NN, NN, NN, NN, NN, NN},
                                     {NN, NN, NN, NN, NN, NN, NN, WK}};
         ChessGameInterface game = new ChessGame(Colors.BLACK, initialState);
-        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForSpace(0, 0));
+        assertThrows(IllegalArgumentException.class, () -> game.getAvailableMovesForTile(0, 0));
     }
 
     @Test
@@ -142,7 +142,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, T, T},
                                                     {F, F, F, F, F, F, T, F},
                                                     {F, F, F, F, F, F, T, T}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 7));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(6, 7));
     }
 
     @Test
@@ -165,7 +165,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 0));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(1, 0));
     }
 
     @Test
@@ -188,7 +188,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, T},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, T}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 7));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(6, 7));
     }
 
     @Test
@@ -211,7 +211,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 0));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(1, 0));
     }
 
     @Test
@@ -234,7 +234,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, T, F, T},
                                                     {F, F, F, F, F, T, F, T},
                                                     {F, F, F, F, F, T, T, T}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 6));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(6, 6));
     }
 
     @Test
@@ -257,7 +257,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 0));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(1, 0));
     }
 
     @Test
@@ -280,7 +280,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, T, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(7, 4));
     }
 
     @Test
@@ -303,7 +303,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(0, 4));
     }
 
     @Test
@@ -326,7 +326,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, T, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(7, 4));
     }
 
     @Test
@@ -349,7 +349,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(0, 4));
     }
 
     @Test
@@ -372,7 +372,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, T, T, T, F, F},
                                                     {F, F, T, T, F, T, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(7, 4));
     }
 
     @Test
@@ -395,7 +395,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(0, 4));
     }
 
     @Test
@@ -418,7 +418,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, T, T, T, F, F},
                                                     {F, F, F, T, F, T, T, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(7, 4));
     }
 
     @Test
@@ -441,7 +441,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(0, 4));
     }
 
     @Test
@@ -464,7 +464,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, T, F, T, F, F},
                                                     {F, F, F, T, F, T, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(7, 4));
     }
 
     @Test
@@ -487,7 +487,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(0, 4));
     }
 
     @Test
@@ -510,7 +510,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, T, T, T, F, F},
                                                     {F, F, F, T, F, T, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(7, 4));
     }
 
     @Test
@@ -533,7 +533,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(0, 4));
     }
 
     @Test
@@ -561,7 +561,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, T, T, T, F, F},
                                                     {F, F, F, T, F, T, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(7, 4));
     }
 
     @Test
@@ -589,7 +589,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(0, 4));
     }
 
     @Test
@@ -617,7 +617,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, T, T, T, F, F},
                                                     {F, F, T, T, F, T, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(7, 4));
     }
 
     @Test
@@ -645,7 +645,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(0, 4));
     }
 
     @Test
@@ -673,7 +673,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, T, T, T, F, F},
                                                     {F, F, F, T, F, T, T, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(7, 4));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(7, 4));
     }
 
     @Test
@@ -701,7 +701,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 4));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(0, 4));
     }
 
     @Test
@@ -724,7 +724,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, T, F, T, F},
                                                     {F, F, F, T, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(5, 5));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(5, 5));
     }
 
     @Test
@@ -747,7 +747,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, T, F, T, F, F, F},
                                                     {F, T, F, F, F, T, F, F},
                                                     {F, F, F, F, F, F, T, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 3));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 3));
     }
 
     @Test
@@ -770,7 +770,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(5, 5));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(5, 5));
     }
 
     @Test
@@ -793,7 +793,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {T, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 3));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 3));
     }
 
     @Test
@@ -816,7 +816,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(5, 5));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(5, 5));
     }
 
     @Test
@@ -839,7 +839,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, T}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 3));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 3));
     }
 
     @Test
@@ -862,7 +862,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, F, F, F, F, F, F, F},
                                                     {T, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -885,7 +885,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, F, F, F, F, F, F, F},
                                                     {T, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -908,7 +908,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -931,7 +931,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {T, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -954,7 +954,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, T},
                                                     {F, T, T, T, T, T, T, T}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -977,7 +977,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, T}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -1000,7 +1000,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, T, F, F, F, F, F, F},
                                                     {T, F, T, F, F, F, F, F},
                                                     {F, F, F, T, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -1023,7 +1023,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, T, F, F, F, F, F, F},
                                                     {T, F, T, F, F, F, F, F},
                                                     {T, F, F, T, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -1046,7 +1046,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, T, F, T, F},
                                                     {F, F, F, T, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(5, 5));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(5, 5));
     }
 
     @Test
@@ -1069,7 +1069,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, T, F, T, F, F, F},
                                                     {F, T, F, F, F, T, F, F},
                                                     {F, F, F, F, F, F, T, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 3));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 3));
     }
 
     @Test
@@ -1092,7 +1092,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(5, 5));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(5, 5));
     }
 
     @Test
@@ -1115,7 +1115,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {T, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 3));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 3));
     }
 
     @Test
@@ -1138,7 +1138,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(5, 5));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(5, 5));
     }
 
     @Test
@@ -1161,7 +1161,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, T}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 3));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 3));
     }
 
     @Test
@@ -1184,7 +1184,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, T, F, F, F, F, F, F},
                                                     {F, F, T, F, F, F, F, F},
                                                     {F, F, F, T, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -1207,7 +1207,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, T, F, F, F, F, F, F},
                                                     {F, F, T, F, F, F, F, F},
                                                     {F, F, F, T, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -1230,7 +1230,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, F, F, F, F, F, F, F},
                                                     {T, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -1253,7 +1253,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, F, F, F, F, F, F, F},
                                                     {T, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -1276,7 +1276,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -1299,7 +1299,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {T, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -1322,7 +1322,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, T},
                                                     {F, T, T, T, T, T, T, T}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -1345,7 +1345,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, T}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -1368,7 +1368,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, F, F, F, F, F, F, F},
                                                     {T, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -1391,7 +1391,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, F, F, F, F, F, F, F},
                                                     {T, F, F, F, F, F, F, F},
                                                     {T, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 0));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 0));
     }
 
     @Test
@@ -1414,7 +1414,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, F, F, F, T, F, F, F},
                                                     {F, T, F, T, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 2));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 2));
     }
 
     @Test
@@ -1437,7 +1437,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, F, F, F, T, F, F, F},
                                                     {F, T, F, T, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 2));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 2));
     }
 
     @Test
@@ -1460,7 +1460,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, F, F, F, T, F, F, F},
                                                     {F, T, F, T, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 2));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 2));
     }
 
     @Test
@@ -1483,7 +1483,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, F, F, F, T, F, F, F},
                                                     {F, T, F, T, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 2));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 2));
     }
 
     @Test
@@ -1506,7 +1506,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 2));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 2));
     }
 
     @Test
@@ -1529,7 +1529,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, T},
                                                     {T, T, T, T, T, T, T, T}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 2));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 2));
     }
 
     @Test
@@ -1544,7 +1544,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 0));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(6, 0));
     }
 
     @Test
@@ -1559,7 +1559,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 0));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(1, 0));
     }
 
     @Test
@@ -1582,7 +1582,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 1));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(6, 1));
     }
 
     @Test
@@ -1605,7 +1605,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(1, 1));
     }
 
     @Test
@@ -1628,7 +1628,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 1));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(6, 1));
     }
 
     @Test
@@ -1651,7 +1651,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(1, 1));
     }
 
     @Test
@@ -1669,7 +1669,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(5, 0));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(5, 0));
     }
 
     @Test
@@ -1687,7 +1687,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(2, 0));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(2, 0));
     }
 
     @Test
@@ -1702,7 +1702,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 0));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(6, 0));
     }
 
     @Test
@@ -1717,7 +1717,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 0));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(1, 0));
     }
 
 
@@ -1741,7 +1741,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, T, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 2));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(6, 2));
     }
 
     @Test
@@ -1764,7 +1764,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(1, 1));
     }
 
     @Test
@@ -1787,7 +1787,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, T, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 2));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(6, 2));
     }
 
     @Test
@@ -1810,7 +1810,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(1, 1));
     }
 
     @Test
@@ -1833,7 +1833,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 2));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(6, 2));
     }
 
     @Test
@@ -1856,7 +1856,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(1, 1));
     }
 
     @Test
@@ -1879,7 +1879,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 2));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(6, 2));
     }
 
     @Test
@@ -1902,7 +1902,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(1, 1));
     }
 
     @Test
@@ -1925,7 +1925,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, T, F, T, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 2));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(6, 2));
     }
 
     @Test
@@ -1948,7 +1948,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(1, 1));
     }
 
     @Test
@@ -1971,7 +1971,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 2));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(6, 2));
     }
 
     @Test
@@ -1994,7 +1994,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(1, 1));
     }
 
     @Test
@@ -2017,7 +2017,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(6, 2));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(6, 2));
     }
 
     @Test
@@ -2040,7 +2040,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(1, 1));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(1, 1));
     }
 
     @Test
@@ -2065,7 +2065,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(3, 2));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(3, 2));
     }
 
     @Test
@@ -2090,7 +2090,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, T, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 1));
     }
 
     @Test
@@ -2115,7 +2115,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(3, 2));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(3, 2));
     }
 
     @Test
@@ -2140,7 +2140,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {T, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 1));
     }
 
     @Test
@@ -2167,7 +2167,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(3, 2));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(3, 2));
     }
 
     @Test
@@ -2194,7 +2194,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, T, F, F, F, F, F, F},
                                                     {F, T, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 1));
     }
 
     @Test
@@ -2221,7 +2221,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(3, 2));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(3, 2));
     }
 
     @Test
@@ -2248,7 +2248,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, T, F, F, F, F, F, F},
                                                     {F, T, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 1));
     }
 
     @Test
@@ -2275,7 +2275,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(3, 2));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(3, 2));
     }
 
     @Test
@@ -2302,7 +2302,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, T, F, F, F, F, F, F},
                                                     {F, T, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 1));
     }
 
     @Test
@@ -2329,7 +2329,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(3, 2));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(3, 2));
     }
 
     @Test
@@ -2356,7 +2356,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, T, F, F, F, F, F, F},
                                                     {F, T, F, F, F, F, F, F},
                                                     {F, F, F, F, F, F, F, F}};
-        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(4, 1));
+        spacesAreNotContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(4, 1));
     }
 
     @Test
@@ -2382,7 +2382,7 @@ public class ChessGameInterfaceTestSuite {
                                                     {F, T, F, F, F, F, T, F},
                                                     {F, T, F, F, F, F, F, T},
                                                     {F, T, F, F, F, F, F, F}};
-        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForSpace(0, 1));
+        spacesAreContainedInSet(expectedSpacesContainedInSet, game.getAvailableMovesForTile(0, 1));
     }
 
     @Test

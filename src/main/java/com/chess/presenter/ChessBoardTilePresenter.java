@@ -1,6 +1,6 @@
 package com.chess.presenter;
 
-import com.chess.model.Pieces;
+import com.chess.model.util.Pieces;
 import com.chess.view.Observer;
 import javafx.scene.image.Image;
 

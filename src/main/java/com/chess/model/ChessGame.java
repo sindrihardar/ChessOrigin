@@ -1,40 +1,25 @@
 package com.chess.model;
 
+import com.chess.model.pieces.*;
+import com.chess.model.util.Colors;
+import com.chess.model.util.Pair;
+import com.chess.model.util.Pieces;
+
 import java.util.*;
 
+import static com.chess.model.util.Constants.*;
+
 public class ChessGame implements ChessGameInterface {
-    private static final Pieces WK = Pieces.WHITE_KING, WQ = Pieces.WHITE_QUEEN, WR = Pieces.WHITE_ROOK, WB = Pieces.WHITE_BISHOP,
-    Wk = Pieces.WHITE_KNIGHT, WP = Pieces.WHITE_PAWN, BK = Pieces.BLACK_KING, BQ = Pieces.BLACK_QUEEN, BR = Pieces.BLACK_ROOK,
-    BB = Pieces.BLACK_BISHOP, Bk = Pieces.BLACK_KNIGHT, BP = Pieces.BLACK_PAWN, NN = null;
-
-    private static final int SIZE_OF_CHESS_BOARD = 8;
-
-    private static final Pieces[][] initialState = {{BR, Bk, BB, BQ, BK, BB, Bk, BR},
-                                                    {BP, BP, BP, BP, BP, BP, BP, BP},
-                                                    {NN, NN, NN, NN, NN, NN, NN, NN},
-                                                    {NN, NN, NN, NN, NN, NN, NN, NN},
-                                                    {NN, NN, NN, NN, NN, NN, NN, NN},
-                                                    {NN, NN, NN, NN, NN, NN, NN, NN},
-                                                    {WP, WP, WP, WP, WP, WP, WP, WP},
-                                                    {WR, Wk, WB, WQ, WK, WB, Wk, WR}};
-
     private Colors currentPlayersColor;
     private List<Piece> activeWhitePieces, activeBlackPieces, capturedWhitePieces, capturedBlackPieces;
-    private Map<Space, Piece> board;
+    private Map<Tile, Piece> board;
     private ArrayDeque<MoveCommand> playedMoves;
-    private Map<Piece, Set<Space>> availableSpacesCache;
+    private Map<Piece, Set<Tile>> availableTilesCache;
     private boolean isBlackKingInCheckFlag, isWhiteKingInCheckFlag, currentPlayerHasMovesFlag;
 
     public ChessGame(Colors color, Pieces[][] board) {
-        currentPlayersColor = color;
-        ChessGameBuilder builder = new ChessGameBuilder(this, board);
-        activeWhitePieces = builder.getActiveWhitePieces();
-        activeBlackPieces = builder.getActiveBlackPieces();
-        capturedWhitePieces = new LinkedList<>();
-        capturedBlackPieces = new LinkedList<>();
-        this.board = builder.getBoardMap();
-        playedMoves = new ArrayDeque<>();
-        updateAvailableSpacesCache();
+        setUpState(color, board);
+        updateAvailableTilesCache();
         updateFlags();
     }
 
@@ -50,60 +35,67 @@ public class ChessGame implements ChessGameInterface {
         this(Colors.WHITE, initialState);
     }
 
+    private void setUpState(Colors color, Pieces[][] board) {
+        currentPlayersColor = color;
+        ChessGameBuilder builder = new ChessGameBuilder(this, board);
+        activeWhitePieces = builder.getActiveWhitePieces();
+        activeBlackPieces = builder.getActiveBlackPieces();
+        capturedWhitePieces = new LinkedList<>();
+        capturedBlackPieces = new LinkedList<>();
+        this.board = builder.getBoardMap();
+        playedMoves = new ArrayDeque<>();
+    }
+
     @Override
-    public boolean doesSpaceContainAPieceOfTheCurrentPlayersColor(int row, int col) {
-        Piece piece = board.getOrDefault(Space.getSpace(row, col), null);
-
-        if (piece == null)
-            return false;
-
-        return piece.getColor() == currentPlayersColor;
+    public boolean doesTileContainPieceOfCurrentPlayersColor(int row, int col) {
+        Piece piece = board.getOrDefault(Tile.getTile(row, col), null);
+        return piece != null && piece.getColor() == currentPlayersColor;
     }
 
 
     @Override
-    public Set<Space> getAvailableMovesForSpace(int row, int col) {
+    public Set<Tile> getAvailableMovesForTile(int row, int col) {
         if (isGameInStalemate() || isCurrentPlayerInCheckmate())
             throw new IllegalArgumentException("Game is over!");
+        else if (!doesTileContainPieceOfCurrentPlayersColor(row, col))
+            throw new IllegalArgumentException("Specified tile does not contain a piece of the current player's color.");
 
-        if (!doesSpaceContainAPieceOfTheCurrentPlayersColor(row, col))
-            throw new IllegalArgumentException("Specified space does not contain a piece of the current player's color.");
-
-        return availableSpacesCache.get(board.get(Space.getSpace(row, col)));
+        return availableTilesCache.get(board.get(Tile.getTile(row, col)));
     }
 
     @Override
     public void move(int startRow, int startCol, int endRow, int endCol) {
-        Space startingSpace = Space.getSpace(startRow, startCol), endingSpace = Space.getSpace(endRow, endCol);
-        isMovementLegal(startingSpace, endingSpace);
-        resolveMovement(startingSpace, endingSpace);
-        updateAvailableSpacesCache();
+        Tile startingTile = Tile.getTile(startRow, startCol), endingTile = Tile.getTile(endRow, endCol);
+        isMovementLegal(startingTile, endingTile);
+        resolveMovement(startingTile, endingTile);
+        updateAvailableTilesCache();
         updateFlags();
     }
 
-    public void resolveMovement(Space startingSpace, Space endingSpace) {
-        MoveCommand moveCommand = board.get(startingSpace).createMoveCommand(endingSpace);
-        moveCommand.execute();
-    }
-
-    public boolean isMovementLegal(Space startingSpace, Space endingSpace) {
-        if (!doesSpaceContainAPieceOfTheCurrentPlayersColor(startingSpace.getRow(), startingSpace.getCol()))
-            throw new IllegalArgumentException("Starting space does not contain a piece of the current player's color.");
-        Piece p = board.get(startingSpace);
-        if (!availableSpacesCache.get(p).contains(endingSpace))
-            throw new IllegalArgumentException("Ending space is not available to be moved to.");
+    public boolean isMovementLegal(Tile startingTile, Tile endingTile) {
+        if (!doesTileContainPieceOfCurrentPlayersColor(startingTile.getRow(), startingTile.getCol()))
+            throw new IllegalArgumentException("Starting tile does not contain a piece of the current player's color.");
+        Piece p = board.get(startingTile);
+        if (!availableTilesCache.get(p).contains(endingTile))
+            throw new IllegalArgumentException("Ending tile is not available to be moved to.");
         if (isCurrentPlayerInCheckmate() || isGameInStalemate())
             throw new IllegalArgumentException("Cannot move because game is over.");
         return true;
+    }
+
+    public void resolveMovement(Tile startingTile, Tile endingTile) {
+        MoveCommand moveCommand = board.get(startingTile).createMoveCommand(endingTile);
+        moveCommand.execute();
     }
 
     @Override
     public void undoLastMove() {
         if (playedMoves.size() == 0)
             throw new IllegalArgumentException("No previous moves have been played!");
+
         MoveCommand moveCommand = playedMoves.pollLast();
         moveCommand.unexecute();
-        updateAvailableSpacesCache();
+        updateAvailableTilesCache();
         updateFlags();
     }
 
@@ -179,11 +171,11 @@ public class ChessGame implements ChessGameInterface {
         throw new IllegalArgumentException("No enumeration exists for the given piece.");
     }
 
-    private void updateAvailableSpacesCache() {
-        Map<Piece, Set<Space>> updatedAvailableSpacesCache = new HashMap<>();
+    private void updateAvailableTilesCache() {
+        Map<Piece, Set<Tile>> updatedAvailableTilesCache = new HashMap<>();
         for (Piece p : currentPlayersColor == Colors.WHITE ? activeWhitePieces : activeBlackPieces)
-            updatedAvailableSpacesCache.put(p, p.getAvailableSpaces());
-        availableSpacesCache = updatedAvailableSpacesCache;
+            updatedAvailableTilesCache.put(p, p.getAvailableTiles());
+        availableTilesCache = updatedAvailableTilesCache;
     }
 
     private void updateFlags() {
@@ -195,7 +187,7 @@ public class ChessGame implements ChessGameInterface {
     public void updateIsWhiteKingInCheckFlag() {
         for (Piece p : activeWhitePieces)
             if (p instanceof King) {
-                isWhiteKingInCheckFlag = isKingInCheck(p.getSpace());
+                isWhiteKingInCheckFlag = isKingInCheck(p.getTile());
                 return;
             }
     }
@@ -203,160 +195,179 @@ public class ChessGame implements ChessGameInterface {
     public void updateIsBlackKingInCheckFlag() {
         for (Piece p : activeBlackPieces)
             if (p instanceof King) {
-                isBlackKingInCheckFlag = isKingInCheck(p.getSpace());
+                isBlackKingInCheckFlag = isKingInCheck(p.getTile());
                 return;
             }
-    }
-
-    private boolean isKingInCheck(Space space) {
-        return adjacentSpacesContainsKing(space) || diagonalContainsQueenOrBishop(space) || rectangleContainsQueenOrRook(space) ||
-                spacesInLContainKnight(space) || diagonalSpacesContainPawn(space);
-    }
-
-    private boolean adjacentSpacesContainsKing(Space space) {
-        int[][] adjacentVectors = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
-        for (int[] adjacentVector : adjacentVectors) {
-            Space adjacentSpace;
-            try {
-                adjacentSpace = Space.getSpace(space.getRow() + adjacentVector[0], space.getCol() + adjacentVector[1]);
-            } catch (Exception e) {
-                continue;
-            }
-            Piece p = board.getOrDefault(adjacentSpace, null);
-            if (p instanceof King && p.getColor() != board.get(space).getColor())
-                return true;
-        }
-        return false;
-    }
-
-    private boolean diagonalContainsQueenOrBishop(Space space) {
-        int[][] diagonalVectors = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
-        for (int[] diagonalVector : diagonalVectors) {
-            int spacesAwayFromStart = 1;
-            while (spacesAwayFromStart < SIZE_OF_CHESS_BOARD) {
-                Space diagonalSpace;
-                try {
-                    diagonalSpace = Space.getSpace(space.getRow() + diagonalVector[0] * spacesAwayFromStart, space.getCol() + diagonalVector[1] * spacesAwayFromStart);
-                } catch (Exception e) {
-                    break;
-                }
-                Piece p = board.getOrDefault(diagonalSpace, null);
-                if (p instanceof Queen && p.getColor() != board.get(space).getColor() || p instanceof Bishop && p.getColor() != board.get(space).getColor() || pieceIsAPromotedPawnQueenWithOppositeColor(p, board.get(space).getColor()))
-                    return true;
-                else if (p != null)
-                    break;
-                spacesAwayFromStart++;
-            }
-        }
-        return false;
-    }
-
-    private boolean rectangleContainsQueenOrRook(Space space) {
-        int[][] rectangularVectors = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-        for (int[] rectangularVector : rectangularVectors) {
-            int spacesAwayFromStart = 1;
-            while (spacesAwayFromStart < SIZE_OF_CHESS_BOARD) {
-                Space diagonalSpace;
-                try {
-                    diagonalSpace = Space.getSpace(space.getRow() + rectangularVector[0] * spacesAwayFromStart, space.getCol() + rectangularVector[1] * spacesAwayFromStart);
-                } catch (Exception e) {
-                    break;
-                }
-                Piece p = board.getOrDefault(diagonalSpace, null);
-                if (p instanceof Queen && p.getColor() != board.get(space).getColor() || p instanceof Rook && p.getColor() != board.get(space).getColor() ||
-                    pieceIsAPromotedPawnQueenWithOppositeColor(p, board.get(space).getColor()))
-                    return true;
-                else if (p != null)
-                    break;
-                spacesAwayFromStart++;
-            }
-        }
-        return false;
-    }
-
-    private boolean spacesInLContainKnight(Space space) {
-        int[][] lShapeVectors = {{-1, 2}, {-1, -2}, {1, 2}, {1, -2}, {-2, -1}, {-2, 1}, {2, -1}, {2, 1}};
-        for (int[] lShapeVector : lShapeVectors) {
-            Space adjacentSpace;
-            try {
-                adjacentSpace = Space.getSpace(space.getRow() + lShapeVector[0], space.getCol() + lShapeVector[1]);
-            } catch (Exception e) {
-                continue;
-            }
-            Piece p = board.getOrDefault(adjacentSpace, null);
-            if (p instanceof Knight && p.getColor() != board.get(space).getColor())
-                return true;
-        }
-        return false;
-    }
-
-    private boolean diagonalSpacesContainPawn(Space space) {
-        int[][] diagonalVectors;
-        if (board.get(space).getColor() == Colors.WHITE)
-            diagonalVectors = new int[][] {{-1, -1}, {-1, 1}};
-        else
-            diagonalVectors = new int[][] {{1, -1}, {1, 1}};
-
-        for (int[] diagonalVector : diagonalVectors) {
-            Space diagonalSpace;
-            try {
-                diagonalSpace = Space.getSpace(space.getRow() + diagonalVector[0], space.getCol() + diagonalVector[1]);
-            } catch (Exception e) {
-                break;
-            }
-            Piece p = board.getOrDefault(diagonalSpace, null);
-            if (p instanceof Pawn && p.getColor() != board.get(space).getColor())
-                return true;
-        }
-        return false;
-    }
-
-    private boolean pieceIsAPromotedPawnQueenWithOppositeColor(Piece p, Colors color) {
-        if (!(p instanceof Pawn))
-            return false;
-        Pawn pawn = (Pawn) p;
-        return pawn.wasPromoted() && pawn.getPromotedPiece() instanceof Queen && pawn.getColor() != color;
     }
 
     private void updateCurrentPlayerHasMovesFlag() {
         currentPlayerHasMovesFlag = true;
-        for (Set<Space> spaces : availableSpacesCache.values())
-            if (spaces.size() != 0)
+        for (Set<Tile> tiles : availableTilesCache.values())
+            if (tiles.size() != 0)
                 return;
         currentPlayerHasMovesFlag = false;
     }
 
-    public Piece getPieceAt(Space space) {
-        return board.get(space);
+    private boolean isKingInCheck(Tile tile) {
+        return adjacentTilesContainKingOfOppositeColor(tile) || diagonalTilesContainQueenOrBishopOfOppositeColor(tile) ||
+                rectangleTilesContainQueenOrRookOfOppositeColor(tile) || tilesInLContainKnightOfOppositeColor(tile) ||
+                diagonalTilesContainPawnOfOppositeColor(tile);
     }
 
-    public void executeCapture(Space space) {
-        Piece p = getPieceAt(space);
-        if (p.getColor() == Colors.WHITE) {
-            activeWhitePieces.remove(p);
-            capturedWhitePieces.add(p);
-        } else {
-            activeBlackPieces.remove(p);
-            capturedBlackPieces.add(p);
+    private boolean adjacentTilesContainKingOfOppositeColor(Tile tile) {
+        Piece pieceUnderAttack = board.get(tile);
+        int[][] adjacentVectors = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+        for (int[] adjacentVector : adjacentVectors) {
+            Tile adjacentTile;
+            // if the row and column are out of range, an exception is thrown, and we move on to the next vector
+            try {
+                adjacentTile = Tile.getTile(tile.getRow() + adjacentVector[0], tile.getCol() + adjacentVector[1]);
+            } catch (Exception e) {
+                continue;
+            }
+            Piece piece = board.getOrDefault(adjacentTile, null);
+            if (isPieceKingOfOppositeColor(piece, pieceUnderAttack.getColor()))
+                return true;
         }
-        board.remove(space);
-        p.setSpace(null);
+        return false;
     }
 
-    public void executeMovement(Pair<Space, Space> movement) {
+    private boolean diagonalTilesContainQueenOrBishopOfOppositeColor(Tile tile) {
+        Piece pieceUnderAttack = board.get(tile);
+        int[][] diagonalVectors = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+        for (int[] diagonalVector : diagonalVectors) {
+            int tilesAwayFromStart = 1;
+            while (tilesAwayFromStart < SIZE_OF_CHESS_BOARD) {
+                Tile diagonalTile;
+                // if the row and column are out of range, an exception is thrown, and we move on to the next vector
+                try {
+                    diagonalTile = Tile.getTile(tile.getRow() + diagonalVector[0] * tilesAwayFromStart, tile.getCol() + diagonalVector[1] * tilesAwayFromStart);
+                } catch (Exception e) {
+                    break;
+                }
+                Piece piece = board.getOrDefault(diagonalTile, null);
+                if (isPieceQueenOfOppositeColor(piece, pieceUnderAttack.getColor()) || isPieceBishopOfOppositeColor(piece, pieceUnderAttack.getColor()))
+                    return true;
+                else if (piece != null)
+                    break;
+                tilesAwayFromStart++;
+            }
+        }
+        return false;
+    }
+
+    private boolean rectangleTilesContainQueenOrRookOfOppositeColor(Tile tile) {
+        Piece pieceUnderAttack = board.get(tile);
+        int[][] rectangularVectors = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        for (int[] rectangularVector : rectangularVectors) {
+            int tilesAwayFromStart = 1;
+            while (tilesAwayFromStart < SIZE_OF_CHESS_BOARD) {
+                Tile rectangularTile;
+                // if the row and column are out of range, an exception is thrown, and we move on to the next vector
+                try {
+                    rectangularTile = Tile.getTile(tile.getRow() + rectangularVector[0] * tilesAwayFromStart, tile.getCol() + rectangularVector[1] * tilesAwayFromStart);
+                } catch (Exception e) {
+                    break;
+                }
+                Piece piece = board.getOrDefault(rectangularTile, null);
+                if (isPieceQueenOfOppositeColor(piece, pieceUnderAttack.getColor()) || isPieceRookOfOppositeColor(piece, pieceUnderAttack.getColor()))
+                    return true;
+                else if (piece != null)
+                    break;
+                tilesAwayFromStart++;
+            }
+        }
+        return false;
+    }
+
+    private boolean tilesInLContainKnightOfOppositeColor(Tile tile) {
+        Piece pieceUnderAttack = board.get(tile);
+        int[][] lShapeVectors = {{-1, 2}, {-1, -2}, {1, 2}, {1, -2}, {-2, -1}, {-2, 1}, {2, -1}, {2, 1}};
+        for (int[] lShapeVector : lShapeVectors) {
+            Tile adjacentTile;
+            // if the row and column are out of range, an exception is thrown, and we move on to the next vector
+            try {
+                adjacentTile = Tile.getTile(tile.getRow() + lShapeVector[0], tile.getCol() + lShapeVector[1]);
+            } catch (Exception e) {
+                continue;
+            }
+            Piece piece = board.getOrDefault(adjacentTile, null);
+            if (isPieceKnightOfOppositeColor(piece, pieceUnderAttack.getColor()))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean diagonalTilesContainPawnOfOppositeColor(Tile tile) {
+        Piece pieceUnderAttack = board.get(tile);
+        int[][] diagonalVectors = pieceUnderAttack.getColor() == Colors.WHITE ? new int[][] {{-1, -1}, {-1, 1}} : new int[][] {{1, -1}, {1, 1}};
+
+        for (int[] diagonalVector : diagonalVectors) {
+            Tile diagonalTile;
+            // if the row and column are out of range, an exception is thrown, and we move on to the next vector
+            try {
+                diagonalTile = Tile.getTile(tile.getRow() + diagonalVector[0], tile.getCol() + diagonalVector[1]);
+            } catch (Exception e) {
+                continue;
+            }
+            Piece piece = board.getOrDefault(diagonalTile, null);
+            if (isPiecePawnOfOppositeColor(piece, pieceUnderAttack.getColor()))
+                return true;
+        }
+        return false;
+    }
+
+    private boolean isPieceKingOfOppositeColor(Piece piece, Colors color) {
+        return piece != null && piece instanceof King && piece.getColor() != color;
+    }
+
+    private boolean isPieceQueenOfOppositeColor(Piece piece, Colors color) {
+        return piece != null && piece.getColor() != color && (piece instanceof Queen || piece instanceof Pawn && ((Pawn) piece).getPromotedPiece() instanceof Queen);
+    }
+
+    private boolean isPieceRookOfOppositeColor(Piece piece, Colors color) {
+        return piece != null && piece.getColor() != color && (piece instanceof Rook || piece instanceof Pawn && ((Pawn) piece).getPromotedPiece() instanceof Rook);
+    }
+
+    private boolean isPieceBishopOfOppositeColor(Piece piece, Colors color) {
+        return piece != null && piece.getColor() != color && (piece instanceof Bishop || piece instanceof Pawn && ((Pawn) piece).getPromotedPiece() instanceof Bishop);
+    }
+
+    private boolean isPieceKnightOfOppositeColor(Piece piece, Colors color) {
+        return piece != null && piece.getColor() != color && (piece instanceof Knight || piece instanceof Pawn && ((Pawn) piece).getPromotedPiece() instanceof Knight);
+    }
+
+    private boolean isPiecePawnOfOppositeColor(Piece piece, Colors color) {
+        return piece != null && piece.getColor() != color && piece instanceof Pawn && !((Pawn) piece).wasPromoted();
+    }
+
+    public void executeCapture(Tile tile) {
+        Piece piece = getPieceAt(tile);
+        if (piece.getColor() == Colors.WHITE) {
+            activeWhitePieces.remove(piece);
+            capturedWhitePieces.add(piece);
+        } else {
+            activeBlackPieces.remove(piece);
+            capturedBlackPieces.add(piece);
+        }
+        board.remove(tile);
+        piece.setTile(null);
+    }
+
+    public void executeMovement(Pair<Tile, Tile> movement) {
         Piece p = getPieceAt(movement.getKey());
         board.remove(movement.getKey());
         if (board.containsKey(movement.getValue()))
-            throw new IllegalArgumentException("Cannot move piece to an occupied space.");
+            throw new IllegalArgumentException("Cannot move piece to an occupied tile.");
         board.put(movement.getValue(), p);
-        p.setSpace(movement.getValue());
+        p.setTile(movement.getValue());
     }
 
-    public void unexecuteCapture(Space space, Piece piece) {
-        if (board.containsKey(space))
+    public void unexecuteCapture(Tile tile, Piece piece) {
+        if (board.containsKey(tile))
             throw new IllegalArgumentException("Cannot reverse capture if a piece is in the captured piece's spot.");
-        board.put(space, piece);
-        piece.setSpace(space);
+        board.put(tile, piece);
+        piece.setTile(tile);
         if (piece.getColor() == Colors.WHITE) {
             capturedWhitePieces.remove(piece);
             activeWhitePieces.add(piece);
@@ -389,11 +400,15 @@ public class ChessGame implements ChessGameInterface {
         return currentPlayersColor;
     }
 
+    public Piece getPieceAt(Tile tile) {
+        return board.get(tile);
+    }
+
     public void pollLastMoveCommand() {
         playedMoves.pollLast();
     }
 
-    public boolean movedFirstTimeLastTurn(Space space) {
-        return playedMoves.getLast().pieceWasMovedFirstTime(space);
+    public boolean movedFirstTimeLastTurn(Tile tile) {
+        return playedMoves.getLast().pieceWasMovedFirstTime(tile);
     }
 }

@@ -1,4 +1,4 @@
-package com.chess.model;
+package com.chess.model.util;
 
 public enum Pieces {
     WHITE_KING,

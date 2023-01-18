@@ -1,4 +1,8 @@
-package com.chess.model;
+package com.chess.model.pieces;
+
+import com.chess.model.*;
+import com.chess.model.util.Colors;
+import com.chess.model.util.Pair;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,13 +13,13 @@ public abstract class Piece {
     static final int SIZE_OF_CHESS_BOARD = 8;
 
     protected ChessGame game;
-    private Space space;
+    private Tile tile;
     private Colors color;
     private boolean wasMoved;
 
-    public Piece(ChessGame game, Space space, Colors color) {
+    public Piece(ChessGame game, Tile tile, Colors color) {
         this.game = game;
-        this.space = space;
+        this.tile = tile;
         this.color = color;
         wasMoved = false;
     }
@@ -24,12 +28,12 @@ public abstract class Piece {
         return color;
     }
 
-    public Space getSpace() {
-        return space;
+    public Tile getTile() {
+        return tile;
     }
 
-    public void setSpace(Space space) {
-        this.space = space;
+    public void setTile(Tile tile) {
+        this.tile = tile;
     }
 
     public boolean hasBeenMoved() {
@@ -40,17 +44,17 @@ public abstract class Piece {
         this.wasMoved = wasMoved;
     }
 
-    public Set<Space> getAvailableSpaces() {
-        Set<Space> availableSpaces = new HashSet<>();
-        Set<Space> potentiallyAvailableSpaces = getPotentiallyAvailableSpaces();
-        for (Space space : potentiallyAvailableSpaces)
-            if (!moveWouldPutPlayerInCheck(space))
-                availableSpaces.add(space);
-        return availableSpaces;
+    public Set<Tile> getAvailableTiles() {
+        Set<Tile> availableTiles = new HashSet<>();
+        Set<Tile> potentiallyAvailableTiles = getPotentiallyAvailableTiles();
+        for (Tile tile : potentiallyAvailableTiles)
+            if (!moveWouldPutPlayerInCheck(tile))
+                availableTiles.add(tile);
+        return availableTiles;
     }
 
-    public boolean moveWouldPutPlayerInCheck(Space space) {
-        MoveCommand moveCommand = createMoveCommand(space);
+    public boolean moveWouldPutPlayerInCheck(Tile tile) {
+        MoveCommand moveCommand = createMoveCommand(tile);
         moveCommand.execute();
         game.updateIsWhiteKingInCheckFlag();
         game.updateIsBlackKingInCheckFlag();
@@ -64,64 +68,64 @@ public abstract class Piece {
         return isPlayerInCheck;
     }
 
-    public MoveCommand createStandardMoveCommand(Space space) {
-        Set<Pair<Space, Space>> movements = new HashSet<>();
-        Map<Space, Piece> captures = new HashMap<>();
-        if (game.getPieceAt(space) != null && game.getPieceAt(space).getColor() != getColor())
-            captures.put(space, game.getPieceAt(space));
-        movements.add(new Pair<>(getSpace(), space));
+    public MoveCommand createStandardMoveCommand(Tile tile) {
+        Set<Pair<Tile, Tile>> movements = new HashSet<>();
+        Map<Tile, Piece> captures = new HashMap<>();
+        if (game.getPieceAt(tile) != null && game.getPieceAt(tile).getColor() != getColor())
+            captures.put(tile, game.getPieceAt(tile));
+        movements.add(new Pair<>(getTile(), tile));
         return new MoveCommand(game, movements, captures);
     }
 
-    public void addPotentiallyAvailableDiagonalSpaces(Set<Space> potentiallyAvailableSpaces) {
+    public void addPotentiallyAvailableDiagonalTiles(Set<Tile> potentiallyAvailableTiles) {
         int[][] diagonalVectors = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
         for (int[] diagonalVector : diagonalVectors) {
             int distanceFromStart = 1;
             while (distanceFromStart < SIZE_OF_CHESS_BOARD) {
-                Space diagonalSpace;
+                Tile diagonalTile;
                 try {
-                    diagonalSpace = Space.getSpace(getSpace().getRow() + diagonalVector[0] * distanceFromStart, getSpace().getCol() + diagonalVector[1] * distanceFromStart);
+                    diagonalTile = Tile.getTile(getTile().getRow() + diagonalVector[0] * distanceFromStart, getTile().getCol() + diagonalVector[1] * distanceFromStart);
                 } catch (Exception e) {
                     break;
                 }
-                Piece p = game.getPieceAt(diagonalSpace);
+                Piece p = game.getPieceAt(diagonalTile);
                 if (p == null) {
-                    potentiallyAvailableSpaces.add(diagonalSpace);
+                    potentiallyAvailableTiles.add(diagonalTile);
                     distanceFromStart++;
                 } else {
                     if (p.getColor() != getColor())
-                        potentiallyAvailableSpaces.add(diagonalSpace);
+                        potentiallyAvailableTiles.add(diagonalTile);
                     break;
                 }
             }
         }
     }
 
-    public void addPotentiallyAvailableRectangularSpaces(Set<Space> potentiallyAvailableSpaces) {
+    public void addPotentiallyAvailableRectangularTiles(Set<Tile> potentiallyAvailableTiles) {
         int[][] rectangularVectors = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
         for (int[] rectangularVector : rectangularVectors) {
             int distanceFromStart = 1;
             while (distanceFromStart < SIZE_OF_CHESS_BOARD) {
-                Space rectangularSpace;
+                Tile rectangularTile;
                 try {
-                    rectangularSpace = Space.getSpace(getSpace().getRow() + rectangularVector[0] * distanceFromStart, getSpace().getCol() + rectangularVector[1] * distanceFromStart);
+                    rectangularTile = Tile.getTile(getTile().getRow() + rectangularVector[0] * distanceFromStart, getTile().getCol() + rectangularVector[1] * distanceFromStart);
                 } catch (Exception e) {
                     break;
                 }
-                Piece p = game.getPieceAt(rectangularSpace);
+                Piece p = game.getPieceAt(rectangularTile);
                 if (p == null) {
-                    potentiallyAvailableSpaces.add(rectangularSpace);
+                    potentiallyAvailableTiles.add(rectangularTile);
                     distanceFromStart++;
                 } else {
                     if (p.getColor() != getColor())
-                        potentiallyAvailableSpaces.add(rectangularSpace);
+                        potentiallyAvailableTiles.add(rectangularTile);
                     break;
                 }
             }
         }
     }
 
-    public abstract MoveCommand createMoveCommand(Space space);
+    public abstract MoveCommand createMoveCommand(Tile tile);
 
-    public abstract Set<Space> getPotentiallyAvailableSpaces();
+    public abstract Set<Tile> getPotentiallyAvailableTiles();
 }

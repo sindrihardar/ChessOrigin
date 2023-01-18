@@ -1,15 +1,19 @@
 package com.chess.model;
 
+import com.chess.model.pieces.*;
+import com.chess.model.util.Colors;
+import com.chess.model.util.Pieces;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static com.chess.model.Pieces.*;
+import static com.chess.model.util.Pieces.*;
 
 public class ChessGameBuilder {
     private Pieces[][] boardState;
-    private Map<Space, Piece> boardMap;
+    private Map<Tile, Piece> boardMap;
     private List<Piece> activeWhitePieces;
     private List<Piece> activeBlackPieces;
 
@@ -23,32 +27,32 @@ public class ChessGameBuilder {
             for (int j = 0; j < board[i].length; j++) {
                 Piece p = null;
                 if (board[i][j] == WHITE_KING)
-                    p = new King(game, Space.getSpace(i, j), Colors.WHITE);
+                    p = new King(game, Tile.getTile(i, j), Colors.WHITE);
                 else if (board[i][j] == WHITE_QUEEN)
-                    p = new Queen(game, Space.getSpace(i, j), Colors.WHITE);
+                    p = new Queen(game, Tile.getTile(i, j), Colors.WHITE);
                 else if (board[i][j] == WHITE_ROOK)
-                    p = new Rook(game, Space.getSpace(i, j), Colors.WHITE);
+                    p = new Rook(game, Tile.getTile(i, j), Colors.WHITE);
                 else if (board[i][j] == WHITE_BISHOP)
-                    p = new Bishop(game, Space.getSpace(i, j), Colors.WHITE);
+                    p = new Bishop(game, Tile.getTile(i, j), Colors.WHITE);
                 else if (board[i][j] == WHITE_KNIGHT)
-                    p = new Knight(game, Space.getSpace(i, j), Colors.WHITE);
+                    p = new Knight(game, Tile.getTile(i, j), Colors.WHITE);
                 else if (board[i][j] == WHITE_PAWN)
-                    p = new Pawn(game, Space.getSpace(i, j), Colors.WHITE);
+                    p = new Pawn(game, Tile.getTile(i, j), Colors.WHITE);
                 else if (board[i][j] == BLACK_KING)
-                    p = new King(game, Space.getSpace(i, j), Colors.BLACK);
+                    p = new King(game, Tile.getTile(i, j), Colors.BLACK);
                 else if (board[i][j] == BLACK_QUEEN)
-                    p = new Queen(game, Space.getSpace(i, j), Colors.BLACK);
+                    p = new Queen(game, Tile.getTile(i, j), Colors.BLACK);
                 else if (board[i][j] == BLACK_ROOK)
-                    p = new Rook(game, Space.getSpace(i, j), Colors.BLACK);
+                    p = new Rook(game, Tile.getTile(i, j), Colors.BLACK);
                 else if (board[i][j] == BLACK_BISHOP)
-                    p = new Bishop(game, Space.getSpace(i, j), Colors.BLACK);
+                    p = new Bishop(game, Tile.getTile(i, j), Colors.BLACK);
                 else if (board[i][j] == BLACK_KNIGHT)
-                    p = new Knight(game, Space.getSpace(i, j), Colors.BLACK);
+                    p = new Knight(game, Tile.getTile(i, j), Colors.BLACK);
                 else if (board[i][j] == BLACK_PAWN)
-                    p = new Pawn(game, Space.getSpace(i, j), Colors.BLACK);
+                    p = new Pawn(game, Tile.getTile(i, j), Colors.BLACK);
 
                 if (p != null) {
-                    boardMap.put(Space.getSpace(i, j), p);
+                    boardMap.put(Tile.getTile(i, j), p);
                     if (p.getColor() == Colors.WHITE)
                         activeWhitePieces.add(p);
                     else
@@ -58,18 +62,18 @@ public class ChessGameBuilder {
         }
     }
 
-    public ChessGameBuilder(Map<Space, Piece> board) {
+    public ChessGameBuilder(Map<Tile, Piece> board) {
         boardState = new Pieces[8][8];
         activeWhitePieces = new LinkedList<>();
         activeBlackPieces = new LinkedList<>();
 
-        for (Space space : board.keySet()) {
-            Pieces p = getPieceEnumeration(board.get(space));
-            boardState[space.getRow()][space.getCol()] = p;
-            if (board.get(space).getColor() == Colors.WHITE)
-                activeWhitePieces.add(board.get(space));
+        for (Tile tile : board.keySet()) {
+            Pieces p = getPieceEnumeration(board.get(tile));
+            boardState[tile.getRow()][tile.getCol()] = p;
+            if (board.get(tile).getColor() == Colors.WHITE)
+                activeWhitePieces.add(board.get(tile));
             else
-                activeBlackPieces.add(board.get(space));
+                activeBlackPieces.add(board.get(tile));
         }
     }
 
@@ -97,7 +101,7 @@ public class ChessGameBuilder {
         return boardState;
     }
 
-    public Map<Space, Piece> getBoardMap() {
+    public Map<Tile, Piece> getBoardMap() {
         return boardMap;
     }
 

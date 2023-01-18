@@ -1,5 +1,8 @@
 package com.chess.model;
 
+import com.chess.model.util.Colors;
+import com.chess.model.util.Pieces;
+
 import java.util.List;
 import java.util.Set;
 
@@ -13,7 +16,7 @@ public interface ChessGameInterface {
      * @param col
      * @return true if the space at (row, col) contains a piece of the current player's color, false otherwise.
      */
-    public boolean doesSpaceContainAPieceOfTheCurrentPlayersColor(int row, int col);
+    public boolean doesTileContainPieceOfCurrentPlayersColor(int row, int col);
 
     /**
      * Gives a set of the spaces that the piece at the given space can move to.
@@ -26,7 +29,7 @@ public interface ChessGameInterface {
      * @param col
      * @return
      */
-    public Set<Space> getAvailableMovesForSpace(int row, int col);
+    public Set<Tile> getAvailableMovesForTile(int row, int col);
 
     /**
      * Moves the piece at the startRow row and startCol column to the space at the endRow row and endCol column.

@@ -1,6 +1,8 @@
 package com.chess.presenter;
 
 import com.chess.model.*;
+import com.chess.model.util.Colors;
+import com.chess.model.util.Pieces;
 import com.chess.view.Observer;
 
 import java.util.LinkedList;
@@ -12,7 +14,7 @@ public class ChessBoardPresenter implements Observable {
     private ChessBoardTilePresenter[][] tilePresenters;
     private Pieces[][] boardState;
     private ChessBoardTilePresenter selected;
-    private Set<Space> available;
+    private Set<Tile> available;
     private List<Observer> observers;
     private boolean isGameOver, isGameInStalemate, isPlayerInCheckmate, didWhiteWin;
 
@@ -38,7 +40,7 @@ public class ChessBoardPresenter implements Observable {
         tilePresenters = new ChessBoardTilePresenter[8][8];
         for (int i = 0; i < tilePresenters.length; i++)
             for (int j = 0; j < tilePresenters[i].length; j++)
-                tilePresenters[i][j] = new ChessBoardTilePresenter(i, j, boardState[i][j], game.doesSpaceContainAPieceOfTheCurrentPlayersColor(i, j));
+                tilePresenters[i][j] = new ChessBoardTilePresenter(i, j, boardState[i][j], game.doesTileContainPieceOfCurrentPlayersColor(i, j));
     }
 
     public void updateFlags() {
@@ -116,23 +118,23 @@ public class ChessBoardPresenter implements Observable {
             updateTilePresenterPieces();        // update the state of each of the tiles (which in turn updates the view)
             updateTilePresenterSelectability(); // updates the state of each tile's select-ability
             updateFlags();                      // checks if the game is over
-        } else if (game.doesSpaceContainAPieceOfTheCurrentPlayersColor(row, col)) {
+        } else if (game.doesTileContainPieceOfCurrentPlayersColor(row, col)) {
             if (available != null)
                 resetAvailableTiles();
             selected = tilePresenters[row][col];
-            available = game.getAvailableMovesForSpace(row, col);
+            available = game.getAvailableMovesForTile(row, col);
             setAvailableTiles();
         }
     }
 
     public void setAvailableTiles() {
-        for (Space availableTile : available)
+        for (Tile availableTile : available)
             tilePresenters[availableTile.getRow()][availableTile.getCol()].setAvailable(true);
     }
 
     public void resetAvailableTiles() {
         selected = null;
-        for (Space availableSpace : available)
+        for (Tile availableSpace : available)
             tilePresenters[availableSpace.getRow()][availableSpace.getCol()].setAvailable(false);
         available = null;
     }
@@ -146,11 +148,11 @@ public class ChessBoardPresenter implements Observable {
     public void updateTilePresenterSelectability() {
         for (int i = 0; i < boardState.length; i++)
             for (int j = 0; j < boardState.length; j++)
-                tilePresenters[i][j].setContainsPieceOfCurrentPlayersColor(game.doesSpaceContainAPieceOfTheCurrentPlayersColor(i, j));
+                tilePresenters[i][j].setContainsPieceOfCurrentPlayersColor(game.doesTileContainPieceOfCurrentPlayersColor(i, j));
     }
 
     public boolean aTileIsSelectedAndGivenTileIsAvailable(int row, int col) {
-        return selected != null && available.contains(Space.getSpace(row, col));
+        return selected != null && available.contains(Tile.getTile(row, col));
     }
 
     @Override

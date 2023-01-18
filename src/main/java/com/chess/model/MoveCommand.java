@@ -1,31 +1,42 @@
 package com.chess.model;
 
+import com.chess.model.pieces.Pawn;
+import com.chess.model.pieces.Piece;
+import com.chess.model.util.Colors;
+import com.chess.model.util.Pair;
+
 import java.util.Map;
 import java.util.Set;
 
 public class MoveCommand {
     private ChessGame game;
-    private Set<Pair<Space, Space>> movements;
-    private Map<Space, Piece> captures;
+    private Set<Pair<Tile, Tile>> movements;
+    private Map<Tile, Piece> captures;
     private boolean firstTimeBeingMoved, promotion;
 
-    public MoveCommand(ChessGame game, Set<Pair<Space, Space>> movements, Map<Space, Piece> captures) {
+    public MoveCommand(ChessGame game, Set<Pair<Tile, Tile>> movements, Map<Tile, Piece> captures) {
         this.game = game;
         this.movements = movements;
         this.captures = captures;
+        firstTimeBeingMoved = isFirstTimeBeingMoved(movements);
+        promotion = endsInPromotion(movements);
+    }
 
-        firstTimeBeingMoved = false;
-        for (Pair<Space, Space> movement : movements)
+    public boolean isFirstTimeBeingMoved(Set<Pair<Tile, Tile>> movements) {
+        for (Pair<Tile, Tile> movement : movements)
             if (!game.getPieceAt(movement.getKey()).hasBeenMoved())
-                firstTimeBeingMoved = true;
+                return true;
+        return false;
+    }
 
-        promotion = false;
-        for (Pair<Space, Space> movement : movements) {
+    public boolean endsInPromotion(Set<Pair<Tile, Tile>> movements) {
+        for (Pair<Tile, Tile> movement : movements) {
             Piece p = game.getPieceAt(movement.getKey());
             int row = movement.getValue().getRow();
             if (p instanceof Pawn && !((Pawn) p).wasPromoted() && (p.getColor() == Colors.BLACK && row == 7 || p.getColor() == Colors.WHITE && row == 0))
-                promotion = true;
+                return true;
         }
+        return false;
     }
 
     public void execute() {
@@ -36,12 +47,12 @@ public class MoveCommand {
     }
 
     public void executeCaptures() {
-        for (Space space : captures.keySet())
-            game.executeCapture(space);
+        for (Tile tile : captures.keySet())
+            game.executeCapture(tile);
     }
 
     public void executeMovements() {
-        for (Pair<Space, Space> movement : movements) {
+        for (Pair<Tile, Tile> movement : movements) {
             game.executeMovement(movement);
             game.getPieceAt(movement.getValue()).setWasMoved(true);
             if (promotion) {
@@ -58,7 +69,7 @@ public class MoveCommand {
     }
 
     public void unexecuteMovements() {
-        for (Pair<Space, Space> movement : movements) {
+        for (Pair<Tile, Tile> movement : movements) {
             game.executeMovement(new Pair<>(movement.getValue(), movement.getKey()));
             if (firstTimeBeingMoved)
                 game.getPieceAt(movement.getKey()).setWasMoved(false);
@@ -70,16 +81,16 @@ public class MoveCommand {
     }
 
     public void unexecuteCaptures() {
-        for (Space space : captures.keySet())
-            game.unexecuteCapture(space, captures.get(space));
+        for (Tile tile : captures.keySet())
+            game.unexecuteCapture(tile, captures.get(tile));
     }
 
-    public boolean pieceWasMovedFirstTime(Space space) {
+    public boolean pieceWasMovedFirstTime(Tile tile) {
         if (!firstTimeBeingMoved)
             return false;
 
-        for (Pair<Space, Space> movement : movements)
-            if (movement.getValue() == space)
+        for (Pair<Tile, Tile> movement : movements)
+            if (movement.getValue() == tile)
                 return true;
 
         return false;
