@@ -10,13 +10,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
 public class ChessBoardTileNode extends StackPane implements Observer {
     private int row, col;
     private String style;
     private ImageView imageView;
-    private ChessBoardTilePresenter spacePresenter;
+    private ChessBoardTilePresenter tilePresenter;
     private ChessBoardPresenter gamePresenter;
 
     public ChessBoardTileNode(int row, int col, ChessBoardTilePresenter spacePresenter, ChessBoardPresenter gamePresenter) {
@@ -26,14 +25,14 @@ public class ChessBoardTileNode extends StackPane implements Observer {
         addFile();
         setUpEventHandlers();
         update();
-        spacePresenter.attach(this); // adds this node as an observer of the presenter
+        spacePresenter.attach(this);
     }
 
     public void setUpState(int row, int col, ChessBoardTilePresenter spacePresenter, ChessBoardPresenter gamePresenter) {
         this.row = row;
         this.col = col;
         this.gamePresenter = gamePresenter;
-        this.spacePresenter = spacePresenter;
+        this.tilePresenter = spacePresenter;
     }
 
     public void addImageView() {
@@ -41,21 +40,6 @@ public class ChessBoardTileNode extends StackPane implements Observer {
         imageView.fitHeightProperty().bind(minHeightProperty());
         imageView.fitWidthProperty().bind(minWidthProperty());
         getChildren().add(imageView);
-    }
-
-    public void addFile() {
-        if (col != 0)
-            return;
-
-        Label file = new Label(getFile(row));
-        file.setFont(new Font(9));
-        file.setPadding(new Insets(2, 0, 0, 2));
-        StackPane.setAlignment(file, Pos.TOP_LEFT);
-        getChildren().add(file);
-    }
-
-    public String getRank(int row) {
-        return String.valueOf((char) ('a' + row));
     }
 
     public void addRank() {
@@ -67,6 +51,21 @@ public class ChessBoardTileNode extends StackPane implements Observer {
         rank.setPadding(new Insets(0, 2, 2, 0));
         StackPane.setAlignment(rank, Pos.BOTTOM_RIGHT);
         getChildren().add(rank);
+    }
+
+    public String getRank(int row) {
+        return String.valueOf((char) ('a' + row));
+    }
+
+    public void addFile() {
+        if (col != 0)
+            return;
+
+        Label file = new Label(getFile(row));
+        file.setFont(new Font(9));
+        file.setPadding(new Insets(2, 0, 0, 2));
+        StackPane.setAlignment(file, Pos.TOP_LEFT);
+        getChildren().add(file);
     }
 
     public String getFile(int col) {
@@ -103,8 +102,8 @@ public class ChessBoardTileNode extends StackPane implements Observer {
      */
     @Override
     public void update() {
-        style = spacePresenter.getStyle();
-        imageView.setImage(spacePresenter.getImage());
+        style = tilePresenter.getStyle();
+        imageView.setImage(tilePresenter.getImage());
         setStyle(style);
     }
 }

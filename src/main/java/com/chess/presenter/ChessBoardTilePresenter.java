@@ -14,6 +14,11 @@ public class ChessBoardTilePresenter implements Observable {
     private List<Observer> observers;
 
     public ChessBoardTilePresenter(int row, int col, Pieces piece, boolean containsPieceOfCurrentPlayersColor) {
+        setUpState(row, col, piece, containsPieceOfCurrentPlayersColor);
+        notifyObservers();
+    }
+
+    public void setUpState(int row, int col, Pieces piece, boolean containsPieceOfCurrentPlayersColor) {
         this.row = row;
         this.col = col;
         this.piece = piece;
@@ -21,12 +26,11 @@ public class ChessBoardTilePresenter implements Observable {
         hoveredOver = false;
         available = false;
         observers = new LinkedList<>();
-        notifyObservers();
     }
 
-    public Image getImage() {
-        return selectImage(piece);
-    }
+    /*
+     *  Getters
+     */
 
     public int getRow() {
         return row;
@@ -40,14 +44,7 @@ public class ChessBoardTilePresenter implements Observable {
         return piece;
     }
 
-    public void setPiece(Pieces piece) {
-        if (this.piece == piece)
-            return;
-        this.piece = piece;
-        notifyObservers();
-    }
-
-    public Image selectImage(Pieces piece) {
+    public Image getImage() {
         String path = "file:./src/main/java/com/chess/presenter/resources/";
         if (piece == Pieces.BLACK_KING)
             path += "black_king.png";
@@ -97,6 +94,17 @@ public class ChessBoardTilePresenter implements Observable {
             else
                 return "-fx-background-color: rgb(255, 249, 248);";
         }
+    }
+
+    /*
+     *  Setters
+     */
+
+    public void setPiece(Pieces piece) {
+        if (this.piece == piece)
+            return;
+        this.piece = piece;
+        notifyObservers();
     }
 
     public void setAvailable(boolean available) {
