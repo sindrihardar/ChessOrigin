@@ -78,7 +78,7 @@ public class Pawn extends Piece {
         return potentiallyAvailableTiles;
     }
 
-    public void addOneTileForward(Set<Tile> potentiallyAvailableTiles) {
+    private void addOneTileForward(Set<Tile> potentiallyAvailableTiles) {
         Tile oneTileForward;
         try {
             oneTileForward = Tile.getTile(getTile().getRow() + direction, getTile().getCol());
@@ -91,7 +91,7 @@ public class Pawn extends Piece {
             potentiallyAvailableTiles.add(oneTileForward);
     }
 
-    public void addTwoTilesForward(Set<Tile> potentiallyAvailableTiles) {
+    private void addTwoTilesForward(Set<Tile> potentiallyAvailableTiles) {
         Tile oneTileForward, twoTilesForward;
         try {
             oneTileForward = Tile.getTile(getTile().getRow() + direction, getTile().getCol());
@@ -105,7 +105,7 @@ public class Pawn extends Piece {
             potentiallyAvailableTiles.add(twoTilesForward);
     }
 
-    public void addDiagonalCaptures(Set<Tile> potentiallyAvailableTiles) {
+    private void addDiagonalCaptures(Set<Tile> potentiallyAvailableTiles) {
         Tile leftDiagonal, rightDiagonal;
         try {
             leftDiagonal = Tile.getTile(getTile().getRow() + direction, getTile().getCol() - 1);
@@ -122,7 +122,7 @@ public class Pawn extends Piece {
         } catch (Exception e) {}
     }
 
-    public void addEnPassant(Set<Tile> potentiallyAvailableTiles) {
+    private void addEnPassant(Set<Tile> potentiallyAvailableTiles) {
         try {
             Tile leftDiagonal = Tile.getTile(getTile().getRow() + direction, getTile().getCol() - 1);
             Tile leftAdjacentTile = Tile.getTile(getTile().getRow(), getTile().getCol() - 1);

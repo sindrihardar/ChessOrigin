@@ -28,21 +28,21 @@ public class ChessBoardTileNode extends StackPane implements Observer {
         spacePresenter.attach(this);
     }
 
-    public void setUpState(int row, int col, ChessBoardTilePresenter spacePresenter, ChessBoardPresenter gamePresenter) {
+    private void setUpState(int row, int col, ChessBoardTilePresenter spacePresenter, ChessBoardPresenter gamePresenter) {
         this.row = row;
         this.col = col;
         this.gamePresenter = gamePresenter;
         this.tilePresenter = spacePresenter;
     }
 
-    public void addImageView() {
+    private void addImageView() {
         imageView = new ImageView();
         imageView.fitHeightProperty().bind(minHeightProperty());
         imageView.fitWidthProperty().bind(minWidthProperty());
         getChildren().add(imageView);
     }
 
-    public void addRank() {
+    private void addRank() {
         if (row != 7)
             return;
 
@@ -53,11 +53,11 @@ public class ChessBoardTileNode extends StackPane implements Observer {
         getChildren().add(rank);
     }
 
-    public String getRank(int row) {
+    private String getRank(int row) {
         return String.valueOf((char) ('a' + row));
     }
 
-    public void addFile() {
+    private void addFile() {
         if (col != 0)
             return;
 
@@ -68,11 +68,11 @@ public class ChessBoardTileNode extends StackPane implements Observer {
         getChildren().add(file);
     }
 
-    public String getFile(int col) {
+    private String getFile(int col) {
         return String.valueOf(8 - col);
     }
 
-    public void setUpEventHandlers() {
+    private void setUpEventHandlers() {
         setOnMouseClicked(new EventHandler<>() {
             @Override
             public void handle(MouseEvent mouseEvent) {

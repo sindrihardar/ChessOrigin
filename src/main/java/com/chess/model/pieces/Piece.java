@@ -9,9 +9,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class Piece {
-    static final int SIZE_OF_CHESS_BOARD = 8;
+import static com.chess.model.util.Constants.SIZE_OF_CHESS_BOARD;
 
+public abstract class Piece {
     protected ChessGame game;
     private Tile tile;
     private Colors color;

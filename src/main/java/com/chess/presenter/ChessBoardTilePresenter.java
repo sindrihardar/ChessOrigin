@@ -18,7 +18,7 @@ public class ChessBoardTilePresenter implements Observable {
         notifyObservers();
     }
 
-    public void setUpState(int row, int col, Pieces piece, boolean containsPieceOfCurrentPlayersColor) {
+    private void setUpState(int row, int col, Pieces piece, boolean containsPieceOfCurrentPlayersColor) {
         this.row = row;
         this.col = col;
         this.piece = piece;

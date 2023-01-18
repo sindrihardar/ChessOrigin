@@ -1,6 +1,6 @@
 # Design
 
-Since features will be iteratively added to the project, I want to ensure that my project is modifiable and well-designed.
+Since features will be incrementally added to the project, I want to ensure that my project is modifiable and well-designed.
 To do so, I'll be implementing a variety of well-known design patterns, many of which are described in *Design Patterns*.
 I'll be specifying the design in UML as both structural and behavioral diagrams.
 
@@ -9,35 +9,41 @@ I'll be specifying the design in UML as both structural and behavioral diagrams.
 ### Component Diagram
 ![](resources/component_diagram.png)
 
-The overall architectural style that I chose for this project is the Model-View-Controller (MVC) style.
-The rationale behind this choice was that MVC is the most popular architectural style, and Java's built-in Observer and Observable interfaces make it simple to bind the view to the model.
+The overall architectural style that I chose for this project is the Model-View-Presenter (MVP) style.
+My goal is to isolate the model component from the GUI framework to assist in testing and development, so that changes to one component don't affect another.
+While the MVC architectural style is the most popular, it couples the model and the view which is what I'm trying to avoid.
+By using the MVP style, the model component is isolated, and so is the view.
+It also allows me to test the presenter to make sure data is being presented in the view correctly, should I choose to start testing the GUI.
 
 ### Class Diagram - View Component
 ![](resources/class_diagram_view_component.png)
 
-There isn't much of an explanation needed here.
-The application has a single scene, which is a TilePane which is composed of StackPanes that contain images of each of the pieces of the board.
+The view component consists of a ChessBoardScene, which is composed of ChessBoardTileNodes.
+Each of these implements the Observer interface.
+We can then attach these objects to presenters so that when the presenters' states are updated, the view is updated as well.
 
-### Class Diagram - Controller Component
-![](resources/class_diagram_controller_component.png)
+More details on the Observer design pattern can be found in *Design Patterns*.
 
-The controller component is composed of two event handlers. 
-One of them is for when the user clicks on a space on the board, the other is for when the user hovers over a space.
+### Class Diagram - Presenter Component
+![](resources/class_diagram_presenter_component.png)
+
+The presenter component consists of presenters for the chess board and each tile in the chess board.
+Each of these implements the Observable interface so that each time the state of these presenters is modified, the corresponding observers are updated.
 
 ### Class Diagram - Model Component
 ![](resources/class_diagram_model_component.png)
 
-To construct the above class diagram, I started with an Object-Oriented Analysis (OOA), which led me to develop a ChessGame class, a Space class, and a Piece class.
-The Piece class is abstract, and each concrete sub class represents a type of piece.
-To distribute the workload amongst the different classes, I wanted the pieces to decide how movements on the board should occur, and which spaces they can move to.
-However, I didn't want the pieces to actually operate on the board.
-Thus, I followed the command design pattern and created the MoveCommand class. 
-The pieces construct a move command, which tells the game how a move should be executed.
-Then, the game executes the move command itself.
-This also supports the ability to undo moves that have been made.
+The ChessGameInterface defines how the model component can be interacted with by the presenter component.
 
-I also utilized the builder design pattern with the ChessBoard builder class.
-This can be used to construct the board for the game, as well as getting the state of the board from the game.
+The class diagram for the model component was initially developed using object-oriented analysis.
+This led to the construction of the ChessGame class, the Piece class (and subclasses), and the tile class.
+Since the construction of the chess board is rather complicated, a ChessBoardBuilder class was created to handle that process, as well as the process of creating a 2D array of pieces to display the state of the board.
+
+In order to see if a movement is legal, we have to check if making that movement would put the current player in check.
+To handle this, the game needs to be able to undo the last move.
+To incorporate this functionality, a MoveCommand class was created.
+
+More details on the Builder and Command design patterns can be found in *Design Patterns*.
 
 ## Behavioral
 

@@ -41,12 +41,12 @@ public class ChessBoardScene extends Scene implements Observer {
         setUpBoard();
     }
 
-    public void setUpPresenter() {
+    private void setUpPresenter() {
         presenter = new ChessBoardPresenter();
         presenter.attach(this);
     }
 
-    public void buildBoardContainer() {
+    private void buildBoardContainer() {
         boardContainer = new StackPane();
         boardContainer.minHeightProperty().bind(Bindings.min(root.widthProperty(), root.heightProperty()).subtract(2 * BOARD_PADDING));
         boardContainer.minWidthProperty().bind(boardContainer.minHeightProperty());
@@ -57,7 +57,7 @@ public class ChessBoardScene extends Scene implements Observer {
         root.getChildren().add(boardContainer);
     }
 
-    public void setUpBoard() {
+    private void setUpBoard() {
         board = new TilePane();
         board.setPrefColumns(8);
         board.setPrefRows(8);
@@ -68,19 +68,19 @@ public class ChessBoardScene extends Scene implements Observer {
         boardContainer.getChildren().add(board);
     }
 
-    public void addSpacesToBoard() {
+    private void addSpacesToBoard() {
         for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++)
                 setUpTile(i, j, presenter);
     }
 
-    public void setUpTile(int row, int col, ChessBoardPresenter presenter) {
+    private void setUpTile(int row, int col, ChessBoardPresenter presenter) {
         ChessBoardTileNode spaceNode = new ChessBoardTileNode(row, col, presenter.getChessBoardTilePresenter(row, col), presenter);
         bindWidthAndHeightToProperty(spaceNode, board.prefTileHeightProperty());
         board.getChildren().add(spaceNode);
     }
 
-    public void buildMessageNode(StackPane parent, String message) {
+    private void buildMessageNode(StackPane parent, String message) {
         messageNode = new StackPane();
         Rectangle background = new Rectangle();
 
@@ -96,7 +96,7 @@ public class ChessBoardScene extends Scene implements Observer {
         messageNode.getChildren().add(label);
     }
 
-    public void bindWidthAndHeightToProperty(Pane node, Property property) {
+    private void bindWidthAndHeightToProperty(Pane node, Property property) {
         node.minHeightProperty().bind(property);
         node.minWidthProperty().bind(property);
         node.maxHeightProperty().bind(property);

@@ -21,11 +21,11 @@ public class Knight extends Piece {
     @Override
     public Set<Tile> getPotentiallyAvailableTiles() {
         Set<Tile> potentiallyAvailableTiles = new HashSet<>();
-        addPotentiallyAvailableTiles(potentiallyAvailableTiles);
+        addPotentiallyAvailableLTiles(potentiallyAvailableTiles);
         return potentiallyAvailableTiles;
     }
 
-    public void addPotentiallyAvailableTiles(Set<Tile> potentiallyAvailableTiles) {
+    private void addPotentiallyAvailableLTiles(Set<Tile> potentiallyAvailableTiles) {
         int[][] adjacentVectors = {{-1, -2}, {-1, 2}, {1, -2}, {1, 2}, {-2, 1}, {-2, -1}, {2, -1}, {2, 1}};
         for (int[] adjacentVector : adjacentVectors) {
             Tile adjacentTile;

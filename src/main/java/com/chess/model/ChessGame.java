@@ -72,7 +72,7 @@ public class ChessGame implements ChessGameInterface {
         updateFlags();
     }
 
-    public boolean isMovementLegal(Tile startingTile, Tile endingTile) {
+    private boolean isMovementLegal(Tile startingTile, Tile endingTile) {
         if (!doesTileContainPieceOfCurrentPlayersColor(startingTile.getRow(), startingTile.getCol()))
             throw new IllegalArgumentException("Starting tile does not contain a piece of the current player's color.");
         Piece p = board.get(startingTile);
@@ -83,7 +83,7 @@ public class ChessGame implements ChessGameInterface {
         return true;
     }
 
-    public void resolveMovement(Tile startingTile, Tile endingTile) {
+    private void resolveMovement(Tile startingTile, Tile endingTile) {
         MoveCommand moveCommand = board.get(startingTile).createMoveCommand(endingTile);
         moveCommand.execute();
     }
@@ -145,7 +145,7 @@ public class ChessGame implements ChessGameInterface {
         return currentPlayersColor;
     }
 
-    public List<Pieces> convertListToEnumeration(List<Piece> pieces) {
+    private List<Pieces> convertListToEnumeration(List<Piece> pieces) {
         List<Pieces> converted = new LinkedList<>();
         for (Piece p : pieces)
             converted.add(getPieceEnumeration(p));

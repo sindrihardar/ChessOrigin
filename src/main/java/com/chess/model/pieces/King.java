@@ -45,7 +45,7 @@ public class King extends Piece {
         return potentiallyAvailableTiles;
     }
 
-    public void addPotentiallyAvailableAdjacentTiles(Set<Tile> potentiallyAvailableTiles) {
+    private void addPotentiallyAvailableAdjacentTiles(Set<Tile> potentiallyAvailableTiles) {
         int[][] adjacentVectors = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
         for (int[] adjacentVector : adjacentVectors) {
             Tile adjacentTile;
@@ -60,7 +60,7 @@ public class King extends Piece {
         }
     }
 
-    public void addPotentiallyAvailableCastleTiles(Set<Tile> potentiallyAvailableTiles) {
+    private void addPotentiallyAvailableCastleTiles(Set<Tile> potentiallyAvailableTiles) {
         if (hasBeenMoved() || getColor() == Colors.WHITE && game.isWhiteKingInCheck() || getColor() == Colors.BLACK && game.isBlackKingInCheck())
             return;
 
@@ -73,7 +73,7 @@ public class King extends Piece {
             potentiallyAvailableTiles.add(Tile.getTile(getTile().getRow(), getTile().getCol() - 2));
     }
 
-    public boolean rightTilesAreEmpty() {
+    private boolean rightTilesAreEmpty() {
         try {
             return game.getPieceAt(Tile.getTile(getTile().getRow(), getTile().getCol() + 1)) == null &&
                     game.getPieceAt(Tile.getTile(getTile().getRow(), getTile().getCol() + 2)) == null;
@@ -81,7 +81,7 @@ public class King extends Piece {
         return false;
     }
 
-    public boolean leftTilesAreEmpty() {
+    private boolean leftTilesAreEmpty() {
         try {
             return game.getPieceAt(Tile.getTile(getTile().getRow(), getTile().getCol() - 1)) == null &&
                     game.getPieceAt(Tile.getTile(getTile().getRow(), getTile().getCol() - 2)) == null &&

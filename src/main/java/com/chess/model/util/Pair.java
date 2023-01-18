@@ -1,8 +1,8 @@
 package com.chess.model.util;
 
 public class Pair <A, B> {
-    A key;
-    B value;
+    private A key;
+    private B value;
 
     public Pair(A key, B value) {
         this.key = key;

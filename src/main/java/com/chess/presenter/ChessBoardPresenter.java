@@ -25,7 +25,7 @@ public class ChessBoardPresenter implements Observable {
         updateFlags();
     }
 
-    public void setUpState() {
+    private void setUpState() {
         boardState = game.getBoardState();
         selected = null;
         available = null;
@@ -36,43 +36,39 @@ public class ChessBoardPresenter implements Observable {
         observers = new LinkedList<>();
     }
 
-    public void initializeTilePresenters() {
+    private void initializeTilePresenters() {
         tilePresenters = new ChessBoardTilePresenter[8][8];
         for (int i = 0; i < tilePresenters.length; i++)
             for (int j = 0; j < tilePresenters[i].length; j++)
                 tilePresenters[i][j] = new ChessBoardTilePresenter(i, j, boardState[i][j], game.doesTileContainPieceOfCurrentPlayersColor(i, j));
     }
 
-    public void updateFlags() {
+    private void updateFlags() {
         updateIsGameInStalemateFlag();
         updateIsPlayerInCheckmateFlag();
         updateDidWhiteWinFlag();
     }
 
-    public void updateIsGameInStalemateFlag() {
+    private void updateIsGameInStalemateFlag() {
         if (this.isGameInStalemate == game.isGameInStalemate())
             return;
         this.isGameInStalemate = game.isGameInStalemate();
         notifyObservers();
     }
 
-    public void updateIsPlayerInCheckmateFlag() {
+    private void updateIsPlayerInCheckmateFlag() {
         if (this.isPlayerInCheckmate == game.isCurrentPlayerInCheckmate())
             return;
         this.isPlayerInCheckmate = game.isCurrentPlayerInCheckmate();
         notifyObservers();
     }
 
-    public void updateDidWhiteWinFlag() {
+    private void updateDidWhiteWinFlag() {
         boolean didWhiteWin = game.getCurrentPlayerColor() == Colors.BLACK && game.isCurrentPlayerInCheckmate();
         if (this.didWhiteWin == didWhiteWin)
             return;
         this.didWhiteWin = didWhiteWin;
         notifyObservers();
-    }
-
-    public Colors getCurrentPlayersColor() {
-        return game.getCurrentPlayerColor();
     }
     
     /*
@@ -91,10 +87,10 @@ public class ChessBoardPresenter implements Observable {
         return isPlayerInCheckmate;
     }
 
-    public boolean didWhiteWin() {
-        return didWhiteWin;
+    public Colors getCurrentPlayersColor() {
+        return game.getCurrentPlayerColor();
     }
-    
+
     /*
      *  hoverInTo, hoverOutOf, and click are called when events are triggered in the view.
      */
@@ -117,7 +113,7 @@ public class ChessBoardPresenter implements Observable {
 
         if (aTileIsSelectedAndGivenTileIsAvailable(row, col)) {
             game.move(selected.getRow(), selected.getCol(), row, col);
-            resetAvailableTiles();             // reset available spaces
+            resetAvailableTiles();              // reset available spaces
             boardState = game.getBoardState();  // update the boardState
             updateTilePresenterPieces();        // update the state of each of the tiles (which in turn updates the view)
             updateTilePresenterSelectability(); // updates the state of each tile's select-ability
@@ -131,31 +127,31 @@ public class ChessBoardPresenter implements Observable {
         }
     }
 
-    public void setAvailableTiles() {
+    private void setAvailableTiles() {
         for (Tile availableTile : available)
             tilePresenters[availableTile.getRow()][availableTile.getCol()].setAvailable(true);
     }
 
-    public void resetAvailableTiles() {
+    private void resetAvailableTiles() {
         selected = null;
         for (Tile availableSpace : available)
             tilePresenters[availableSpace.getRow()][availableSpace.getCol()].setAvailable(false);
         available = null;
     }
 
-    public void updateTilePresenterPieces() {
+    private void updateTilePresenterPieces() {
         for (int i = 0; i < boardState.length; i++)
             for (int j = 0; j < boardState.length; j++)
                 tilePresenters[i][j].setPiece(boardState[i][j]);
     }
 
-    public void updateTilePresenterSelectability() {
+    private void updateTilePresenterSelectability() {
         for (int i = 0; i < boardState.length; i++)
             for (int j = 0; j < boardState.length; j++)
                 tilePresenters[i][j].setContainsPieceOfCurrentPlayersColor(game.doesTileContainPieceOfCurrentPlayersColor(i, j));
     }
 
-    public boolean aTileIsSelectedAndGivenTileIsAvailable(int row, int col) {
+    private boolean aTileIsSelectedAndGivenTileIsAvailable(int row, int col) {
         return selected != null && available.contains(Tile.getTile(row, col));
     }
 

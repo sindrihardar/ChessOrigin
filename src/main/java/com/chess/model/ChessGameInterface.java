@@ -16,7 +16,7 @@ public interface ChessGameInterface {
      * @param col
      * @return true if the space at (row, col) contains a piece of the current player's color, false otherwise.
      */
-    public boolean doesTileContainPieceOfCurrentPlayersColor(int row, int col);
+    boolean doesTileContainPieceOfCurrentPlayersColor(int row, int col);
 
     /**
      * Gives a set of the spaces that the piece at the given space can move to.
@@ -29,7 +29,7 @@ public interface ChessGameInterface {
      * @param col
      * @return
      */
-    public Set<Tile> getAvailableMovesForTile(int row, int col);
+    Set<Tile> getAvailableMovesForTile(int row, int col);
 
     /**
      * Moves the piece at the startRow row and startCol column to the space at the endRow row and endCol column.
@@ -43,55 +43,55 @@ public interface ChessGameInterface {
      * @param endRow
      * @param endCol
      */
-    public void move(int startRow, int startCol, int endRow, int endCol);
+    void move(int startRow, int startCol, int endRow, int endCol);
 
     /**
      * Reverts the game to it's state prior to the last move that was made.
      */
-    public void undoLastMove();
+    void undoLastMove();
 
     /**
      * @return true if the current player is in check, false otherwise.
      */
-    public boolean isCurrentPlayerInCheck();
+    boolean isCurrentPlayerInCheck();
 
     /**
      * @return true if the current player is in checkmate, false otherwise.
      */
-    public boolean isCurrentPlayerInCheckmate();
+    boolean isCurrentPlayerInCheckmate();
 
     /**
      * @return true if the game is in stalemate, false otherwise.
      */
-    public boolean isGameInStalemate();
+    boolean isGameInStalemate();
 
     /**
      * @return the state of the board as a 2D array of Pieces.
      */
-    public Pieces[][] getBoardState();
+    Pieces[][] getBoardState();
 
     /**
      * @return a list of the white pieces on the board, sorted in descending order.
      */
-    public List<Pieces> getActiveWhitePieces();
+    List<Pieces> getActiveWhitePieces();
 
     /**
      * @return a list of the black pieces on the board, sorted in descending order.
      */
-    public List<Pieces> getActiveBlackPieces();
+    List<Pieces> getActiveBlackPieces();
 
     /**
      * @return a list of the captured white pieces, sorted in descending order.
      */
-    public List<Pieces> getCapturedWhitePieces();
+    List<Pieces> getCapturedWhitePieces();
 
     /**
      * @return a list of the captured black pieces, sorted in descending order.
      */
-    public List<Pieces> getCapturedBlackPieces();
+    List<Pieces> getCapturedBlackPieces();
 
     /**
      * @return the current player's color.
      */
-    public Colors getCurrentPlayerColor();
+    Colors getCurrentPlayerColor();
 }
