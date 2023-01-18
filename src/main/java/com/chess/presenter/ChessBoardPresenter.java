@@ -95,14 +95,21 @@ public class ChessBoardPresenter implements Observable {
     }
 
     public void hoverInTo(int row, int col) {
+        if (isGameOver)
+            return;
         tilePresenters[row][col].setHoveredOver(true);
     }
 
     public void hoverOutOf(int row, int col) {
+        if (isGameOver)
+            return;
         tilePresenters[row][col].setHoveredOver(false);
     }
 
     public void click(int row, int col) {
+        if (isGameOver)
+            return;
+
         if (aTileIsSelectedAndGivenTileIsAvailable(row, col)) {
             game.move(selected.getRow(), selected.getCol(), row, col);
             resetAvailableSpaces();
