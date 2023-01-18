@@ -1,9 +1,9 @@
 # Requirements
 
 ## Functional
-- When the current player selects a space on the screen, the following must occur:
-  - If their piece is selected, highlight all available spaces that the piece can be moved to.
-  - If a highlighted space is selected (which means that the player's piece is already selected), the piece will move there, it will be the other player's turn, and all highlighting will be reset.
+- When the current player selects a tile on the screen, the following must occur:
+  - If their piece is selected, highlight all available tiles that the piece can be moved to.
+  - If a highlighted tile is selected (which means that the player's piece is already selected), the piece will move there, it will be the other player's turn, and all highlighting will be reset.
   - If neither of the above spaces are selected, nothing should occur.
   - When the cursor goes over a selectable space, that space should be highlighted.
 
