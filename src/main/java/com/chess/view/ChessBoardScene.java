@@ -1,5 +1,6 @@
 package com.chess.view;
 
+import com.chess.model.util.Colors;
 import com.chess.presenter.ChessBoardPresenter;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
@@ -107,10 +108,10 @@ public class ChessBoardScene extends Scene implements Observer {
         if (presenter.isGameInStalemate()) {
             buildMessageNode(boardContainer, "Stalemate!");
             boardContainer.getChildren().add(messageNode);
-        } else if (presenter.didWhiteWin()) {
+        } else if (presenter.isPlayerInCheckmate() && presenter.getCurrentPlayersColor() == Colors.BLACK) {
             buildMessageNode(boardContainer, "White won!");
             boardContainer.getChildren().add(messageNode);
-        } else if (!presenter.didWhiteWin() && presenter.isPlayerInCheckmate()) {
+        } else if (presenter.isPlayerInCheckmate() && presenter.getCurrentPlayersColor() == Colors.WHITE) {
             buildMessageNode(boardContainer, "Black won!");
             boardContainer.getChildren().add(messageNode);
         }

@@ -70,6 +70,10 @@ public class ChessBoardPresenter implements Observable {
         this.didWhiteWin = didWhiteWin;
         notifyObservers();
     }
+
+    public Colors getCurrentPlayersColor() {
+        return game.getCurrentPlayerColor();
+    }
     
     /*
      *  Getters
