@@ -18,8 +18,8 @@ It also allows me to test the presenter to make sure data is being presented in 
 ### Class Diagram - View Component
 ![](resources/class_diagram_view_component.png)
 
-The view component consists of a ChessBoardScene, which is composed of ChessBoardTileNodes.
-Each of these implements the Observer interface.
+The view component consists of a HomeScene and a ChessBoardScene, which is composed of ChessBoardTileNodes.
+The ChessBoardScene and the ChessBoardTileNodes implement the Observer interface.
 We can then attach these objects to presenters so that when the presenters' states are updated, the view is updated as well.
 
 More details on the Observer design pattern can be found in *Design Patterns*.
