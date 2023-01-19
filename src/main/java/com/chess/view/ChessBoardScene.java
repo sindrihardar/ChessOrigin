@@ -33,8 +33,8 @@ public class ChessBoardScene extends Scene implements Observer {
     private Color messageColor = new Color(0.8275, 0.3176, 0.6, 0.5);
     private String messageFont = "Impact";
 
-    public ChessBoardScene() {
-        super(new Pane());
+    public ChessBoardScene(double width, double height) {
+        super(new Pane(), width, height);
         root = (Pane) getRoot();
         setUpPresenter();
         buildBoardContainer();
