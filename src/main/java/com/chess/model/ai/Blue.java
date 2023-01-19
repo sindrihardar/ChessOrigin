@@ -1,13 +1,15 @@
-package com.chess.model;
+package com.chess.model.ai;
 
+import com.chess.model.game.ChessGameInterface;
+import com.chess.model.game.Tile;
 import com.chess.model.util.Pair;
 
 import java.util.Set;
 
-public class Cheddar implements AIInterface {
+public class Blue implements AIInterface {
     private ChessGameInterface game;
 
-    public Cheddar(ChessGameInterface game) {
+    public Blue(ChessGameInterface game) {
         this.game = game;
     }
 

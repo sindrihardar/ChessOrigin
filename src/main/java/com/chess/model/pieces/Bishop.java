@@ -1,9 +1,9 @@
 package com.chess.model.pieces;
 
-import com.chess.model.ChessGame;
+import com.chess.model.game.ChessGame;
 import com.chess.model.util.Colors;
-import com.chess.model.MoveCommand;
-import com.chess.model.Tile;
+import com.chess.model.game.MoveCommand;
+import com.chess.model.game.Tile;
 
 import java.util.HashSet;
 import java.util.Set;

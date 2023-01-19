@@ -80,7 +80,7 @@ public class HomeScene extends Scene {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                stage.setScene(new ChessBoardScene(getWidth(), getHeight(), new AIChessBoardPresenter()));
+                stage.setScene(new ChessBoardScene(getWidth(), getHeight(), new StandardChessBoardPresenter()));
                 stage.show();
             }
         });

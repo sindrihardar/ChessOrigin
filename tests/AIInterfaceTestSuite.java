@@ -1,6 +1,6 @@
-import com.chess.model.AIInterface;
-import com.chess.model.ChessGame;
-import com.chess.model.ChessGameInterface;
+import com.chess.model.ai.AIInterface;
+import com.chess.model.game.ChessGame;
+import com.chess.model.game.ChessGameInterface;
 import org.junit.jupiter.api.Test;
 
 public class AIInterfaceTestSuite {

@@ -4,8 +4,9 @@ module com.example.chess {
 
 
     opens com.example.chess to javafx.fxml;
-    exports com.chess.model;
     exports com.chess.view;
     exports com.chess.model.pieces;
     exports com.chess.model.util;
+    exports com.chess.model.ai;
+    exports com.chess.model.game;
 }

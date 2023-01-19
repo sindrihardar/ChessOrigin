@@ -1,4 +1,6 @@
-package com.chess.model;
+package com.chess.model.ai;
+
+import com.chess.model.game.ChessGameInterface;
 
 public interface AIInterface {
     /**
