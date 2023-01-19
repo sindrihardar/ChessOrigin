@@ -13,5 +13,6 @@ Note: Many non-functional requirements are not relevant to this project, so this
 
 - The processing for moving a piece should be nearly instant.
   - While I understand that non-functional requirements should be measurable so that they can be tested, I have no intention of performing integration testing on such a small project, so I'll manually test this to ensure that the processing speed isn't too slow.
+- If the user chooses to play against the computer, the computer can take up to five seconds to play its turn.
 
 
