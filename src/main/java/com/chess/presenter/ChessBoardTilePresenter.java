@@ -82,10 +82,10 @@ public class ChessBoardTilePresenter implements Observable {
 
     public String getStyle() {
         if (hoveredOver && (available || containsPieceOfCurrentPlayersColor))
-            return "-fx-background-color: red;";
+            return "-fx-background-color: rgb(155, 49, 148);";
         if (row % 2 == col % 2) {
             if (available)
-                return "-fx-background-color: rgb(155, 49, 148);";
+                return "-fx-background-color: rgb(205, 99, 198);";
             else
                 return "-fx-background-color: rgb(73, 204, 132);";
         } else {
