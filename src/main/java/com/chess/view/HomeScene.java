@@ -1,5 +1,7 @@
 package com.chess.view;
 
+import com.chess.presenter.AIChessBoardPresenter;
+import com.chess.presenter.StandardChessBoardPresenter;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -15,7 +17,7 @@ import javafx.stage.Stage;
 public class HomeScene extends Scene {
     private VBox root;
     private Text title;
-    private Button localChessGameButton;
+    private Button localChessGameButton, computerChessGameButton;
 
     public HomeScene(double width, double height) {
         super(new VBox(), width, height);
@@ -24,8 +26,10 @@ public class HomeScene extends Scene {
         buildLocalChessGameButton();
         root.setAlignment(Pos.CENTER);
         buildTitleLabel();
+        buildComputerChessGameButton();
         root.getChildren().add(title);
         root.getChildren().add(localChessGameButton);
+        root.getChildren().add(computerChessGameButton);
     }
 
     private void buildTitleLabel() {
@@ -35,6 +39,36 @@ public class HomeScene extends Scene {
     }
 
     private void buildLocalChessGameButton() {
+        computerChessGameButton = new Button("Play Against the Computer");
+        computerChessGameButton.setFont(new Font("Impact", 20));
+        computerChessGameButton.setMinWidth(200);
+        computerChessGameButton.setMaxWidth(200);
+        computerChessGameButton.setMinHeight(50);
+        computerChessGameButton.setMaxHeight(50);
+        computerChessGameButton.setStyle("-fx-background-color: rgb(73, 204, 132);");
+        computerChessGameButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                stage.setScene(new ChessBoardScene(getWidth(), getHeight(), new AIChessBoardPresenter()));
+                stage.show();
+            }
+        });
+        computerChessGameButton.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                computerChessGameButton.setStyle("-fx-background-color: rgb(53, 184, 112);");
+            }
+        });
+        computerChessGameButton.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                computerChessGameButton.setStyle("-fx-background-color: rgb(73, 204, 132);");
+            }
+        });
+    }
+
+    private void buildComputerChessGameButton() {
         localChessGameButton = new Button("Play Locally");
         localChessGameButton.setFont(new Font("Impact", 20));
         localChessGameButton.setMinWidth(200);
@@ -46,7 +80,7 @@ public class HomeScene extends Scene {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                stage.setScene(new ChessBoardScene(getWidth(), getHeight()));
+                stage.setScene(new ChessBoardScene(getWidth(), getHeight(), new AIChessBoardPresenter()));
                 stage.show();
             }
         });

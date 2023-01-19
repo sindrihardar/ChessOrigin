@@ -1,7 +1,9 @@
 package com.chess.view;
 
 import com.chess.model.util.Colors;
+import com.chess.presenter.AIChessBoardPresenter;
 import com.chess.presenter.ChessBoardPresenter;
+import com.chess.presenter.StandardChessBoardPresenter;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -27,15 +29,15 @@ public class ChessBoardScene extends Scene implements Observer {
     private TilePane board;
     private ChessBoardPresenter presenter;
 
-    public ChessBoardScene(double width, double height) {
+    public ChessBoardScene(double width, double height, ChessBoardPresenter presenter) {
         super(new VBox(), width, height);
-        initializeComponents();
+        initializeComponents(presenter);
         constructSceneGraph();
         buildComponents();
     }
 
-    private void initializeComponents() {
-        setUpPresenter();
+    private void initializeComponents(ChessBoardPresenter presenter) {
+        setUpPresenter(presenter);
         root = (VBox) getRoot();
         topBar = new HBox();
         homeButton = new Button();
@@ -56,9 +58,9 @@ public class ChessBoardScene extends Scene implements Observer {
         buildBoardComponent();
     }
 
-    private void setUpPresenter() {
-        presenter = new ChessBoardPresenter();
-        presenter.attach(this);
+    private void setUpPresenter(ChessBoardPresenter presenter) {
+        this.presenter = presenter;
+        this.presenter.attach(this);
     }
 
     private void buildTopBar() {

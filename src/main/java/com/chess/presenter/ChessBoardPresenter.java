@@ -9,12 +9,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-public class ChessBoardPresenter implements Observable {
-    private ChessGameInterface game;
-    private ChessBoardTilePresenter[][] tilePresenters;
-    private Pieces[][] boardState;
-    private ChessBoardTilePresenter selected;
-    private Set<Tile> available;
+public abstract class ChessBoardPresenter implements Observable {
+    protected ChessGameInterface game;
+    protected ChessBoardTilePresenter[][] tilePresenters;
+    protected Pieces[][] boardState;
+    protected ChessBoardTilePresenter selected;
+    protected Set<Tile> available;
     private List<Observer> observers;
     private boolean isGameOver, isGameInStalemate, isPlayerInCheckmate, didWhiteWin;
 
@@ -43,7 +43,7 @@ public class ChessBoardPresenter implements Observable {
                 tilePresenters[i][j] = new ChessBoardTilePresenter(i, j, boardState[i][j], game.doesTileContainPieceOfCurrentPlayersColor(i, j));
     }
 
-    private void updateFlags() {
+    protected void updateFlags() {
         updateIsGameInStalemateFlag();
         updateIsPlayerInCheckmateFlag();
         updateDidWhiteWinFlag();
@@ -107,51 +107,33 @@ public class ChessBoardPresenter implements Observable {
         tilePresenters[row][col].setHoveredOver(false);
     }
 
-    public void click(int row, int col) {
-        if (isGameOver) // clicking should not affect the board if the game is over
-            return;
+    public abstract void click(int row, int col);
 
-        if (aTileIsSelectedAndGivenTileIsAvailable(row, col)) {
-            game.move(selected.getRow(), selected.getCol(), row, col);
-            resetAvailableTiles();              // reset available spaces
-            boardState = game.getBoardState();  // update the boardState
-            updateTilePresenterPieces();        // update the state of each of the tiles (which in turn updates the view)
-            updateTilePresenterSelectability(); // updates the state of each tile's select-ability
-            updateFlags();                      // checks if the game is over
-        } else if (game.doesTileContainPieceOfCurrentPlayersColor(row, col)) {
-            if (available != null)
-                resetAvailableTiles();
-            selected = tilePresenters[row][col];
-            available = game.getAvailableMovesForTile(row, col);
-            setAvailableTiles();
-        }
-    }
-
-    private void setAvailableTiles() {
+    protected void setAvailableTiles() {
         for (Tile availableTile : available)
             tilePresenters[availableTile.getRow()][availableTile.getCol()].setAvailable(true);
     }
 
-    private void resetAvailableTiles() {
+    protected void resetAvailableTiles() {
         selected = null;
         for (Tile availableSpace : available)
             tilePresenters[availableSpace.getRow()][availableSpace.getCol()].setAvailable(false);
         available = null;
     }
 
-    private void updateTilePresenterPieces() {
+    protected void updateTilePresenterPieces() {
         for (int i = 0; i < boardState.length; i++)
             for (int j = 0; j < boardState.length; j++)
                 tilePresenters[i][j].setPiece(boardState[i][j]);
     }
 
-    private void updateTilePresenterSelectability() {
+    protected void updateTilePresenterSelectability() {
         for (int i = 0; i < boardState.length; i++)
             for (int j = 0; j < boardState.length; j++)
                 tilePresenters[i][j].setContainsPieceOfCurrentPlayersColor(game.doesTileContainPieceOfCurrentPlayersColor(i, j));
     }
 
-    private boolean aTileIsSelectedAndGivenTileIsAvailable(int row, int col) {
+    protected boolean aTileIsSelectedAndGivenTileIsAvailable(int row, int col) {
         return selected != null && available.contains(Tile.getTile(row, col));
     }
 

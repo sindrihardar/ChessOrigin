@@ -145,6 +145,15 @@ public class ChessGame implements ChessGameInterface {
         return currentPlayersColor;
     }
 
+    @Override
+    public Set<Pair<Tile, Tile>> getAvailableMovesForCurrentPlayer() {
+        Set<Pair<Tile, Tile>> availableMovesForCurrentPlayer = new HashSet<>();
+        for (Piece piece : availableTilesCache.keySet())
+            for (Tile tile : availableTilesCache.get(piece))
+                availableMovesForCurrentPlayer.add(new Pair<>(piece.getTile(), tile));
+        return availableMovesForCurrentPlayer;
+    }
+
     private List<Pieces> convertListToEnumeration(List<Piece> pieces) {
         List<Pieces> converted = new LinkedList<>();
         for (Piece p : pieces)
