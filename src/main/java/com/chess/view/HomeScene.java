@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -30,6 +31,7 @@ public class HomeScene extends Scene {
     private void buildTitleLabel() {
         title = new Text("Chess");
         title.setFont(new Font("Impact", 100));
+        title.setStroke(new Color(.7, 0.2843, 0.6725, 1));
     }
 
     private void buildLocalChessGameButton() {

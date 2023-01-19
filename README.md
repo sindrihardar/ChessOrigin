@@ -26,6 +26,9 @@ I recommend reading the planning document to get an idea of what software develo
 Before diving into the source code, I would recommend referring to the design document to build an understanding of how these components and classes relate to one another.
 
 ## TODO
- - Add a home screen.
  - Add an AI bot.
- - Add saving functionality.
+ - Add saving functionality for the game.
+ - Add themes to the view component.
+ - Add list of moves made to the side of the screen.
+ - Allow user to select which piece they'd like to promote a pawn to.
+ - Add a button to reset the state of the game.

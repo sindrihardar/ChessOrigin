@@ -16,6 +16,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class ChessBoardScene extends Scene implements Observer {
+    private final Color MESSAGE_COLOR = new Color(0.8275, 0.3176, 0.6, 0.5);
+    private final String MESSAGE_FONT = "Impact";
     private static final int BOARD_PADDING = 20;
     private VBox root;
     private HBox topBar;
@@ -24,8 +26,6 @@ public class ChessBoardScene extends Scene implements Observer {
     private StackPane boardContainer, messageNode;
     private TilePane board;
     private ChessBoardPresenter presenter;
-    private final Color messageColor = new Color(0.8275, 0.3176, 0.6, 0.5);
-    private final String messageFont = "Impact";
 
     public ChessBoardScene(double width, double height) {
         super(new VBox(), width, height);
@@ -108,7 +108,6 @@ public class ChessBoardScene extends Scene implements Observer {
         buildBoardContainer();
     }
 
-
     private void buildBoardContainer() {
         Pane parent = (Pane) boardContainer.getParent();
         boardContainer.minHeightProperty().bind(Bindings.min(parent.widthProperty(), parent.heightProperty()).subtract(2 * BOARD_PADDING));
@@ -130,22 +129,22 @@ public class ChessBoardScene extends Scene implements Observer {
         board.maxWidthProperty().bind(parent.maxWidthProperty());
         board.prefTileHeightProperty().bind(board.heightProperty().subtract(board.getPrefColumns()).divide(8));
         board.prefTileWidthProperty().bind(board.prefTileHeightProperty());
-        addSpacesToBoard(board);
+        addTilesToBoard(board);
     }
 
-    private void addSpacesToBoard(TilePane board) {
+    private void addTilesToBoard(TilePane board) {
         for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++)
                 buildTile(i, j, presenter, board);
     }
 
     private void buildTile(int row, int col, ChessBoardPresenter presenter, TilePane board) {
-        ChessBoardTileNode spaceNode = new ChessBoardTileNode(row, col, presenter.getChessBoardTilePresenter(row, col), presenter);
-        spaceNode.minHeightProperty().bind(board.prefTileHeightProperty());
-        spaceNode.minWidthProperty().bind(board.prefTileHeightProperty());
-        spaceNode.maxHeightProperty().bind(board.prefTileHeightProperty());
-        spaceNode.maxWidthProperty().bind(board.prefTileHeightProperty());
-        board.getChildren().add(spaceNode);
+        ChessBoardTileNode tileNode = new ChessBoardTileNode(row, col, presenter.getChessBoardTilePresenter(row, col), presenter);
+        tileNode.minHeightProperty().bind(board.prefTileHeightProperty());
+        tileNode.minWidthProperty().bind(board.prefTileHeightProperty());
+        tileNode.maxHeightProperty().bind(board.prefTileHeightProperty());
+        tileNode.maxWidthProperty().bind(board.prefTileHeightProperty());
+        board.getChildren().add(tileNode);
     }
 
     private void buildMessageNode(StackPane parent, String message) {
@@ -153,13 +152,13 @@ public class ChessBoardScene extends Scene implements Observer {
         Rectangle background = new Rectangle();
 
         // build background for the message
-        background.setFill(messageColor);
+        background.setFill(MESSAGE_COLOR);
         background.widthProperty().bind(parent.widthProperty().divide(2));
         background.heightProperty().bind(parent.heightProperty().divide(3));
 
         // build the message itself
         Label label = new Label(message);
-        label.styleProperty().bind(Bindings.concat("-fx-font-size: ", background.heightProperty().divide(4), "; -fx-font-family: " + messageFont + ";"));
+        label.styleProperty().bind(Bindings.concat("-fx-font-size: ", background.heightProperty().divide(4), "; -fx-font-family: " + MESSAGE_FONT + ";"));
         messageNode.getChildren().add(background);
         messageNode.getChildren().add(label);
     }
