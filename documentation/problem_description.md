@@ -38,6 +38,11 @@ The game will be played according to standard chess game rules as follows:
 
 ## User Interface
 
+The user interface is composed of two screens, the home screen and the chess board screen.
+The home screen will contain a button, which will take you to the game screen.
+In order to get back to the home screen from the game screen, there's a home icon/button in the top left corner of the screen.
+
+#### Game Screen
 There's only one screen to deal with in the game, which contains the board.
 
 Only the current player can select a piece. When the current player hovers over a selectable tile, that tile will be highlighted.
