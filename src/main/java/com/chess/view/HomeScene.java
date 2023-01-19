@@ -16,8 +16,8 @@ public class HomeScene extends Scene {
     private Text title;
     private Button localChessGameButton;
 
-    public HomeScene() {
-        super(new VBox());
+    public HomeScene(double width, double height) {
+        super(new VBox(), width, height);
         root = (VBox) getRoot();
         root.setSpacing(30);
         buildLocalChessGameButton();

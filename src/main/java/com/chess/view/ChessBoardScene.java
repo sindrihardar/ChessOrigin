@@ -4,13 +4,20 @@ import com.chess.model.util.Colors;
 import com.chess.presenter.ChessBoardPresenter;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 
 /*
  *  The ChessBoardScene class is a scene that displays a chess board. The constructor for the scene builds its components
@@ -26,6 +33,8 @@ import javafx.scene.shape.Rectangle;
  */
 public class ChessBoardScene extends Scene implements Observer {
     private static final int BOARD_PADDING = 20;
+    private VBox newRoot;
+    private HBox topBar;
     private Pane root;
     private StackPane boardContainer, messageNode;
     private TilePane board;
@@ -34,11 +43,48 @@ public class ChessBoardScene extends Scene implements Observer {
     private String messageFont = "Impact";
 
     public ChessBoardScene(double width, double height) {
-        super(new Pane(), width, height);
-        root = (Pane) getRoot();
+        super(new VBox(), width, height);
+        newRoot = (VBox) getRoot();
+        root = new Pane();
+        setUpTopBar();
+        newRoot.getChildren().add(topBar);
         setUpPresenter();
         buildBoardContainer();
         setUpBoard();
+        newRoot.getChildren().add(root);
+        root.minWidthProperty().bind(newRoot.widthProperty());
+        root.maxWidthProperty().bind(newRoot.widthProperty());
+        root.minHeightProperty().bind(newRoot.heightProperty().subtract(topBar.heightProperty()));
+        root.maxHeightProperty().bind(newRoot.heightProperty().subtract(topBar.heightProperty()));
+    }
+
+    private void setUpTopBar() {
+        topBar = new HBox();
+        topBar.setMinHeight(40);
+        topBar.setMaxHeight(40);
+        topBar.minWidthProperty().bind(newRoot.widthProperty());
+        topBar.maxWidthProperty().bind(newRoot.widthProperty());
+        topBar.setStyle("-fx-background-color: rgb(73, 204, 132);");
+        topBar.setPadding(new Insets(5, 5, 5, 5));
+        ImageView imageView = new ImageView(new Image("file:./src/main/java/com/chess/view/resources/home_icon.png", 20, 20, false, false));
+        Button homeButton = new Button("", imageView);
+        homeButton.minHeightProperty().bind(topBar.heightProperty().subtract(10));
+        homeButton.maxHeightProperty().bind(topBar.heightProperty().subtract(10));
+        homeButton.minWidthProperty().bind(homeButton.heightProperty());
+        homeButton.maxWidthProperty().bind(homeButton.heightProperty());
+        imageView.minWidth(homeButton.getHeight());
+        imageView.maxWidth(homeButton.getHeight());
+        homeButton.setPadding(new Insets(10, 10, 10, 10));
+        homeButton.setStyle(topBar.getStyle());
+        homeButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                stage.setScene(new HomeScene(getWidth(), getHeight()));
+                stage.show();
+            }
+        });
+        topBar.getChildren().add(homeButton);
     }
 
     private void setUpPresenter() {

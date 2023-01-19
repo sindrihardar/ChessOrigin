@@ -9,7 +9,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        Scene scene = new HomeScene();
+        Scene scene = new HomeScene(MIN_WIDTH, MIN_HEIGHT);
         stage.setTitle("Chess");
         stage.setScene(scene);
         setUpStage(stage);
