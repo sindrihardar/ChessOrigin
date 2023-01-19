@@ -3,88 +3,57 @@ package com.chess.view;
 import com.chess.model.util.Colors;
 import com.chess.presenter.ChessBoardPresenter;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.Property;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-/*
- *  The ChessBoardScene class is a scene that displays a chess board. The constructor for the scene builds its components
- *  and puts together the scene graph. The boardContainer contains the board and a gameOverMessageNode if the game is over.
- *  The board is composed of ChessBoardTileNodes.
- *
- *  The scene also has a ChessBoardPresenter for the chess game, and each individual ChessBoardTileNode contains a ChessBoardTilePresenter.
- *  These presenters contain information on the strings, images, and styles that get presented in the view component.
- *
- *  This class is an Observer, so when it observes a change to an observable object that it's attached to, the update
- *  method is called. Each ChessBoardScene object is attached to its presenter, so each time the state of the presenter
- *  is updated, the view is updated as well.
- */
 public class ChessBoardScene extends Scene implements Observer {
     private static final int BOARD_PADDING = 20;
-    private VBox newRoot;
+    private VBox root;
     private HBox topBar;
-    private Pane root;
+    private Pane boardPane;
+    private Button homeButton;
     private StackPane boardContainer, messageNode;
     private TilePane board;
     private ChessBoardPresenter presenter;
-    private Color messageColor = new Color(0.8275, 0.3176, 0.6, 0.5);
-    private String messageFont = "Impact";
+    private final Color messageColor = new Color(0.8275, 0.3176, 0.6, 0.5);
+    private final String messageFont = "Impact";
 
     public ChessBoardScene(double width, double height) {
         super(new VBox(), width, height);
-        newRoot = (VBox) getRoot();
-        root = new Pane();
-        setUpTopBar();
-        newRoot.getChildren().add(topBar);
-        setUpPresenter();
-        buildBoardContainer();
-        setUpBoard();
-        newRoot.getChildren().add(root);
-        root.minWidthProperty().bind(newRoot.widthProperty());
-        root.maxWidthProperty().bind(newRoot.widthProperty());
-        root.minHeightProperty().bind(newRoot.heightProperty().subtract(topBar.heightProperty()));
-        root.maxHeightProperty().bind(newRoot.heightProperty().subtract(topBar.heightProperty()));
+        initializeComponents();
+        constructSceneGraph();
+        buildComponents();
     }
 
-    private void setUpTopBar() {
+    private void initializeComponents() {
+        setUpPresenter();
+        root = (VBox) getRoot();
         topBar = new HBox();
-        topBar.setMinHeight(40);
-        topBar.setMaxHeight(40);
-        topBar.minWidthProperty().bind(newRoot.widthProperty());
-        topBar.maxWidthProperty().bind(newRoot.widthProperty());
-        topBar.setStyle("-fx-background-color: rgb(73, 204, 132);");
-        topBar.setPadding(new Insets(5, 5, 5, 5));
-        ImageView imageView = new ImageView(new Image("file:./src/main/java/com/chess/view/resources/home_icon.png", 20, 20, false, false));
-        Button homeButton = new Button("", imageView);
-        homeButton.minHeightProperty().bind(topBar.heightProperty().subtract(10));
-        homeButton.maxHeightProperty().bind(topBar.heightProperty().subtract(10));
-        homeButton.minWidthProperty().bind(homeButton.heightProperty());
-        homeButton.maxWidthProperty().bind(homeButton.heightProperty());
-        imageView.minWidth(homeButton.getHeight());
-        imageView.maxWidth(homeButton.getHeight());
-        homeButton.setPadding(new Insets(10, 10, 10, 10));
-        homeButton.setStyle(topBar.getStyle());
-        homeButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                stage.setScene(new HomeScene(getWidth(), getHeight()));
-                stage.show();
-            }
-        });
-        topBar.getChildren().add(homeButton);
+        homeButton = new Button();
+        boardPane = new Pane();
+        boardContainer = new StackPane();
+        board = new TilePane();
+    }
+
+    private void constructSceneGraph() {
+        root.getChildren().addAll(topBar, boardPane);
+        topBar.getChildren().addAll(homeButton);
+        boardPane.getChildren().addAll(boardContainer);
+        boardContainer.getChildren().addAll(board);
+    }
+
+    private void buildComponents() {
+        buildTopBar();
+        buildBoardComponent();
     }
 
     private void setUpPresenter() {
@@ -92,37 +61,90 @@ public class ChessBoardScene extends Scene implements Observer {
         presenter.attach(this);
     }
 
+    private void buildTopBar() {
+        final int TOP_BAR_HEIGHT = 40;
+        final String TOP_BAR_STYLE = "-fx-background-color: rgb(73, 204, 132);";
+        final Insets TOP_BAR_PADDING = new Insets(5, 5, 5, 5);
+        topBar.setMinHeight(TOP_BAR_HEIGHT);
+        topBar.setMaxHeight(TOP_BAR_HEIGHT);
+        topBar.minWidthProperty().bind(((VBox) topBar.getParent()).widthProperty());
+        topBar.maxWidthProperty().bind(topBar.minWidthProperty());
+        topBar.setStyle(TOP_BAR_STYLE);
+        topBar.setPadding(TOP_BAR_PADDING);
+        buildHomeButton();
+    }
+
+    private void buildHomeButton() {
+        HBox parent = (HBox) homeButton.getParent();
+        homeButton.minHeightProperty().bind(parent.heightProperty().subtract(parent.getPadding().getBottom() + parent.getPadding().getTop()));
+        homeButton.maxHeightProperty().bind(homeButton.minHeightProperty());
+        homeButton.minWidthProperty().bind(homeButton.minHeightProperty());
+        homeButton.maxWidthProperty().bind(homeButton.minHeightProperty());
+        homeButton.setStyle(parent.getStyle());
+
+        // add image to the button
+        final String HOME_ICON_FILE_PATH = "file:./src/main/java/com/chess/view/resources/home_icon.png";
+        ImageView imageView = new ImageView(new Image(HOME_ICON_FILE_PATH, 20, 20, false, false));
+        imageView.minWidth(homeButton.getWidth());
+        imageView.maxWidth(homeButton.getWidth());
+        imageView.minHeight(homeButton.getHeight());
+        imageView.maxHeight(homeButton.getHeight());
+        homeButton.setGraphic(imageView);
+
+        homeButton.setOnMouseClicked(mouseEvent -> {
+            Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+            stage.setScene(new HomeScene(getWidth(), getHeight()));
+            stage.show();
+        });
+        homeButton.setOnMouseEntered(mouseEvent -> homeButton.setStyle("-fx-background-color: rgb(43, 174, 102);"));
+        homeButton.setOnMouseExited(mouseEvent -> homeButton.setStyle(parent.getStyle()));
+    }
+
+    private void buildBoardComponent() {
+        VBox parent = (VBox) boardPane.getParent();
+        VBox.setVgrow(boardPane, Priority.ALWAYS);
+        boardPane.minWidthProperty().bind(parent.widthProperty());
+        boardPane.maxWidthProperty().bind(parent.widthProperty());
+        buildBoardContainer();
+    }
+
+
     private void buildBoardContainer() {
-        boardContainer = new StackPane();
-        boardContainer.minHeightProperty().bind(Bindings.min(root.widthProperty(), root.heightProperty()).subtract(2 * BOARD_PADDING));
+        Pane parent = (Pane) boardContainer.getParent();
+        boardContainer.minHeightProperty().bind(Bindings.min(parent.widthProperty(), parent.heightProperty()).subtract(2 * BOARD_PADDING));
         boardContainer.minWidthProperty().bind(boardContainer.minHeightProperty());
         boardContainer.maxWidthProperty().bind(boardContainer.minWidthProperty());
         boardContainer.maxHeightProperty().bind(boardContainer.minHeightProperty());
         boardContainer.layoutXProperty().bind(Bindings.max(BOARD_PADDING,widthProperty().divide(2).subtract(boardContainer.widthProperty().divide(2))));
-        boardContainer.layoutYProperty().bind(root.heightProperty().divide(2).subtract(boardContainer.heightProperty().divide(2)));
-        root.getChildren().add(boardContainer);
+        boardContainer.layoutYProperty().bind(parent.heightProperty().divide(2).subtract(boardContainer.heightProperty().divide(2)));
+        buildBoard();
     }
 
-    private void setUpBoard() {
-        board = new TilePane();
+    private void buildBoard() {
+        StackPane parent = (StackPane) board.getParent();
         board.setPrefColumns(8);
         board.setPrefRows(8);
-        bindWidthAndHeightToProperty(board, boardContainer.maxWidthProperty());
+        board.minHeightProperty().bind(parent.maxWidthProperty());
+        board.minWidthProperty().bind(parent.maxWidthProperty());
+        board.maxHeightProperty().bind(parent.maxWidthProperty());
+        board.maxWidthProperty().bind(parent.maxWidthProperty());
         board.prefTileHeightProperty().bind(board.heightProperty().subtract(board.getPrefColumns()).divide(8));
         board.prefTileWidthProperty().bind(board.prefTileHeightProperty());
-        addSpacesToBoard();
-        boardContainer.getChildren().add(board);
+        addSpacesToBoard(board);
     }
 
-    private void addSpacesToBoard() {
+    private void addSpacesToBoard(TilePane board) {
         for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++)
-                setUpTile(i, j, presenter);
+                buildTile(i, j, presenter, board);
     }
 
-    private void setUpTile(int row, int col, ChessBoardPresenter presenter) {
+    private void buildTile(int row, int col, ChessBoardPresenter presenter, TilePane board) {
         ChessBoardTileNode spaceNode = new ChessBoardTileNode(row, col, presenter.getChessBoardTilePresenter(row, col), presenter);
-        bindWidthAndHeightToProperty(spaceNode, board.prefTileHeightProperty());
+        spaceNode.minHeightProperty().bind(board.prefTileHeightProperty());
+        spaceNode.minWidthProperty().bind(board.prefTileHeightProperty());
+        spaceNode.maxHeightProperty().bind(board.prefTileHeightProperty());
+        spaceNode.maxWidthProperty().bind(board.prefTileHeightProperty());
         board.getChildren().add(spaceNode);
     }
 
@@ -140,13 +162,6 @@ public class ChessBoardScene extends Scene implements Observer {
         label.styleProperty().bind(Bindings.concat("-fx-font-size: ", background.heightProperty().divide(4), "; -fx-font-family: " + messageFont + ";"));
         messageNode.getChildren().add(background);
         messageNode.getChildren().add(label);
-    }
-
-    private void bindWidthAndHeightToProperty(Pane node, Property property) {
-        node.minHeightProperty().bind(property);
-        node.minWidthProperty().bind(property);
-        node.maxHeightProperty().bind(property);
-        node.maxWidthProperty().bind(property);
     }
 
     @Override
