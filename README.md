@@ -24,3 +24,8 @@ I used the following classes and books to learn the concepts that I've applied t
 All of the documentation for this project can be found in the documentation directory. 
 I recommend reading the planning document to get an idea of what software development process is being used, along with the phases involved in that process.
 Before diving into the source code, I would recommend referring to the design document to build an understanding of how these components and classes relate to one another.
+
+## TODO
+ - Add a home screen.
+ - Add an AI bot.
+ - Add saving functionality.

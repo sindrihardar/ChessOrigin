@@ -44,6 +44,6 @@ Here are the following phases that I'll be going through for this project:
 
 ## Iterations
 
-| Iteration # | Feature Added | Final Commit ID |
-|-------------|---------------|-----------------|
-|1| A simple chess application. | -               |
+| Iteration # | Feature Added | Final Commit ID                       |
+|-------------|---------------|---------------------------------------|
+|1| A simple chess application. | 8170c59e0dec050f0ed2899623b93bd35de7a3f9 |
