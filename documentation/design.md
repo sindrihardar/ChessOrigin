@@ -45,6 +45,13 @@ To incorporate this functionality, a MoveCommand class was created.
 
 More details on the Builder and Command design patterns can be found in *Design Patterns*.
 
+The AIInterface defines how the AIBots (like Cheddar) can interact with the ChessGameInterface.
+The only thing an AIBot needs to do is make a move based on the state of a ChessGame. 
+Thus, that is the only method defined in the interface.
+
+The Cheddar AI bot will use an iterative deepening minimax algorithm with alpha-beta pruning. 
+It'll stop executing after the 5-second limit.
+
 ## Behavioral
 
 For the behavioral diagrams, there's no need to create a use case diagram since there's just a single actor, the user, and there's only two ways for the user to interact with the application, either by hovering over a space or by selecting it.

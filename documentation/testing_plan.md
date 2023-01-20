@@ -1,7 +1,13 @@
 # Testing Plan
 
-To test this application, I'll be performing white box testing in the form of unit tests for the methods in the model component with JUnit.
-Since user interface frameworks such as JavaFX are notoriously difficult to test, and the user interface for my application is incredibly simple, I won't be performing any integration testing.
+To test this application, I'll be performing white box testing in the form of unit tests for the methods in the ChessGameInterface with JUnit.
+Since GUI frameworks such as JavaFX are notoriously difficult to test, and the user interface for my application is incredibly simple, I won't be performing any integration testing.
+
+## AIInterface Tests
+Testing the AIInterface poses some problems. 
+Each implementation of the AIInterface will use different techniques for choosing moves, so there's no good way of creating unit tests for the interface since each bot might choose a different move to make for the same state.
+Instead of unit testing the interface, I'll be creating a test suite that compares two different implementation of the AIInterface.
+Whenever I develop a supposedly superior bot, or improve an existing one, I can have it play against the previous implementations to see if it beats it the majority of the time.
 
 ## ChessGameInterface Unit Tests
 

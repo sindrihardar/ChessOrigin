@@ -1,4 +1,4 @@
-package com.chess.model;
+package com.chess.model.game;
 
 import com.chess.model.pieces.*;
 import com.chess.model.util.Colors;
@@ -145,6 +145,24 @@ public class ChessGame implements ChessGameInterface {
         return currentPlayersColor;
     }
 
+    @Override
+    public Set<Pair<Tile, Tile>> getAvailableMovesForCurrentPlayer() {
+        Set<Pair<Tile, Tile>> availableMovesForCurrentPlayer = new TreeSet<>(new Comparator<Pair<Tile, Tile>>() {
+            @Override
+            public int compare(Pair<Tile, Tile> o1, Pair<Tile, Tile> o2) {
+                int move1CapturedValue = getPieceAt(o1.getValue()) == null ? 0 : getPieceAt(o1.getValue()).getValue();
+                int move2CapturedValue = getPieceAt(o2.getValue()) == null ? 0 : getPieceAt(o2.getValue()).getValue();
+                int row1 = o1.getValue().getRow(), col1 = o1.getValue().getCol();
+                int row2 = o2.getValue().getRow(), col2 = o2.getValue().getCol();
+                return row1 * 8 + col1 + row2 * 8 + col2 + 100 * (move1CapturedValue - move2CapturedValue);
+            }
+        });
+        for (Piece piece : availableTilesCache.keySet())
+            for (Tile tile : availableTilesCache.get(piece))
+                availableMovesForCurrentPlayer.add(new Pair<>(piece.getTile(), tile));
+        return availableMovesForCurrentPlayer;
+    }
+
     private List<Pieces> convertListToEnumeration(List<Piece> pieces) {
         List<Pieces> converted = new LinkedList<>();
         for (Piece p : pieces)
@@ -167,6 +185,7 @@ public class ChessGame implements ChessGameInterface {
             Pawn pawn = (Pawn) p;
             if (pawn.wasPromoted())
                 return getPieceEnumeration(pawn.getPromotedPiece());
+            return p.getColor() == Colors.WHITE ? Pieces.WHITE_PAWN : Pieces.BLACK_PAWN;
         }
         throw new IllegalArgumentException("No enumeration exists for the given piece.");
     }

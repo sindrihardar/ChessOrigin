@@ -1,7 +1,9 @@
 package com.chess.model.pieces;
 
 
-import com.chess.model.*;
+import com.chess.model.game.ChessGame;
+import com.chess.model.game.MoveCommand;
+import com.chess.model.game.Tile;
 import com.chess.model.util.Colors;
 import com.chess.model.util.Pair;
 
@@ -16,10 +18,17 @@ public class Pawn extends Piece {
     private Piece promotedPiece;
 
     public Pawn(ChessGame game, Tile tile, Colors color) {
-        super(game, tile, color);
+        super(game, tile, color, 1);
         direction = color == Colors.WHITE ? -1 : 1;
         promoted = false;
         promotedPiece = null;
+    }
+
+    @Override
+    public int getValue() {
+        if (promoted)
+            return promotedPiece.getValue();
+        return super.getValue();
     }
 
     public boolean wasPromoted() {

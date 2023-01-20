@@ -1,4 +1,6 @@
-import com.chess.model.*;
+import com.chess.model.game.ChessGame;
+import com.chess.model.game.ChessGameInterface;
+import com.chess.model.game.Tile;
 import com.chess.model.util.Colors;
 import com.chess.model.util.Pieces;
 import org.junit.jupiter.api.Test;

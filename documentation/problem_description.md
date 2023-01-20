@@ -1,8 +1,14 @@
 # Problem Description
 
-The application being built is a Chess application that allows two users to play chess on a single device.
+The application being built is a Chess application that allows two users to play chess on a single device, and also allows a single user to play against the computer.
 
-When the application is launched, a window will be displayed with the initial state of a chess board, with white pieces on bottom and black pieces on top.
+When the application is launched, the user will be taken to the home screen, which contains a button for playing locally and a button for playing against the computer.
+
+If the user clicks the button to play locally, a window will be displayed with the initial state of a chess board, with white pieces on bottom and black pieces on top.
+When a user takes their turn, the current player's color changes and the other user can take their turn.
+
+If the user clicks the button to play against the computer, an identical screen to the one described above will be shown.
+The only difference is that when a user takes their turn, the computer takes its turn directly afterwards.
 
 ## Rules
 The game will be played according to standard chess game rules as follows:
@@ -38,9 +44,9 @@ The game will be played according to standard chess game rules as follows:
 
 ## User Interface
 
-The user interface is composed of two screens, the home screen and the chess board screen.
-The home screen will contain a button, which will take you to the game screen.
-In order to get back to the home screen from the game screen, there's a home icon/button in the top left corner of the screen.
+The user interface is composed of two types of screens, the home screen and the chess board screen.
+The home screen will contain two buttons, one of which will take you to the game screen to play locally, the other will take you to the game screen to play against the computer.
+There's a home icon/button in the top left corner of the game screen which takes the user back to the home screen.
 
 #### Game Screen
 There's only one screen to deal with in the game, which contains the board.
@@ -51,6 +57,7 @@ Only the current player can select a piece. When the current player hovers over 
 When a player selects a piece, all the tiles it can move to should be highlighted.
 
 If a piece is selected and the user selects a tile that it can be moved to, then that piece will be moved there and the next player can take their turn.
+If the user is playing against the computer, the computer will automatically take it's turn after the user.
 
 If the game ends with a checkmate, a message should be displayed indicating which player won.
 If the game ends with a stalemate, a message should be displayed indicating that there was a tie.

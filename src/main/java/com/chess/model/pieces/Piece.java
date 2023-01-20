@@ -1,6 +1,8 @@
 package com.chess.model.pieces;
 
-import com.chess.model.*;
+import com.chess.model.game.ChessGame;
+import com.chess.model.game.MoveCommand;
+import com.chess.model.game.Tile;
 import com.chess.model.util.Colors;
 import com.chess.model.util.Pair;
 
@@ -16,12 +18,18 @@ public abstract class Piece {
     private Tile tile;
     private Colors color;
     private boolean wasMoved;
+    private int value;
 
-    public Piece(ChessGame game, Tile tile, Colors color) {
+    public Piece(ChessGame game, Tile tile, Colors color, int value) {
         this.game = game;
         this.tile = tile;
         this.color = color;
+        this.value = value;
         wasMoved = false;
+    }
+
+    public int getValue() {
+        return value;
     }
 
     public Colors getColor() {

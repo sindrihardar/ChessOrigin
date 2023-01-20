@@ -1,6 +1,7 @@
-package com.chess.model;
+package com.chess.model.game;
 
 import com.chess.model.util.Colors;
+import com.chess.model.util.Pair;
 import com.chess.model.util.Pieces;
 
 import java.util.List;
@@ -94,4 +95,9 @@ public interface ChessGameInterface {
      * @return the current player's color.
      */
     Colors getCurrentPlayerColor();
+
+    /**
+     * @return the available moves for the current player as a set of pairs of tiles.
+     */
+    Set<Pair<Tile, Tile>> getAvailableMovesForCurrentPlayer();
 }

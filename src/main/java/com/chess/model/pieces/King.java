@@ -1,6 +1,8 @@
 package com.chess.model.pieces;
 
-import com.chess.model.*;
+import com.chess.model.game.ChessGame;
+import com.chess.model.game.MoveCommand;
+import com.chess.model.game.Tile;
 import com.chess.model.util.Colors;
 import com.chess.model.util.Pair;
 
@@ -11,7 +13,7 @@ import java.util.Set;
 
 public class King extends Piece {
     public King(ChessGame game, Tile tile, Colors color) {
-        super(game, tile, color);
+        super(game, tile, color, Integer.MAX_VALUE);
     }
 
     @Override
