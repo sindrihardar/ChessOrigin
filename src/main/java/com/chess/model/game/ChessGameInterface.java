@@ -100,4 +100,14 @@ public interface ChessGameInterface {
      * @return the available moves for the current player as a set of pairs of tiles.
      */
     Set<Pair<Tile, Tile>> getAvailableMovesForCurrentPlayer();
+
+    /**
+     * @return the material heuristic to be used in the bots' heuristic function.
+     */
+    int getMaterialHeuristic();
+
+    /**
+     * @return the positional heuristic to be used in the bots' heuristic function.
+     */
+    int getPositionalHeuristic();
 }

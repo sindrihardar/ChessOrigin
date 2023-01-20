@@ -8,19 +8,70 @@ import com.chess.model.util.Pieces;
 import java.util.*;
 
 import static com.chess.model.util.Constants.*;
+import static com.chess.model.util.Pieces.*;
+import static com.chess.model.util.Pieces.BLACK_KNIGHT;
 
 public class ChessGame implements ChessGameInterface {
+    private int materialHeuristic, positionalHeuristic;
     private Colors currentPlayersColor;
     private List<Piece> activeWhitePieces, activeBlackPieces, capturedWhitePieces, capturedBlackPieces;
     private Map<Tile, Piece> board;
     private ArrayDeque<MoveCommand> playedMoves;
     private Map<Piece, Set<Tile>> availableTilesCache;
     private boolean isBlackKingInCheckFlag, isWhiteKingInCheckFlag, currentPlayerHasMovesFlag;
+    private Map<Pieces, int[][]> pieceTables;
+
+    private int[][] PAWN_PIECE_SQUARE =        {{0,     0,      0,      0,      0,      0,      0,      0},
+            {50,    50,     50,     50,     50,     50,     50,     50},
+            {10,    10,     20,     30,     30,     20,     10,     10},
+            {5,     5,      10,     25,     25,     10,     5,      5},
+            {0,     0,      0,      20,     20,     0,      0,      0},
+            {5,     -5,     -10,    0,      0,      -10,    -5,     5},
+            {5,     10,     10,     -20,    -20,    10,     10,     5},
+            {0,     0,      0,      0,      0,      0,      0,      0}};
+
+    private int[][] KNIGHT_PIECE_SQUARE =      {{-50,   -40,    -30,    -30,    -30,    -30,    -40,    -50},
+            {-40,   -20,    0,      0,      0,      0,      -20,    -40},
+            {-30,   0,      10,     15,     15,     10,     0,      -30},
+            {-30,   5,      15,     20,     20,     15,     5,      -30},
+            {-30,   0,      15,     20,     20,     15,     0,      -30},
+            {-30,   5,      10,     15,     15,     10,     5,      -30},
+            {-40,   -20,    0,      5,      5,      0,      -20,    -40},
+            {-50,   -40,    -30,    -30,    -30,    -30,    -40,    -50}};
+
+    private int[][] BISHOP_PIECE_SQUARE =      {{-20,   -10,    -10,    -10,    -10,    -10,    -10,    -20},
+            {-10,   0,      0,      0,      0,      0,      0,      -10},
+            {-10,   0,      5,      10,     10,     5,      0,      -10},
+            {-10,   5,      5,      10,     10,     5,      5,      -10},
+            {-10,   0,      10,     10,     10,     10,     0,      -10},
+            {-10,   10,     10,     10,     10,     10,     10,     -10},
+            {-10,   5,      0,      0,      0,      0,      5,      -10},
+            {-20,   -10,    -10,    -10,    -10,    -10,    -10,    -20}};
+
+    private int[][] ROOK_PIECE_SQUARE =        {{0,     0,      0,      0,      0,      0,      0,      0},
+            {5,     10,     10,     10,     10,     10,     10,     5},
+            {-5,    0,      0,      0,      0,      0,      0,      -5},
+            {-5,    0,      0,      0,      0,      0,      0,      -5},
+            {-5,    0,      0,      0,      0,      0,      0,      -5},
+            {-5,    0,      0,      0,      0,      0,      0,      -5},
+            {-5,    0,      0,      0,      0,      0,      0,      -5},
+            {0,     0,      0,      5,      5,      0,      0,      0}};
+
+    private int[][] QUEEN_PIECE_SQUARE =        {{-20,  -10,    -10,    -5,     -5,     -10,    -10,    -20},
+            {-10,  0,      0,      0,      0,      0,      0,      -10},
+            {-10,  0,      5,      5,      5,      5,      0,      -10},
+            {-5,   0,      5,      5,      5,      5,      0,      -5},
+            {0,    0,      5,      5,      5,      5,      0,      -5},
+            {-10,  5,      5,      5,      5,      5,      0,      -10},
+            {-10,  0,      5,      0,      0,      0,      0,      -10},
+            {-20,  -10,    -10,    -5,     -5,     -10,    -10,    -20}};
 
     public ChessGame(Colors color, Pieces[][] board) {
         setUpState(color, board);
+        updateIsWhiteKingInCheckFlag();
+        updateIsBlackKingInCheckFlag();
         updateAvailableTilesCache();
-        updateFlags();
+        updateCurrentPlayerHasMovesFlag();
     }
 
     public ChessGame(Pieces[][] board) {
@@ -44,6 +95,77 @@ public class ChessGame implements ChessGameInterface {
         capturedBlackPieces = new LinkedList<>();
         this.board = builder.getBoardMap();
         playedMoves = new ArrayDeque<>();
+        setUpPieceTablesMap();
+        initializeMaterialHeuristic();
+        initializePositionalHeuristic();
+    }
+
+    private void initializePositionalHeuristic() {
+        positionalHeuristic = 0;
+        Pieces[][] boardState = getBoardState();
+        for (int i = 0; i < boardState.length; i++)
+            for (int j = 0; j < boardState.length; j++)
+                positionalHeuristic += getPositionalValue(i, j, boardState[i][j]);
+    }
+
+    private int getPositionalValue(int row, int col, Pieces piece) {
+        if (piece == null || piece == WHITE_KING || piece == BLACK_KING)
+            return 0;
+
+        return pieceTables.get(piece)[row][col];
+    }
+
+    private void setUpPieceTablesMap() {
+        pieceTables = new HashMap<>();
+
+        pieceTables.put(WHITE_QUEEN, QUEEN_PIECE_SQUARE);
+        pieceTables.put(BLACK_QUEEN, reverse(QUEEN_PIECE_SQUARE));
+
+        pieceTables.put(WHITE_ROOK, ROOK_PIECE_SQUARE);
+        pieceTables.put(BLACK_ROOK, reverse(ROOK_PIECE_SQUARE));
+
+        pieceTables.put(WHITE_BISHOP, BISHOP_PIECE_SQUARE);
+        pieceTables.put(BLACK_BISHOP, reverse(BISHOP_PIECE_SQUARE));
+
+        pieceTables.put(WHITE_KNIGHT, KNIGHT_PIECE_SQUARE);
+        pieceTables.put(BLACK_KNIGHT, reverse(KNIGHT_PIECE_SQUARE));
+
+        pieceTables.put(WHITE_PAWN, PAWN_PIECE_SQUARE);
+        pieceTables.put(BLACK_PAWN, reverse(PAWN_PIECE_SQUARE));
+    }
+
+    private int[][] reverse(int[][] table) {
+        int[][] reversed = new int[table.length][table[0].length];
+        for (int i = 0; i < table.length; i++)
+            for (int j = 0; j < table.length; j++)
+                reversed[i][j] = -table[table.length - 1 - i][j];
+        return reversed;
+    }
+
+    private void initializeMaterialHeuristic() {
+        materialHeuristic = 0;
+        for (Pieces piece : convertListToEnumeration(activeWhitePieces))
+            materialHeuristic += getPieceValue(piece);
+        for (Pieces piece : convertListToEnumeration(activeBlackPieces))
+            materialHeuristic -= getPieceValue(piece);
+    }
+
+    private int getPieceValue(Pieces piece) {
+        if (piece == null)
+            throw new IllegalArgumentException("Piece cannot be null if we want to get it's value.");
+
+        if (piece == WHITE_KING || piece == BLACK_KING)
+            return 20000;
+        else if (piece == WHITE_QUEEN || piece == BLACK_QUEEN)
+            return 900;
+        else if (piece == WHITE_ROOK || piece == BLACK_ROOK)
+            return 500;
+        else if (piece == WHITE_BISHOP || piece == BLACK_BISHOP)
+            return 330;
+        else if (piece == WHITE_KNIGHT || piece == BLACK_KNIGHT)
+            return 320;
+        else
+            return 100;
     }
 
     @Override
@@ -68,8 +190,10 @@ public class ChessGame implements ChessGameInterface {
         Tile startingTile = Tile.getTile(startRow, startCol), endingTile = Tile.getTile(endRow, endCol);
         isMovementLegal(startingTile, endingTile);
         resolveMovement(startingTile, endingTile);
+        updateIsWhiteKingInCheckFlag();
+        updateIsBlackKingInCheckFlag();
         updateAvailableTilesCache();
-        updateFlags();
+        updateCurrentPlayerHasMovesFlag();
     }
 
     private boolean isMovementLegal(Tile startingTile, Tile endingTile) {
@@ -95,8 +219,11 @@ public class ChessGame implements ChessGameInterface {
 
         MoveCommand moveCommand = playedMoves.pollLast();
         moveCommand.unexecute();
+
+        updateIsWhiteKingInCheckFlag();
+        updateIsBlackKingInCheckFlag();
         updateAvailableTilesCache();
-        updateFlags();
+        updateCurrentPlayerHasMovesFlag();
     }
 
     @Override
@@ -161,6 +288,16 @@ public class ChessGame implements ChessGameInterface {
             for (Tile tile : availableTilesCache.get(piece))
                 availableMovesForCurrentPlayer.add(new Pair<>(piece.getTile(), tile));
         return availableMovesForCurrentPlayer;
+    }
+
+    @Override
+    public int getMaterialHeuristic() {
+        return materialHeuristic;
+    }
+
+    @Override
+    public int getPositionalHeuristic() {
+        return positionalHeuristic;
     }
 
     private List<Pieces> convertListToEnumeration(List<Piece> pieces) {
@@ -365,10 +502,13 @@ public class ChessGame implements ChessGameInterface {
         if (piece.getColor() == Colors.WHITE) {
             activeWhitePieces.remove(piece);
             capturedWhitePieces.add(piece);
+            materialHeuristic -= getPieceValue(getPieceEnumeration(piece));
         } else {
             activeBlackPieces.remove(piece);
             capturedBlackPieces.add(piece);
+            materialHeuristic += getPieceValue(getPieceEnumeration(piece));
         }
+        positionalHeuristic -= getPositionalValue(tile.getRow(), tile.getCol(), getPieceEnumeration(piece));
         board.remove(tile);
         piece.setTile(null);
     }
@@ -380,6 +520,8 @@ public class ChessGame implements ChessGameInterface {
             throw new IllegalArgumentException("Cannot move piece to an occupied tile.");
         board.put(movement.getValue(), p);
         p.setTile(movement.getValue());
+        positionalHeuristic -= getPositionalValue(movement.getKey().getRow(), movement.getKey().getCol(), getPieceEnumeration(p));
+        positionalHeuristic += getPositionalValue(movement.getValue().getRow(), movement.getValue().getCol(), getPieceEnumeration(p));
     }
 
     public void unexecuteCapture(Tile tile, Piece piece) {
@@ -390,10 +532,13 @@ public class ChessGame implements ChessGameInterface {
         if (piece.getColor() == Colors.WHITE) {
             capturedWhitePieces.remove(piece);
             activeWhitePieces.add(piece);
+            materialHeuristic += getPieceValue(getPieceEnumeration(piece));
         } else {
             capturedBlackPieces.remove(piece);
             activeBlackPieces.add(piece);
+            materialHeuristic -= getPieceValue(getPieceEnumeration(piece));
         }
+        positionalHeuristic += getPositionalValue(tile.getRow(), tile.getCol(), getPieceEnumeration(piece));
     }
 
     public void switchCurrentPlayerColor() {

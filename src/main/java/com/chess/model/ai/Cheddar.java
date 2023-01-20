@@ -4,90 +4,15 @@ import com.chess.model.game.ChessGameInterface;
 import com.chess.model.game.Tile;
 import com.chess.model.util.Colors;
 import com.chess.model.util.Pair;
-import com.chess.model.util.Pieces;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
-
-import static com.chess.model.util.Pieces.*;
 
 public class Cheddar implements AIInterface {
     private ChessGameInterface game;
-    private Map<Pieces, int[][]> pieceTables;
-
-    private int[][] PAWN_PIECE_SQUARE =        {{0,     0,      0,      0,      0,      0,      0,      0},
-                                                {50,    50,     50,     50,     50,     50,     50,     50},
-                                                {10,    10,     20,     30,     30,     20,     10,     10},
-                                                {5,     5,      10,     25,     25,     10,     5,      5},
-                                                {0,     0,      0,      20,     20,     0,      0,      0},
-                                                {5,     -5,     -10,    0,      0,      -10,    -5,     5},
-                                                {5,     10,     10,     -20,    -20,    10,     10,     5},
-                                                {0,     0,      0,      0,      0,      0,      0,      0}};
-
-    private int[][] KNIGHT_PIECE_SQUARE =      {{-50,   -40,    -30,    -30,    -30,    -30,    -40,    -50},
-                                                {-40,   -20,    0,      0,      0,      0,      -20,    -40},
-                                                {-30,   0,      10,     15,     15,     10,     0,      -30},
-                                                {-30,   5,      15,     20,     20,     15,     5,      -30},
-                                                {-30,   0,      15,     20,     20,     15,     0,      -30},
-                                                {-30,   5,      10,     15,     15,     10,     5,      -30},
-                                                {-40,   -20,    0,      5,      5,      0,      -20,    -40},
-                                                {-50,   -40,    -30,    -30,    -30,    -30,    -40,    -50}};
-
-    private int[][] BISHOP_PIECE_SQUARE =      {{-20,   -10,    -10,    -10,    -10,    -10,    -10,    -20},
-                                                {-10,   0,      0,      0,      0,      0,      0,      -10},
-                                                {-10,   0,      5,      10,     10,     5,      0,      -10},
-                                                {-10,   5,      5,      10,     10,     5,      5,      -10},
-                                                {-10,   0,      10,     10,     10,     10,     0,      -10},
-                                                {-10,   10,     10,     10,     10,     10,     10,     -10},
-                                                {-10,   5,      0,      0,      0,      0,      5,      -10},
-                                                {-20,   -10,    -10,    -10,    -10,    -10,    -10,    -20}};
-
-    private int[][] ROOK_PIECE_SQUARE =        {{0,     0,      0,      0,      0,      0,      0,      0},
-                                                {5,     10,     10,     10,     10,     10,     10,     5},
-                                                {-5,    0,      0,      0,      0,      0,      0,      -5},
-                                                {-5,    0,      0,      0,      0,      0,      0,      -5},
-                                                {-5,    0,      0,      0,      0,      0,      0,      -5},
-                                                {-5,    0,      0,      0,      0,      0,      0,      -5},
-                                                {-5,    0,      0,      0,      0,      0,      0,      -5},
-                                                {0,     0,      0,      5,      5,      0,      0,      0}};
-
-    private int[][] QUEEN_PIECE_SQUARE =        {{-20,  -10,    -10,    -5,     -5,     -10,    -10,    -20},
-                                                 {-10,  0,      0,      0,      0,      0,      0,      -10},
-                                                 {-10,  0,      5,      5,      5,      5,      0,      -10},
-                                                 {-5,   0,      5,      5,      5,      5,      0,      -5},
-                                                 {0,    0,      5,      5,      5,      5,      0,      -5},
-                                                 {-10,  5,      5,      5,      5,      5,      0,      -10},
-                                                 {-10,  0,      5,      0,      0,      0,      0,      -10},
-                                                 {-20,  -10,    -10,    -5,     -5,     -10,    -10,    -20}};
 
     public Cheddar(ChessGameInterface game) {
         this.game = game;
-        pieceTables = new HashMap<>();
-
-        pieceTables.put(WHITE_QUEEN, QUEEN_PIECE_SQUARE);
-        pieceTables.put(BLACK_QUEEN, reverse(QUEEN_PIECE_SQUARE));
-
-        pieceTables.put(WHITE_ROOK, ROOK_PIECE_SQUARE);
-        pieceTables.put(BLACK_ROOK, reverse(ROOK_PIECE_SQUARE));
-
-        pieceTables.put(WHITE_BISHOP, BISHOP_PIECE_SQUARE);
-        pieceTables.put(BLACK_BISHOP, reverse(BISHOP_PIECE_SQUARE));
-
-        pieceTables.put(WHITE_KNIGHT, KNIGHT_PIECE_SQUARE);
-        pieceTables.put(BLACK_KNIGHT, reverse(KNIGHT_PIECE_SQUARE));
-
-        pieceTables.put(WHITE_PAWN, PAWN_PIECE_SQUARE);
-        pieceTables.put(BLACK_PAWN, reverse(PAWN_PIECE_SQUARE));
-    }
-
-    private int[][] reverse(int[][] table) {
-        int[][] reversed = new int[table.length][table[0].length];
-        for (int i = 0; i < table.length; i++)
-            for (int j = 0; j < table.length; j++)
-                reversed[i][j] = -table[table.length - 1 - i][j];
-        return reversed;
     }
 
     private Pair<Tile, Tile> minimax(int depth) {
@@ -155,43 +80,7 @@ public class Cheddar implements AIInterface {
     }
 
     private int evaluate(ChessGameInterface game) {
-        int material = 0;
-        for (Pieces piece : game.getActiveWhitePieces())
-            material += getPieceValue(piece);
-        for (Pieces piece : game.getActiveBlackPieces())
-            material -= getPieceValue(piece);
-
-        Pieces[][] boardState = game.getBoardState();
-        int position = 0;
-        for (int i = 0; i < boardState.length; i++)
-            for (int j = 0; j < boardState.length; j++)
-                position += getPositionalValue(i, j, boardState[i][j]);
-        return material + position;
-    }
-
-    private int getPositionalValue(int row, int col, Pieces piece) {
-        if (piece == null || piece == WHITE_KING || piece == BLACK_KING)
-            return 0;
-
-        return pieceTables.get(piece)[row][col];
-    }
-
-    private int getPieceValue(Pieces piece) {
-        if (piece == null)
-            throw new IllegalArgumentException("Piece cannot be null if we want to get it's value.");
-
-        if (piece == WHITE_KING || piece == BLACK_KING)
-            return 20000;
-        else if (piece == WHITE_QUEEN || piece == BLACK_QUEEN)
-            return 900;
-        else if (piece == WHITE_ROOK || piece == BLACK_ROOK)
-            return 500;
-        else if (piece == WHITE_BISHOP || piece == BLACK_BISHOP)
-            return 330;
-        else if (piece == WHITE_KNIGHT || piece == BLACK_KNIGHT)
-            return 320;
-        else
-            return 100;
+        return game.getMaterialHeuristic() + game.getPositionalHeuristic() * 5;
     }
 
     @Override
