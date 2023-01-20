@@ -18,12 +18,18 @@ public abstract class Piece {
     private Tile tile;
     private Colors color;
     private boolean wasMoved;
+    private int value;
 
-    public Piece(ChessGame game, Tile tile, Colors color) {
+    public Piece(ChessGame game, Tile tile, Colors color, int value) {
         this.game = game;
         this.tile = tile;
         this.color = color;
+        this.value = value;
         wasMoved = false;
+    }
+
+    public int getValue() {
+        return value;
     }
 
     public Colors getColor() {

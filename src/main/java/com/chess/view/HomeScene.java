@@ -22,7 +22,7 @@ public class HomeScene extends Scene {
     public HomeScene(double width, double height) {
         super(new VBox(), width, height);
         root = (VBox) getRoot();
-        root.setSpacing(30);
+        root.setSpacing(15);
         buildLocalChessGameButton();
         root.setAlignment(Pos.CENTER);
         buildTitleLabel();
@@ -41,8 +41,8 @@ public class HomeScene extends Scene {
     private void buildLocalChessGameButton() {
         computerChessGameButton = new Button("Play Against the Computer");
         computerChessGameButton.setFont(new Font("Impact", 20));
-        computerChessGameButton.setMinWidth(200);
-        computerChessGameButton.setMaxWidth(200);
+        computerChessGameButton.setMinWidth(300);
+        computerChessGameButton.setMaxWidth(300);
         computerChessGameButton.setMinHeight(50);
         computerChessGameButton.setMaxHeight(50);
         computerChessGameButton.setStyle("-fx-background-color: rgb(73, 204, 132);");
@@ -71,8 +71,8 @@ public class HomeScene extends Scene {
     private void buildComputerChessGameButton() {
         localChessGameButton = new Button("Play Locally");
         localChessGameButton.setFont(new Font("Impact", 20));
-        localChessGameButton.setMinWidth(200);
-        localChessGameButton.setMaxWidth(200);
+        localChessGameButton.setMinWidth(300);
+        localChessGameButton.setMaxWidth(300);
         localChessGameButton.setMinHeight(50);
         localChessGameButton.setMaxHeight(50);
         localChessGameButton.setStyle("-fx-background-color: rgb(73, 204, 132);");

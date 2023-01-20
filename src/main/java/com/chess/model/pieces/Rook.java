@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class Rook extends Piece {
     public Rook(ChessGame game, Tile tile, Colors color) {
-        super(game, tile, color);
+        super(game, tile, color, 5);
     }
 
     @Override

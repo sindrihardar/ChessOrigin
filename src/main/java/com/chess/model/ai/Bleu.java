@@ -6,10 +6,10 @@ import com.chess.model.util.Pair;
 
 import java.util.Set;
 
-public class Blue implements AIInterface {
+public class Bleu implements AIInterface {
     private ChessGameInterface game;
 
-    public Blue(ChessGameInterface game) {
+    public Bleu(ChessGameInterface game) {
         this.game = game;
     }
 

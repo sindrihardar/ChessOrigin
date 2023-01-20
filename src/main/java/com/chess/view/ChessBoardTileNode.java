@@ -90,7 +90,7 @@ public class ChessBoardTileNode extends StackPane implements Observer {
         setOnMouseExited(new EventHandler<>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                gamePresenter.hoverOutOf(row, col);
+                mouseEvent.consume(); gamePresenter.hoverOutOf(row, col);
             }
         });
     }

@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class King extends Piece {
     public King(ChessGame game, Tile tile, Colors color) {
-        super(game, tile, color);
+        super(game, tile, color, Integer.MAX_VALUE);
     }
 
     @Override

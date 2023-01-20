@@ -1,14 +1,15 @@
 package com.chess.presenter;
 
 import com.chess.model.ai.AIInterface;
-import com.chess.model.ai.Blue;
+import com.chess.model.ai.Bleu;
+import com.chess.model.ai.Cheddar;
 
 public class AIChessBoardPresenter extends ChessBoardPresenter {
     private AIInterface bot;
 
     public AIChessBoardPresenter() {
         super();
-        this.bot = new Blue(game);
+        this.bot = new Cheddar(game);
     }
 
     @Override
