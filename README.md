@@ -26,9 +26,12 @@ I recommend reading the planning document to get an idea of what software develo
 Before diving into the source code, I would recommend referring to the design document to build an understanding of how these components and classes relate to one another.
 
 ## TODO
- - Add an AI bot.
  - Add saving functionality for the game.
  - Add themes to the view component.
  - Add list of moves made to the side of the screen.
  - Allow user to select which piece they'd like to promote a pawn to.
  - Add a button to reset the state of the game.
+ - Move tables from the code to files that can be written to and read from.
+ - Update the heuristic function for the bot so that it is updated whenever a move is made.
+ - Add animations to moves.
+ - Allow the user's piece to move BEFORE the bot starts to make it's move.
