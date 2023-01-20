@@ -68,8 +68,10 @@ public class ChessGame implements ChessGameInterface {
 
     public ChessGame(Colors color, Pieces[][] board) {
         setUpState(color, board);
+        updateIsWhiteKingInCheckFlag();
+        updateIsBlackKingInCheckFlag();
         updateAvailableTilesCache();
-        updateFlags();
+        updateCurrentPlayerHasMovesFlag();
     }
 
     public ChessGame(Pieces[][] board) {
@@ -188,8 +190,10 @@ public class ChessGame implements ChessGameInterface {
         Tile startingTile = Tile.getTile(startRow, startCol), endingTile = Tile.getTile(endRow, endCol);
         isMovementLegal(startingTile, endingTile);
         resolveMovement(startingTile, endingTile);
+        updateIsWhiteKingInCheckFlag();
+        updateIsBlackKingInCheckFlag();
         updateAvailableTilesCache();
-        updateFlags();
+        updateCurrentPlayerHasMovesFlag();
     }
 
     private boolean isMovementLegal(Tile startingTile, Tile endingTile) {
@@ -215,8 +219,11 @@ public class ChessGame implements ChessGameInterface {
 
         MoveCommand moveCommand = playedMoves.pollLast();
         moveCommand.unexecute();
+
+        updateIsWhiteKingInCheckFlag();
+        updateIsBlackKingInCheckFlag();
         updateAvailableTilesCache();
-        updateFlags();
+        updateCurrentPlayerHasMovesFlag();
     }
 
     @Override
