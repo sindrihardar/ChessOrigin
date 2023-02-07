@@ -4,6 +4,7 @@ import com.chess.model.util.Colors;
 import com.chess.presenter.AIChessBoardPresenter;
 import com.chess.presenter.ChessBoardPresenter;
 import com.chess.presenter.StandardChessBoardPresenter;
+import javafx.animation.FadeTransition;
 import javafx.animation.PathTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
@@ -23,7 +24,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class ChessBoardScene extends Scene implements Observer {
-    private final Color MESSAGE_COLOR = new Color(0.8275, 0.3176, 0.6, 0.5);
+    private final Color MESSAGE_COLOR = new Color(0.8275, 0.3176, 0.6, 0.8);
     private final String MESSAGE_FONT = "Impact";
     private static final int BOARD_PADDING = 20;
     private VBox root;
@@ -168,6 +169,7 @@ public class ChessBoardScene extends Scene implements Observer {
         label.styleProperty().bind(Bindings.concat("-fx-font-size: ", background.heightProperty().divide(4), "; -fx-font-family: " + MESSAGE_FONT + ";"));
         messageNode.getChildren().add(background);
         messageNode.getChildren().add(label);
+        messageNode.setOpacity(0.0);
     }
 
     public void movePieceAnimation(int row1, int col1, int row2, int col2) {
@@ -210,13 +212,26 @@ public class ChessBoardScene extends Scene implements Observer {
     public void update() {
         if (presenter.isGameInStalemate()) {
             buildMessageNode(boardContainer, "Stalemate!");
-            boardContainer.getChildren().add(messageNode);
         } else if (presenter.isPlayerInCheckmate() && presenter.getCurrentPlayersColor() == Colors.BLACK) {
             buildMessageNode(boardContainer, "White won!");
-            boardContainer.getChildren().add(messageNode);
         } else if (presenter.isPlayerInCheckmate() && presenter.getCurrentPlayersColor() == Colors.WHITE) {
             buildMessageNode(boardContainer, "Black won!");
-            boardContainer.getChildren().add(messageNode);
+        } else {
+            return;
         }
+
+        FadeTransition fadeTransition = new FadeTransition(Duration.millis(1000), messageNode);
+        fadeTransition.setFromValue(0.0);
+        fadeTransition.setToValue(1.0);
+        fadeTransition.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                messageNode.setOpacity(1.0);
+            }
+        });
+
+        fadeTransition.play();
+
+        boardContainer.getChildren().add(messageNode);
     }
 }

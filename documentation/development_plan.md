@@ -49,3 +49,4 @@ Here are the following phases that I'll be going through for this project:
 | 1           | A simple chess application.                   | 8170c59e0dec050f0ed2899623b93bd35de7a3f9 |
 | 2           | Added a home screen.                          | 2b77c9e96747f1d60a7113aa59083541477f9af0 |
 | 3           | Added an option to play against the computer. | 4d579b41846534e3667a22c30ea1c709395fb77e |
+| 4           | Added animations to piece movement.           | ace6e12acb4db4aa01cca333d81b806bd42b6f46 |
