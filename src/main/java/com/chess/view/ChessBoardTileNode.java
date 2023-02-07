@@ -103,6 +103,8 @@ public class ChessBoardTileNode extends StackPane implements Observer {
     @Override
     public void update() {
         style = tilePresenter.getStyle();
+        getChildren().remove(imageView);
+        addImageView();
         imageView.setImage(tilePresenter.getImage());
         setStyle(style);
     }

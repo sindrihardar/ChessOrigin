@@ -4,7 +4,11 @@ import com.chess.model.util.Colors;
 import com.chess.presenter.AIChessBoardPresenter;
 import com.chess.presenter.ChessBoardPresenter;
 import com.chess.presenter.StandardChessBoardPresenter;
+import javafx.animation.PathTransition;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -14,8 +18,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.*;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class ChessBoardScene extends Scene implements Observer {
     private final Color MESSAGE_COLOR = new Color(0.8275, 0.3176, 0.6, 0.5);
@@ -163,6 +168,42 @@ public class ChessBoardScene extends Scene implements Observer {
         label.styleProperty().bind(Bindings.concat("-fx-font-size: ", background.heightProperty().divide(4), "; -fx-font-family: " + MESSAGE_FONT + ";"));
         messageNode.getChildren().add(background);
         messageNode.getChildren().add(label);
+    }
+
+    public void movePieceAnimation(int row1, int col1, int row2, int col2) {
+        StackPane node1 = (StackPane) board.getChildren().get(row1 * 8 + col1), node2 = (StackPane) board.getChildren().get(row2 * 8 + col2);
+        double startX = node1.getLayoutX() + node1.getWidth() / 2, startY = node1.getLayoutY() + node1.getHeight() / 2;
+        double endX = node2.getLayoutX() + node2.getWidth() / 2, endY = node2.getLayoutY() + node2.getHeight() / 2;
+        startX -= node1.getLayoutX();
+        startY -= node1.getLayoutY();
+        endX -= node1.getLayoutX();
+        endY -= node1.getLayoutY();
+
+        // create the path to be traveled (where is the node going)
+        Path path = new Path();
+        MoveTo endPoint = new MoveTo(startX, startY);
+        path.getElements().add(endPoint);
+        path.getElements().add(new LineTo(endX, endY));
+
+        // create the path transition (where is the node starting and how long should it take)
+        PathTransition animation = new PathTransition();
+        animation.setDuration(Duration.millis(300));
+        for (Node node : node1.getChildren())
+            if (node instanceof ImageView)
+                animation.setNode(node);
+        node1.setViewOrder(-1);
+        animation.getNode().setViewOrder(-1);
+        animation.setPath(path);
+        animation.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                presenter.executeQueuedMovement();
+                node1.setViewOrder(0);
+                animation.getNode().setViewOrder(0);
+            }
+        });
+
+        animation.play();
     }
 
     @Override
