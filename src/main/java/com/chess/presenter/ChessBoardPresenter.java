@@ -17,7 +17,7 @@ public abstract class ChessBoardPresenter implements Observable {
     protected Pieces[][] boardState;
     protected ChessBoardTilePresenter selected;
     protected Set<Tile> available;
-    private List<Observer> observers;
+    protected List<Observer> observers;
     private boolean isGameOver, isGameInStalemate, isPlayerInCheckmate, didWhiteWin;
 
     public ChessBoardPresenter() {

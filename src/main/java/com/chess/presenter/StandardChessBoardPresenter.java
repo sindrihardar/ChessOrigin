@@ -1,5 +1,8 @@
 package com.chess.presenter;
 
+import com.chess.view.ChessBoardScene;
+import com.chess.view.Observer;
+
 public class StandardChessBoardPresenter extends ChessBoardPresenter {
     public StandardChessBoardPresenter() {
         super();
@@ -11,6 +14,8 @@ public class StandardChessBoardPresenter extends ChessBoardPresenter {
             return;
 
         if (aTileIsSelectedAndGivenTileIsAvailable(row, col)) {
+            for (Observer observer : observers)
+                ((ChessBoardScene) observer).movePieceAnimation(selected.getRow(), selected.getCol(), row, col);
             game.move(selected.getRow(), selected.getCol(), row, col);
             resetAvailableTiles();              // reset available spaces
             boardState = game.getBoardState();  // update the boardState
