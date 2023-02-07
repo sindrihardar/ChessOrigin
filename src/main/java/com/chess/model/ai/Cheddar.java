@@ -84,9 +84,9 @@ public class Cheddar implements AIInterface {
     }
 
     @Override
-    public void move() {
+    public Pair<Tile, Tile> move() {
         Pair<Tile, Tile> move = minimax(2);
-        game.move(move.getKey().getRow(), move.getKey().getCol(), move.getValue().getRow(), move.getValue().getCol());
+        return move;
     }
 
     @Override

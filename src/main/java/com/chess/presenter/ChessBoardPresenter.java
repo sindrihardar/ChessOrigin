@@ -9,6 +9,7 @@ import com.chess.view.Observer;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 public abstract class ChessBoardPresenter implements Observable {
@@ -18,6 +19,8 @@ public abstract class ChessBoardPresenter implements Observable {
     protected ChessBoardTilePresenter selected;
     protected Set<Tile> available;
     protected List<Observer> observers;
+    protected boolean animationIsPlaying;
+    protected Queue<Movement> movements;
     private boolean isGameOver, isGameInStalemate, isPlayerInCheckmate, didWhiteWin;
 
     public ChessBoardPresenter() {
@@ -36,6 +39,7 @@ public abstract class ChessBoardPresenter implements Observable {
         isPlayerInCheckmate = false;
         didWhiteWin = false;
         observers = new LinkedList<>();
+        movements = new LinkedList<>();
     }
 
     private void initializeTilePresenters() {
@@ -98,13 +102,13 @@ public abstract class ChessBoardPresenter implements Observable {
      */
     
     public void hoverInTo(int row, int col) {
-        if (isGameOver)
+        if (animationIsPlaying || isGameOver)
             return;
         tilePresenters[row][col].setHoveredOver(true);
     }
 
     public void hoverOutOf(int row, int col) {
-        if (isGameOver)
+        if (animationIsPlaying || isGameOver)
             return;
         tilePresenters[row][col].setHoveredOver(false);
     }
@@ -118,6 +122,8 @@ public abstract class ChessBoardPresenter implements Observable {
 
     protected void resetAvailableTiles() {
         selected = null;
+        if (available == null)
+            return;
         for (Tile availableSpace : available)
             tilePresenters[availableSpace.getRow()][availableSpace.getCol()].setAvailable(false);
         available = null;
@@ -139,6 +145,26 @@ public abstract class ChessBoardPresenter implements Observable {
         return selected != null && available.contains(Tile.getTile(row, col));
     }
 
+    protected void resetHoveredOverTiles() {
+        for (int i = 0; i < boardState.length; i++)
+            for (int j = 0; j < boardState.length; j++)
+                tilePresenters[i][j].setHoveredOver(false);
+    }
+
+    public void executeQueuedMovement() {
+        while (movements.size() > 0) {
+            Movement movement = movements.poll();
+            game.move(movement.startRow, movement.startCol, movement.endRow, movement.endCol);
+            resetHoveredOverTiles();
+            resetAvailableTiles();              // reset available spaces
+            boardState = game.getBoardState();  // update the boardState
+            updateTilePresenterPieces();        // update the state of each of the tiles (which in turn updates the view)
+            updateTilePresenterSelectability(); // updates the state of each tile's select-ability
+            updateFlags();                      // checks if the game is over
+        }
+        animationIsPlaying = false;
+    }
+
     @Override
     public void attach(Observer observer) {
         observers.add(observer);
@@ -153,5 +179,16 @@ public abstract class ChessBoardPresenter implements Observable {
     public void notifyObservers() {
         for (Observer observer : observers)
             observer.update();
+    }
+
+    protected class Movement {
+        int startRow, endRow, startCol, endCol;
+
+        public Movement(int startRow, int startCol, int endRow, int endCol) {
+            this.startRow = startRow;
+            this.startCol = startCol;
+            this.endRow = endRow;
+            this.endCol = endCol;
+        }
     }
 }

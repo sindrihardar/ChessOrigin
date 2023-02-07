@@ -1,12 +1,14 @@
 package com.chess.model.ai;
 
 import com.chess.model.game.ChessGameInterface;
+import com.chess.model.game.Tile;
+import com.chess.model.util.Pair;
 
 public interface AIInterface {
     /**
      * Performs a move on the bot's chess game based.
      */
-    void move();
+    Pair<Tile, Tile> move();
 
     /**
      * Sets the current game for the bot.

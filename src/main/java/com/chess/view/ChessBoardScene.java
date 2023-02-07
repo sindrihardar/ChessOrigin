@@ -7,6 +7,8 @@ import com.chess.presenter.StandardChessBoardPresenter;
 import javafx.animation.PathTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -185,9 +187,21 @@ public class ChessBoardScene extends Scene implements Observer {
 
         // create the path transition (where is the node starting and how long should it take)
         PathTransition animation = new PathTransition();
-        animation.setDuration(Duration.millis(1000));
-        animation.setNode(node1.getChildren().get(0));
+        animation.setDuration(Duration.millis(300));
+        for (Node node : node1.getChildren())
+            if (node instanceof ImageView)
+                animation.setNode(node);
+        node1.setViewOrder(-1);
+        animation.getNode().setViewOrder(-1);
         animation.setPath(path);
+        animation.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                presenter.executeQueuedMovement();
+                node1.setViewOrder(0);
+                animation.getNode().setViewOrder(0);
+            }
+        });
 
         animation.play();
     }

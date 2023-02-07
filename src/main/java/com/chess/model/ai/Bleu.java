@@ -20,10 +20,11 @@ public class Bleu implements AIInterface {
     }
 
     @Override
-    public void move() {
+    public Pair<Tile, Tile> move() {
         Set<Pair<Tile, Tile>> availableMoves = game.getAvailableMovesForCurrentPlayer();
         Pair<Tile, Tile> move = minimax(availableMoves, 3).pair;
         game.move(move.getKey().getRow(), move.getKey().getCol(), move.getValue().getRow(), move.getValue().getCol());
+        return move;
     }
 
     @Override
