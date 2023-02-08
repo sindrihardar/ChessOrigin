@@ -4,6 +4,7 @@ import com.chess.model.pieces.Pawn;
 import com.chess.model.pieces.Piece;
 import com.chess.model.util.Colors;
 import com.chess.model.util.Pair;
+import com.chess.model.util.Tile;
 
 import java.util.Map;
 import java.util.Set;

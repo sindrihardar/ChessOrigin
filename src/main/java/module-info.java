@@ -9,4 +9,6 @@ module com.example.chess {
     exports com.chess.model.util;
     exports com.chess.model.ai;
     exports com.chess.model.game;
+    exports com.chess.view.nodes;
+    exports com.chess.view.scenes;
 }

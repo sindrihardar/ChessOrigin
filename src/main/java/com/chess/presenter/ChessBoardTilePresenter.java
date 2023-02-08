@@ -2,7 +2,6 @@ package com.chess.presenter;
 
 import com.chess.model.util.Pieces;
 import com.chess.view.Observer;
-import javafx.scene.image.Image;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -42,42 +41,6 @@ public class ChessBoardTilePresenter implements Observable {
 
     public Pieces getPiece() {
         return piece;
-    }
-
-    public Image getImage() {
-        String path = "file:./src/main/java/com/chess/presenter/resources/";
-        if (piece == Pieces.BLACK_KING)
-            path += "black_king.png";
-        else if (piece == Pieces.BLACK_QUEEN)
-            path += "black_queen.png";
-        else if (piece == Pieces.BLACK_ROOK)
-            path += "black_rook.png";
-        else if (piece == Pieces.BLACK_BISHOP)
-            path += "black_bishop.png";
-        else if (piece == Pieces.BLACK_KNIGHT)
-            path += "black_knight.png";
-        else if (piece == Pieces.BLACK_PAWN)
-            path += "black_pawn.png";
-        else if (piece == Pieces.WHITE_KING)
-            path += "white_king.png";
-        else if (piece == Pieces.WHITE_QUEEN)
-            path += "white_queen.png";
-        else if (piece == Pieces.WHITE_ROOK)
-            path += "white_rook.png";
-        else if (piece == Pieces.WHITE_BISHOP)
-            path += "white_bishop.png";
-        else if (piece == Pieces.WHITE_KNIGHT)
-            path += "white_knight.png";
-        else if (piece == Pieces.WHITE_PAWN)
-            path += "white_pawn.png";
-        else
-            return null;
-
-        try {
-            return new Image(path);
-        } catch (Exception e) {
-            throw new RuntimeException("No image found for file path: " + path);
-        }
     }
 
     public String getStyle() {
@@ -131,11 +94,6 @@ public class ChessBoardTilePresenter implements Observable {
     @Override
     public void attach(Observer observer) {
         observers.add(observer);
-    }
-
-    @Override
-    public void detach(Observer observer) {
-        observers.remove(observer);
     }
 
     @Override

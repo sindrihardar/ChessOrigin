@@ -3,7 +3,16 @@ package com.chess.presenter;
 import com.chess.view.Observer;
 
 public interface Observable {
-    public void attach(Observer observer);
-    public void detach(Observer observer);
-    public void notifyObservers();
+    /**
+     * Attaches the given observer to this observable.
+     *
+     * Each observer should be updated on a call to notifyObservers.
+     * @param observer
+     */
+    void attach(Observer observer);
+
+    /**
+     * Notifies all the observable's observers that the state has been changed.
+     */
+    void notifyObservers();
 }

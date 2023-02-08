@@ -1,7 +1,7 @@
 package com.chess.model.ai;
 
 import com.chess.model.game.ChessGameInterface;
-import com.chess.model.game.Tile;
+import com.chess.model.util.Tile;
 import com.chess.model.util.Pair;
 
 import java.util.Set;
@@ -23,7 +23,6 @@ public class Bleu implements AIInterface {
     public Pair<Tile, Tile> move() {
         Set<Pair<Tile, Tile>> availableMoves = game.getAvailableMovesForCurrentPlayer();
         Pair<Tile, Tile> move = minimax(availableMoves, 3).pair;
-        game.move(move.getKey().getRow(), move.getKey().getCol(), move.getValue().getRow(), move.getValue().getCol());
         return move;
     }
 
