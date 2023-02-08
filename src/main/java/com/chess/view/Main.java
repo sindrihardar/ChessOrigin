@@ -1,5 +1,6 @@
 package com.chess.view;
 
+import com.chess.view.scenes.HomeScene;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

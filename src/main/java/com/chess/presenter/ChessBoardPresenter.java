@@ -2,7 +2,7 @@ package com.chess.presenter;
 
 import com.chess.model.game.ChessGame;
 import com.chess.model.game.ChessGameInterface;
-import com.chess.model.game.Tile;
+import com.chess.model.util.Tile;
 import com.chess.model.util.Colors;
 import com.chess.model.util.Pieces;
 import com.chess.view.Observer;
@@ -120,7 +120,7 @@ public abstract class ChessBoardPresenter implements Observable {
             tilePresenters[availableTile.getRow()][availableTile.getCol()].setAvailable(true);
     }
 
-    protected void resetAvailableTiles() {
+    public void resetAvailableTiles() {
         selected = null;
         if (available == null)
             return;
@@ -145,7 +145,7 @@ public abstract class ChessBoardPresenter implements Observable {
         return selected != null && available.contains(Tile.getTile(row, col));
     }
 
-    protected void resetHoveredOverTiles() {
+    public void resetHoveredOverTiles() {
         for (int i = 0; i < boardState.length; i++)
             for (int j = 0; j < boardState.length; j++)
                 tilePresenters[i][j].setHoveredOver(false);
@@ -168,11 +168,6 @@ public abstract class ChessBoardPresenter implements Observable {
     @Override
     public void attach(Observer observer) {
         observers.add(observer);
-    }
-
-    @Override
-    public void detach(Observer observer) {
-        observers.remove(observer);
     }
 
     @Override

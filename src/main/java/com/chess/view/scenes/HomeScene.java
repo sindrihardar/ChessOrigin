@@ -1,7 +1,8 @@
-package com.chess.view;
+package com.chess.view.scenes;
 
 import com.chess.presenter.AIChessBoardPresenter;
 import com.chess.presenter.StandardChessBoardPresenter;
+import com.chess.view.scenes.ChessBoardScene;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -15,13 +16,14 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class HomeScene extends Scene {
-    private VBox root;
+    private static final String TITLE = "Chess";
+    private static final String FONT_NAME = "Impact";
     private Text title;
     private Button localChessGameButton, computerChessGameButton;
 
     public HomeScene(double width, double height) {
         super(new VBox(), width, height);
-        root = (VBox) getRoot();
+        VBox root = (VBox) getRoot();
         root.setSpacing(15);
         buildLocalChessGameButton();
         root.setAlignment(Pos.CENTER);
@@ -33,8 +35,8 @@ public class HomeScene extends Scene {
     }
 
     private void buildTitleLabel() {
-        title = new Text("Chess");
-        title.setFont(new Font("Impact", 100));
+        title = new Text(TITLE);
+        title.setFont(new Font(FONT_NAME, 100));
         title.setStroke(new Color(.7, 0.2843, 0.6725, 1));
     }
 

@@ -1,7 +1,7 @@
 package com.chess.model.ai;
 
 import com.chess.model.game.ChessGameInterface;
-import com.chess.model.game.Tile;
+import com.chess.model.util.Tile;
 import com.chess.model.util.Colors;
 import com.chess.model.util.Pair;
 

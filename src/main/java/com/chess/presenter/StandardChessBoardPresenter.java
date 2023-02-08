@@ -1,6 +1,6 @@
 package com.chess.presenter;
 
-import com.chess.view.ChessBoardScene;
+import com.chess.view.nodes.ChessBoardNode;
 import com.chess.view.Observer;
 
 public class StandardChessBoardPresenter extends ChessBoardPresenter {
@@ -15,9 +15,10 @@ public class StandardChessBoardPresenter extends ChessBoardPresenter {
 
         if (aTileIsSelectedAndGivenTileIsAvailable(row, col)) {
             for (Observer observer : observers)
-                ((ChessBoardScene) observer).movePieceAnimation(selected.getRow(), selected.getCol(), row, col);
+                ((ChessBoardNode) observer).movePieceAnimation(selected.getRow(), selected.getCol(), row, col);
             animationIsPlaying = true;
             movements.add(new Movement(selected.getRow(), selected.getCol(), row, col));
+            resetAvailableTiles();
         } else if (game.doesTileContainPieceOfCurrentPlayersColor(row, col)) {
             if (available != null)
                 resetAvailableTiles();
