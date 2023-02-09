@@ -1,7 +1,9 @@
 package com.chess.view.scenes;
 
 import com.chess.model.util.Colors;
+import com.chess.presenter.AITimedChessBoardPresenter;
 import com.chess.presenter.ChessBoardPresenter;
+import com.chess.presenter.StandardTimedChessBoardPresenter;
 import com.chess.view.nodes.ChessBoardNode;
 import com.chess.view.nodes.FullChessGameNode;
 import com.chess.view.nodes.TimerNode;
@@ -44,7 +46,10 @@ public class ChessBoardScene extends Scene {
     private void constructSceneGraph(ChessBoardPresenter presenter) {
         root.getChildren().addAll(topBar, boardPane);
         topBar.getChildren().addAll(homeButton);
-        boardContainer = new FullChessGameNode(boardPane); // ChessBoardNode(boardPane, presenter);
+        if (presenter instanceof StandardTimedChessBoardPresenter)
+            boardContainer = new FullChessGameNode(boardPane, (StandardTimedChessBoardPresenter) presenter);
+        if (presenter instanceof AITimedChessBoardPresenter)
+            boardContainer = new FullChessGameNode(boardPane, (AITimedChessBoardPresenter) presenter);
         boardPane.getChildren().add(boardContainer);
     }
 

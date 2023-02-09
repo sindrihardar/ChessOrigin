@@ -1,5 +1,8 @@
 package com.chess.view.nodes;
 
+import com.chess.presenter.AITimedChessBoardPresenter;
+import com.chess.presenter.ChessBoardPresenter;
+import com.chess.presenter.StandardChessBoardPresenter;
 import com.chess.presenter.StandardTimedChessBoardPresenter;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,10 +14,18 @@ import javafx.scene.layout.VBox;
 public class FullChessGameNode extends HBox {
     private ChessBoardNode board;
     private TimerNode whiteTimer, blackTimer;
-    private StandardTimedChessBoardPresenter gamePresenter;
+    private ChessBoardPresenter gamePresenter;
 
-    public FullChessGameNode(Pane parent) {
-        gamePresenter = new StandardTimedChessBoardPresenter();
+    public FullChessGameNode(Pane parent, StandardTimedChessBoardPresenter gamePresenter) {
+        this.gamePresenter = gamePresenter;
+        bindToParentsSize(parent);
+        whiteTimer = new TimerNode(gamePresenter.getWhiteTimer());
+        blackTimer = new TimerNode(gamePresenter.getBlackTimer());
+        build();
+    }
+
+    public FullChessGameNode(Pane parent, AITimedChessBoardPresenter gamePresenter) {
+        this.gamePresenter = gamePresenter;
         bindToParentsSize(parent);
         whiteTimer = new TimerNode(gamePresenter.getWhiteTimer());
         blackTimer = new TimerNode(gamePresenter.getBlackTimer());

@@ -30,6 +30,15 @@ public class StandardTimedChessBoardPresenter extends ChessBoardPresenter {
     }
 
     @Override
+    public void notifyObservers() {
+        super.notifyObservers();
+        if (super.isPlayerInCheckmate() || super.isGameInStalemate()) {
+            whiteTimer.gameIsOver();
+            blackTimer.gameIsOver();
+        }
+    }
+
+    @Override
     public void executeQueuedMovement() {
         super.executeQueuedMovement();
         hitTimer();
