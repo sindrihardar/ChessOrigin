@@ -21,7 +21,7 @@ public abstract class ChessBoardPresenter implements Observable {
     protected List<Observer> observers;
     protected boolean animationIsPlaying;
     protected Queue<Movement> movements;
-    private boolean isGameOver, isGameInStalemate, isPlayerInCheckmate, didWhiteWin;
+    private boolean isGameOver, isGameInStalemate, isPlayerInCheckmate, didWhiteWin, whiteIsOutOfTime, blackIsOutOfTime;
 
     public ChessBoardPresenter() {
         game = new ChessGame();
@@ -38,6 +38,8 @@ public abstract class ChessBoardPresenter implements Observable {
         isGameInStalemate = false;
         isPlayerInCheckmate = false;
         didWhiteWin = false;
+        whiteIsOutOfTime = false;
+        blackIsOutOfTime = false;
         observers = new LinkedList<>();
         movements = new LinkedList<>();
     }
@@ -91,6 +93,14 @@ public abstract class ChessBoardPresenter implements Observable {
 
     public boolean isPlayerInCheckmate() {
         return isPlayerInCheckmate;
+    }
+
+    public boolean isWhiteOutOfTime() {
+        return whiteIsOutOfTime;
+    }
+
+    public boolean isBlackOutOfTime() {
+        return blackIsOutOfTime;
     }
 
     public Colors getCurrentPlayersColor() {
@@ -149,6 +159,14 @@ public abstract class ChessBoardPresenter implements Observable {
         for (int i = 0; i < boardState.length; i++)
             for (int j = 0; j < boardState.length; j++)
                 tilePresenters[i][j].setHoveredOver(false);
+    }
+
+    public void timerRanOutForColor(Colors color) {
+        if (color == Colors.WHITE)
+            whiteIsOutOfTime = true;
+        else
+            blackIsOutOfTime = true;
+        notifyObservers();
     }
 
     public void executeQueuedMovement() {

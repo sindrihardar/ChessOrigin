@@ -133,6 +133,10 @@ public class ChessBoardNode extends StackPane implements Observer {
             buildMessageNode(this, "White won!");
         } else if (presenter.isPlayerInCheckmate() && presenter.getCurrentPlayersColor() == Colors.WHITE) {
             buildMessageNode(this, "Black won!");
+        } else if (presenter.isWhiteOutOfTime()) {
+            buildMessageNode(this, "Black won!");
+        } else if (presenter.isBlackOutOfTime()) {
+            buildMessageNode(this, "White won!");
         } else {
             return; // if nothing was updated, don't play the animation
         }

@@ -1,7 +1,10 @@
 package com.chess.view.scenes;
 
+import com.chess.model.util.Colors;
 import com.chess.presenter.ChessBoardPresenter;
 import com.chess.view.nodes.ChessBoardNode;
+import com.chess.view.nodes.FullChessGameNode;
+import com.chess.view.nodes.TimerNode;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -22,7 +25,7 @@ public class ChessBoardScene extends Scene {
     private HBox topBar;
     private Pane boardPane;
     private Button homeButton;
-    private ChessBoardNode boardContainer;
+    private HBox boardContainer;
 
     public ChessBoardScene(double width, double height, ChessBoardPresenter presenter) {
         super(new VBox(), width, height);
@@ -41,7 +44,8 @@ public class ChessBoardScene extends Scene {
     private void constructSceneGraph(ChessBoardPresenter presenter) {
         root.getChildren().addAll(topBar, boardPane);
         topBar.getChildren().addAll(homeButton);
-        boardContainer = new ChessBoardNode(boardPane, presenter);
+        boardContainer = new FullChessGameNode(boardPane); // ChessBoardNode(boardPane, presenter);
+        boardPane.getChildren().add(boardContainer);
     }
 
     private void buildComponents() {
