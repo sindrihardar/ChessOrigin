@@ -12,18 +12,20 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-public abstract class ChessBoardPresenter implements Observable {
+public abstract class BoardPresenter implements Observable {
+    protected GameMediator gameMediator;
     protected ChessGameInterface game;
-    protected ChessBoardTilePresenter[][] tilePresenters;
+    protected TilePresenter[][] tilePresenters;
     protected Pieces[][] boardState;
-    protected ChessBoardTilePresenter selected;
+    protected TilePresenter selected;
     protected Set<Tile> available;
     protected List<Observer> observers;
     protected boolean animationIsPlaying;
     protected Queue<Movement> movements;
     private boolean isGameOver, isGameInStalemate, isPlayerInCheckmate, didWhiteWin, whiteIsOutOfTime, blackIsOutOfTime;
 
-    public ChessBoardPresenter() {
+    public BoardPresenter(GameMediator gameMediator) {
+        this.gameMediator = gameMediator;
         game = new ChessGame();
         setUpState();
         initializeTilePresenters();
@@ -45,10 +47,10 @@ public abstract class ChessBoardPresenter implements Observable {
     }
 
     private void initializeTilePresenters() {
-        tilePresenters = new ChessBoardTilePresenter[8][8];
+        tilePresenters = new TilePresenter[8][8];
         for (int i = 0; i < tilePresenters.length; i++)
             for (int j = 0; j < tilePresenters[i].length; j++)
-                tilePresenters[i][j] = new ChessBoardTilePresenter(i, j, boardState[i][j], game.doesTileContainPieceOfCurrentPlayersColor(i, j));
+                tilePresenters[i][j] = new TilePresenter(i, j, boardState[i][j], game.doesTileContainPieceOfCurrentPlayersColor(i, j));
     }
 
     protected void updateFlags() {
@@ -83,7 +85,7 @@ public abstract class ChessBoardPresenter implements Observable {
      *  Getters
      */
     
-    public ChessBoardTilePresenter getChessBoardTilePresenter(int row, int col) {
+    public TilePresenter getChessBoardTilePresenter(int row, int col) {
         return tilePresenters[row][col];
     }
 
@@ -181,6 +183,8 @@ public abstract class ChessBoardPresenter implements Observable {
             updateFlags();                      // checks if the game is over
         }
         animationIsPlaying = false;
+        if (gameMediator != null)
+            gameMediator.notify(this);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.chess.view.nodes;
 
 import com.chess.model.util.Pieces;
-import com.chess.presenter.ChessBoardTilePresenter;
-import com.chess.presenter.ChessBoardPresenter;
+import com.chess.presenter.TilePresenter;
+import com.chess.presenter.BoardPresenter;
 import com.chess.view.Observer;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -14,14 +14,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 
-public class ChessBoardTileNode extends StackPane implements Observer {
+public class TileNode extends StackPane implements Observer {
     private int row, col;
     private String style;
     private ImageView imageView;
-    private ChessBoardTilePresenter tilePresenter;
-    private ChessBoardPresenter gamePresenter;
+    private TilePresenter tilePresenter;
+    private BoardPresenter gamePresenter;
 
-    public ChessBoardTileNode(int row, int col, ChessBoardTilePresenter spacePresenter, ChessBoardPresenter gamePresenter) {
+    public TileNode(int row, int col, TilePresenter spacePresenter, BoardPresenter gamePresenter) {
         setUpState(row, col, spacePresenter, gamePresenter);
         addImageView();
         addRank();
@@ -31,7 +31,7 @@ public class ChessBoardTileNode extends StackPane implements Observer {
         spacePresenter.attach(this);
     }
 
-    private void setUpState(int row, int col, ChessBoardTilePresenter spacePresenter, ChessBoardPresenter gamePresenter) {
+    private void setUpState(int row, int col, TilePresenter spacePresenter, BoardPresenter gamePresenter) {
         this.row = row;
         this.col = col;
         this.gamePresenter = gamePresenter;

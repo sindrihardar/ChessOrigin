@@ -6,12 +6,12 @@ import com.chess.model.util.Colors;
 import com.chess.model.util.Pair;
 import com.chess.model.util.Tile;
 import com.chess.view.Observer;
-import com.chess.view.nodes.ChessBoardNode;
+import com.chess.view.nodes.BoardNode;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 
-public class AITimedChessBoardPresenter extends ChessBoardPresenter {
+public class AITimedChessBoardPresenter extends BoardPresenter {
     private TimerPresenter whiteTimer, blackTimer, currentTimer;
     private AIInterface bot;
 
@@ -55,7 +55,7 @@ public class AITimedChessBoardPresenter extends ChessBoardPresenter {
         if (aTileIsSelectedAndGivenTileIsAvailable(row, col)) {
             animationIsPlaying = true;
             for (Observer observer : observers)
-                ((ChessBoardNode) observer).movePieceAnimation(selected.getRow(), selected.getCol(), row, col);
+                ((BoardNode) observer).movePieceAnimation(selected.getRow(), selected.getCol(), row, col);
             movements.add(new Movement(selected.getRow(), selected.getCol(), row, col));
         } else if (game.doesTileContainPieceOfCurrentPlayersColor(row, col)) {
             if (available != null)
@@ -92,7 +92,7 @@ public class AITimedChessBoardPresenter extends ChessBoardPresenter {
                     Pair<Tile, Tile> move = task.getValue();
                     boardState = game.getBoardState();  // update the boardState
                     for (Observer observer : observers)
-                        ((ChessBoardNode) observer).movePieceAnimation(move.getKey().getRow(), move.getKey().getCol(), move.getValue().getRow(), move.getValue().getCol());
+                        ((BoardNode) observer).movePieceAnimation(move.getKey().getRow(), move.getKey().getCol(), move.getValue().getRow(), move.getValue().getCol());
                     movements.add(new Movement(move.getKey().getRow(), move.getKey().getCol(), move.getValue().getRow(), move.getValue().getCol()));
                 }
             });

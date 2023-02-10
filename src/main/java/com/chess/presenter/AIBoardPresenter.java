@@ -5,17 +5,17 @@ import com.chess.model.ai.Cheddar;
 import com.chess.model.util.Tile;
 import com.chess.model.util.Colors;
 import com.chess.model.util.Pair;
-import com.chess.view.nodes.ChessBoardNode;
+import com.chess.view.nodes.BoardNode;
 import com.chess.view.Observer;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 
-public class AIChessBoardPresenter extends ChessBoardPresenter {
+public class AIBoardPresenter extends BoardPresenter {
     private AIInterface bot;
 
-    public AIChessBoardPresenter() {
-        super();
+    public AIBoardPresenter(GameMediator gameMediator) {
+        super(gameMediator);
         this.bot = new Cheddar(game);
     }
 
@@ -27,7 +27,7 @@ public class AIChessBoardPresenter extends ChessBoardPresenter {
         if (aTileIsSelectedAndGivenTileIsAvailable(row, col)) {
             animationIsPlaying = true;
             for (Observer observer : observers)
-                ((ChessBoardNode) observer).movePieceAnimation(selected.getRow(), selected.getCol(), row, col);
+                ((BoardNode) observer).movePieceAnimation(selected.getRow(), selected.getCol(), row, col);
             movements.add(new Movement(selected.getRow(), selected.getCol(), row, col));
         } else if (game.doesTileContainPieceOfCurrentPlayersColor(row, col)) {
             if (available != null)
@@ -63,7 +63,7 @@ public class AIChessBoardPresenter extends ChessBoardPresenter {
                     Pair<Tile, Tile> move = task.getValue();
                     boardState = game.getBoardState();  // update the boardState
                     for (Observer observer : observers)
-                        ((ChessBoardNode) observer).movePieceAnimation(move.getKey().getRow(), move.getKey().getCol(), move.getValue().getRow(), move.getValue().getCol());
+                        ((BoardNode) observer).movePieceAnimation(move.getKey().getRow(), move.getKey().getCol(), move.getValue().getRow(), move.getValue().getCol());
                     movements.add(new Movement(move.getKey().getRow(), move.getKey().getCol(), move.getValue().getRow(), move.getValue().getCol()));
                 }
             });

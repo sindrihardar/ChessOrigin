@@ -2,9 +2,9 @@ package com.chess.presenter;
 
 import com.chess.model.util.Colors;
 import com.chess.view.Observer;
-import com.chess.view.nodes.ChessBoardNode;
+import com.chess.view.nodes.BoardNode;
 
-public class StandardTimedChessBoardPresenter extends ChessBoardPresenter {
+public class StandardTimedChessBoardPresenter extends BoardPresenter {
     private TimerPresenter whiteTimer, blackTimer, currentTimer;
 
     public StandardTimedChessBoardPresenter() {
@@ -51,7 +51,7 @@ public class StandardTimedChessBoardPresenter extends ChessBoardPresenter {
 
         if (aTileIsSelectedAndGivenTileIsAvailable(row, col)) {
             for (Observer observer : observers)
-                ((ChessBoardNode) observer).movePieceAnimation(selected.getRow(), selected.getCol(), row, col);
+                ((BoardNode) observer).movePieceAnimation(selected.getRow(), selected.getCol(), row, col);
             animationIsPlaying = true;
             movements.add(new Movement(selected.getRow(), selected.getCol(), row, col));
             resetAvailableTiles();

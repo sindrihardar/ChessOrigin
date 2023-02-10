@@ -6,13 +6,13 @@ import com.chess.view.Observer;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ChessBoardTilePresenter implements Observable {
+public class TilePresenter implements Observable {
     private int row, col;
     private boolean hoveredOver, available, containsPieceOfCurrentPlayersColor;
     private Pieces piece;
     private List<Observer> observers;
 
-    public ChessBoardTilePresenter(int row, int col, Pieces piece, boolean containsPieceOfCurrentPlayersColor) {
+    public TilePresenter(int row, int col, Pieces piece, boolean containsPieceOfCurrentPlayersColor) {
         setUpState(row, col, piece, containsPieceOfCurrentPlayersColor);
         notifyObservers();
     }

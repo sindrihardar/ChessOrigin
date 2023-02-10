@@ -1,7 +1,7 @@
 package com.chess.view.nodes;
 
 import com.chess.model.util.Colors;
-import com.chess.presenter.ChessBoardPresenter;
+import com.chess.presenter.BoardPresenter;
 import com.chess.view.Observer;
 import javafx.animation.FadeTransition;
 import javafx.animation.PathTransition;
@@ -19,15 +19,15 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-public class ChessBoardNode extends StackPane implements Observer {
+public class BoardNode extends StackPane implements Observer {
     private static final int BOARD_PADDING = 20;
     private final String MESSAGE_FONT = "Impact";
     private TilePane board;
     private StackPane messageNode;
     private static final Color MESSAGE_COLOR = new Color(0.8275, 0.3176, 0.6, 0.8);
-    private ChessBoardPresenter presenter;
+    private BoardPresenter presenter;
 
-    public ChessBoardNode(Pane parent, ChessBoardPresenter presenter) {
+    public BoardNode(Pane parent, BoardPresenter presenter) {
         parent.getChildren().add(this);
         this.presenter = presenter;
         this.presenter.attach(this);
@@ -66,8 +66,8 @@ public class ChessBoardNode extends StackPane implements Observer {
                 buildTile(i, j, presenter, board);
     }
 
-    private void buildTile(int row, int col, ChessBoardPresenter presenter, TilePane board) {
-        ChessBoardTileNode tileNode = new ChessBoardTileNode(row, col, presenter.getChessBoardTilePresenter(row, col), presenter);
+    private void buildTile(int row, int col, BoardPresenter presenter, TilePane board) {
+        TileNode tileNode = new TileNode(row, col, presenter.getChessBoardTilePresenter(row, col), presenter);
         tileNode.minHeightProperty().bind(board.prefTileHeightProperty());
         tileNode.minWidthProperty().bind(board.prefTileHeightProperty());
         tileNode.maxHeightProperty().bind(board.prefTileHeightProperty());

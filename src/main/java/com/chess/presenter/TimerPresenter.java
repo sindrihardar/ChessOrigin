@@ -7,19 +7,23 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class TimerPresenter {
+    private GameMediator gameMediator;
     private boolean gameOver;
     private long initialDurationMillis, passedDurationMillis, startTimeMillis;
     private Colors color;
     private Timer timer;
-    private ChessBoardPresenter gamePresenter;
 
-    public TimerPresenter(long durationMillis, Colors color, ChessBoardPresenter gamePresenter) {
+    public TimerPresenter(long durationMillis, Colors color, GameMediator gameMediator) {
         this.initialDurationMillis = durationMillis;
         passedDurationMillis = 0;
         this.color = color;
         timer = null;
-        this.gamePresenter = gamePresenter;
         gameOver = false;
+        this.gameMediator = gameMediator;
+    }
+
+    public Colors getColor() {
+        return color;
     }
 
     /*
@@ -33,7 +37,8 @@ public class TimerPresenter {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> gamePresenter.timerRanOutForColor(color));
+                gameOver = true;
+                Platform.runLater(() -> gameMediator.notify(this));
                 stop();
             }
         }, initialDurationMillis - passedDurationMillis);
@@ -54,6 +59,10 @@ public class TimerPresenter {
     public void gameIsOver() {
         gameOver = true;
         stop();
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 
     public long getTimeRemaining() {

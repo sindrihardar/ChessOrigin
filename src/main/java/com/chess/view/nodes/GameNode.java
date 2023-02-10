@@ -1,7 +1,8 @@
 package com.chess.view.nodes;
 
 import com.chess.presenter.AITimedChessBoardPresenter;
-import com.chess.presenter.ChessBoardPresenter;
+import com.chess.presenter.BoardPresenter;
+import com.chess.presenter.GameMediator;
 import com.chess.presenter.StandardTimedChessBoardPresenter;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,24 +11,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-public class FullChessGameNode extends HBox {
-    private ChessBoardNode board;
+public class GameNode extends HBox {
+    private BoardNode board;
     private TimerNode whiteTimer, blackTimer;
-    private ChessBoardPresenter gamePresenter;
+    private GameMediator gameMediator;
 
-    public FullChessGameNode(Pane parent, StandardTimedChessBoardPresenter gamePresenter) {
-        this.gamePresenter = gamePresenter;
+    public GameNode(Pane parent, GameMediator gameMediator) {
+        this.gameMediator = gameMediator;
         bindToParentsSize(parent);
-        whiteTimer = new TimerNode(gamePresenter.getWhiteTimer());
-        blackTimer = new TimerNode(gamePresenter.getBlackTimer());
-        build();
-    }
-
-    public FullChessGameNode(Pane parent, AITimedChessBoardPresenter gamePresenter) {
-        this.gamePresenter = gamePresenter;
-        bindToParentsSize(parent);
-        whiteTimer = new TimerNode(gamePresenter.getWhiteTimer());
-        blackTimer = new TimerNode(gamePresenter.getBlackTimer());
+        whiteTimer = new TimerNode(gameMediator.getWhiteTimerPresenter());
+        blackTimer = new TimerNode(gameMediator.getBlackTimerPresenter());
         build();
     }
 
@@ -43,7 +36,7 @@ public class FullChessGameNode extends HBox {
         Pane boardPane = new Pane();
         boardPane.minWidthProperty().bind(widthProperty().multiply(2.0 / 3));
         boardPane.maxWidthProperty().bind(widthProperty().multiply(2.0 / 3));
-        board = new ChessBoardNode(boardPane, gamePresenter);
+        board = new BoardNode(boardPane, gameMediator.getBoardPresenter());
         getChildren().add(boardPane);
         VBox timerBox = new VBox();
         getChildren().add(timerBox);

@@ -1,10 +1,7 @@
 package com.chess.view.scenes;
 
-import com.chess.presenter.AIChessBoardPresenter;
 import com.chess.presenter.AITimedChessBoardPresenter;
-import com.chess.presenter.StandardChessBoardPresenter;
 import com.chess.presenter.StandardTimedChessBoardPresenter;
-import com.chess.view.scenes.ChessBoardScene;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
