@@ -1,6 +1,6 @@
 package com.chess.model.game;
 
-import com.chess.model.pieces.*;
+import com.chess.model.game.pieces.*;
 import com.chess.model.util.Colors;
 import com.chess.model.util.Pair;
 import com.chess.model.util.Pieces;

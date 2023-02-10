@@ -1,7 +1,9 @@
 package com.chess.view.scenes;
 
 import com.chess.presenter.AIChessBoardPresenter;
+import com.chess.presenter.AITimedChessBoardPresenter;
 import com.chess.presenter.StandardChessBoardPresenter;
+import com.chess.presenter.StandardTimedChessBoardPresenter;
 import com.chess.view.scenes.ChessBoardScene;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -52,7 +54,7 @@ public class HomeScene extends Scene {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                stage.setScene(new ChessBoardScene(getWidth(), getHeight(), new AIChessBoardPresenter()));
+                stage.setScene(new ChessBoardScene(getWidth(), getHeight(), new AITimedChessBoardPresenter()));
                 stage.show();
             }
         });
@@ -82,7 +84,7 @@ public class HomeScene extends Scene {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                stage.setScene(new ChessBoardScene(getWidth(), getHeight(), new StandardChessBoardPresenter()));
+                stage.setScene(new ChessBoardScene(getWidth(), getHeight(), new StandardTimedChessBoardPresenter()));
                 stage.show();
             }
         });

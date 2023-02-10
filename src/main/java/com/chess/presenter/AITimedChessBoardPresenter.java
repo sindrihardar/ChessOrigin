@@ -2,21 +2,49 @@ package com.chess.presenter;
 
 import com.chess.model.ai.AIInterface;
 import com.chess.model.ai.Cheddar;
-import com.chess.model.util.Tile;
 import com.chess.model.util.Colors;
 import com.chess.model.util.Pair;
-import com.chess.view.nodes.ChessBoardNode;
+import com.chess.model.util.Tile;
 import com.chess.view.Observer;
+import com.chess.view.nodes.ChessBoardNode;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 
-public class AIChessBoardPresenter extends ChessBoardPresenter {
+public class AITimedChessBoardPresenter extends ChessBoardPresenter {
+    private TimerPresenter whiteTimer, blackTimer, currentTimer;
     private AIInterface bot;
 
-    public AIChessBoardPresenter() {
+    public AITimedChessBoardPresenter() {
         super();
         this.bot = new Cheddar(game);
+        whiteTimer = new TimerPresenter(10 * 60 * 1000 + 1000, Colors.WHITE, this);
+        blackTimer = new TimerPresenter(10 * 60 * 1000, Colors.BLACK, this);
+        currentTimer = whiteTimer;
+        currentTimer.start();
+    }
+
+    public TimerPresenter getWhiteTimer() {
+        return whiteTimer;
+    }
+
+    public TimerPresenter getBlackTimer() {
+        return blackTimer;
+    }
+
+    public void hitTimer() {
+        currentTimer.stop();
+        currentTimer = currentTimer == whiteTimer ? blackTimer : whiteTimer;
+        currentTimer.start();
+    }
+
+    @Override
+    public void notifyObservers() {
+        super.notifyObservers();
+        if (super.isPlayerInCheckmate() || super.isGameInStalemate()) {
+            whiteTimer.gameIsOver();
+            blackTimer.gameIsOver();
+        }
     }
 
     @Override
@@ -42,6 +70,7 @@ public class AIChessBoardPresenter extends ChessBoardPresenter {
     public void executeQueuedMovement() {
         if (game.getCurrentPlayerColor() == Colors.WHITE) {
             super.executeQueuedMovement();
+            hitTimer();
             animationIsPlaying = true;
 
             Task<Pair<Tile, Tile>> task = new Task<>() {
@@ -71,6 +100,7 @@ public class AIChessBoardPresenter extends ChessBoardPresenter {
             new Thread(task).start();
         } else {
             super.executeQueuedMovement();
+            hitTimer();
         }
     }
 }
