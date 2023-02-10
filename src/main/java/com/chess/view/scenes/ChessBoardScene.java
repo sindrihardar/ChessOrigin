@@ -1,9 +1,7 @@
 package com.chess.view.scenes;
 
-import com.chess.presenter.AITimedChessBoardPresenter;
 import com.chess.presenter.BoardPresenter;
 import com.chess.presenter.GameMediator;
-import com.chess.presenter.StandardTimedChessBoardPresenter;
 import com.chess.view.nodes.GameNode;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -27,10 +25,10 @@ public class ChessBoardScene extends Scene {
     private Button homeButton;
     private HBox boardContainer;
 
-    public ChessBoardScene(double width, double height, BoardPresenter presenter) {
+    public ChessBoardScene(double width, double height, GameMediator gameMediator) {
         super(new VBox(), width, height);
         initializeComponents();
-        constructSceneGraph(presenter);
+        constructSceneGraph(gameMediator);
         buildComponents();
     }
 

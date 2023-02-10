@@ -38,7 +38,7 @@ public class TimerPresenter {
             @Override
             public void run() {
                 gameOver = true;
-                Platform.runLater(() -> gameMediator.notify(this));
+                Platform.runLater(() -> gameMediator.notify(TimerPresenter.this));
                 stop();
             }
         }, initialDurationMillis - passedDurationMillis);

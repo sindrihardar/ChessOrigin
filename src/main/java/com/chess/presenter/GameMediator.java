@@ -6,11 +6,15 @@ public class GameMediator implements Mediator {
     private BoardPresenter boardPresenter;
     private TimerPresenter currentTimerPresenter, whiteTimerPresenter, blackTimerPresenter;
 
-    public GameMediator() {
-        this.boardPresenter = new LocalBoardPresenter(this);
-        this.whiteTimerPresenter = new TimerPresenter(10 * 60 * 1000, Colors.WHITE, this);
-        this.blackTimerPresenter = new TimerPresenter(10 * 60 * 1000, Colors.BLACK, this);
+    public GameMediator(MediatorConstructionFlags flag) {
+        if (flag == MediatorConstructionFlags.TIMED_LOCAL)
+            this.boardPresenter = new LocalBoardPresenter(this);
+        else if (flag == MediatorConstructionFlags.TIMED_AI)
+            this.boardPresenter = new AIBoardPresenter(this);
+        this.whiteTimerPresenter = new TimerPresenter(60 * 10 * 1000, Colors.WHITE, this);
+        this.blackTimerPresenter = new TimerPresenter(60 * 10 * 1000, Colors.BLACK, this);
         currentTimerPresenter = whiteTimerPresenter;
+        currentTimerPresenter.start();
     }
 
     public BoardPresenter getBoardPresenter() {
@@ -33,9 +37,13 @@ public class GameMediator implements Mediator {
                 whiteTimerPresenter.gameIsOver();
                 blackTimerPresenter.gameIsOver();
             } else if (boardPresenter.getCurrentPlayersColor() == Colors.WHITE && currentTimerPresenter != whiteTimerPresenter) {
+                currentTimerPresenter.stop();
                 currentTimerPresenter = whiteTimerPresenter;
+                currentTimerPresenter.start();
             } else if (boardPresenter.getCurrentPlayersColor() == Colors.BLACK && currentTimerPresenter != blackTimerPresenter) {
+                currentTimerPresenter.stop();
                 currentTimerPresenter = blackTimerPresenter;
+                currentTimerPresenter.start();
             }
         } else if (o instanceof TimerPresenter) {
             TimerPresenter timerPresenter = (TimerPresenter) o;

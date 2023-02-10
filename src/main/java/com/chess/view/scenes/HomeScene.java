@@ -1,7 +1,7 @@
 package com.chess.view.scenes;
 
-import com.chess.presenter.AITimedChessBoardPresenter;
-import com.chess.presenter.StandardTimedChessBoardPresenter;
+import com.chess.presenter.GameMediator;
+import com.chess.presenter.MediatorConstructionFlags;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -27,7 +27,7 @@ public class HomeScene extends Scene {
         buildLocalChessGameButton();
         root.setAlignment(Pos.CENTER);
         buildTitleLabel();
-        buildComputerChessGameButton();
+        buildAIChessGameButton();
         root.getChildren().add(title);
         root.getChildren().add(localChessGameButton);
         root.getChildren().add(computerChessGameButton);
@@ -39,7 +39,7 @@ public class HomeScene extends Scene {
         title.setStroke(new Color(.7, 0.2843, 0.6725, 1));
     }
 
-    private void buildLocalChessGameButton() {
+    private void buildAIChessGameButton() {
         computerChessGameButton = new Button("Play Against the Computer");
         computerChessGameButton.setFont(new Font("Impact", 20));
         computerChessGameButton.setMinWidth(300);
@@ -51,7 +51,7 @@ public class HomeScene extends Scene {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                stage.setScene(new ChessBoardScene(getWidth(), getHeight(), new AITimedChessBoardPresenter()));
+                stage.setScene(new ChessBoardScene(getWidth(), getHeight(), new GameMediator(MediatorConstructionFlags.TIMED_AI)));
                 stage.show();
             }
         });
@@ -69,7 +69,7 @@ public class HomeScene extends Scene {
         });
     }
 
-    private void buildComputerChessGameButton() {
+    private void buildLocalChessGameButton() {
         localChessGameButton = new Button("Play Locally");
         localChessGameButton.setFont(new Font("Impact", 20));
         localChessGameButton.setMinWidth(300);
@@ -81,7 +81,7 @@ public class HomeScene extends Scene {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                stage.setScene(new ChessBoardScene(getWidth(), getHeight(), new StandardTimedChessBoardPresenter()));
+                stage.setScene(new ChessBoardScene(getWidth(), getHeight(), new GameMediator(MediatorConstructionFlags.TIMED_LOCAL)));
                 stage.show();
             }
         });
