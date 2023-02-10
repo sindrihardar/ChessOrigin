@@ -2,7 +2,6 @@ package com.chess.view.nodes;
 
 import com.chess.presenter.AITimedChessBoardPresenter;
 import com.chess.presenter.ChessBoardPresenter;
-import com.chess.presenter.StandardChessBoardPresenter;
 import com.chess.presenter.StandardTimedChessBoardPresenter;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

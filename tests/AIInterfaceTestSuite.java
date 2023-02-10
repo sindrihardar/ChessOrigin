@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class AIInterfaceTestSuite {
     @Test
     public void testIfBot1IsBetterThanBot2() {
-        // TODO!!!
+
     }
 
     // play n games between two bots, return the number of times the first bot won (repeat if there's a stalemate)
