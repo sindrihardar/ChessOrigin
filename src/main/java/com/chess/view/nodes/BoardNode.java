@@ -19,31 +19,34 @@ import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-public class BoardNode extends StackPane implements Observer {
-    private static final int BOARD_PADDING = 20;
+public class BoardNode extends Pane implements Observer {
+    private StackPane root;
+    private static final double BOARD_PADDING_PERCENTAGE = 0.1;
     private final String MESSAGE_FONT = "Impact";
     private TilePane board;
     private StackPane messageNode;
     private static final Color MESSAGE_COLOR = new Color(0.8275, 0.3176, 0.6, 0.8);
     private BoardPresenter presenter;
 
-    public BoardNode(Pane parent, BoardPresenter presenter) {
-        parent.getChildren().add(this);
+    public BoardNode(BoardPresenter presenter) {
         this.presenter = presenter;
         this.presenter.attach(this);
         build();
     }
 
     public void build() {
-        Pane parent = (Pane) getParent();
-        minHeightProperty().bind(Bindings.min(parent.widthProperty(), parent.heightProperty()).subtract(2 * BOARD_PADDING));
-        maxHeightProperty().bind(minHeightProperty());
-        minWidthProperty().bind(minHeightProperty());
-        maxWidthProperty().bind(minWidthProperty());
-        layoutXProperty().bind(Bindings.max(BOARD_PADDING, parent.widthProperty().divide(2).subtract(widthProperty().divide(2))));
-        layoutYProperty().bind(parent.heightProperty().divide(2).subtract(heightProperty().divide(2)));
+        root = new StackPane();
+        getChildren().add(root);
+
+        root.minHeightProperty().bind(Bindings.min(widthProperty(), heightProperty()).multiply(1 - BOARD_PADDING_PERCENTAGE));
+        root.maxHeightProperty().bind(root.minHeightProperty());
+        root.minWidthProperty().bind(root.minHeightProperty());
+        root.maxWidthProperty().bind(root.minWidthProperty());
+        root.layoutXProperty().bind(Bindings.max(Bindings.min(widthProperty(), heightProperty()).multiply(BOARD_PADDING_PERCENTAGE), widthProperty().divide(2).subtract(root.widthProperty().divide(2))));
+        root.layoutYProperty().bind(heightProperty().divide(2).subtract(root.heightProperty().divide(2)));
+
         board = new TilePane();
-        getChildren().add(board);
+        root.getChildren().add(board);
         buildBoard();
     }
 
@@ -128,15 +131,15 @@ public class BoardNode extends StackPane implements Observer {
     @Override
     public void update() {
         if (presenter.isGameInStalemate()) {
-            buildMessageNode(this, "Stalemate!");
+            buildMessageNode(root, "Stalemate!");
         } else if (presenter.isPlayerInCheckmate() && presenter.getCurrentPlayersColor() == Colors.BLACK) {
-            buildMessageNode(this, "White won!");
+            buildMessageNode(root, "White won!");
         } else if (presenter.isPlayerInCheckmate() && presenter.getCurrentPlayersColor() == Colors.WHITE) {
-            buildMessageNode(this, "Black won!");
+            buildMessageNode(root, "Black won!");
         } else if (presenter.isWhiteOutOfTime()) {
-            buildMessageNode(this, "Black won!");
+            buildMessageNode(root, "Black won!");
         } else if (presenter.isBlackOutOfTime()) {
-            buildMessageNode(this, "White won!");
+            buildMessageNode(root, "White won!");
         } else {
             return; // if nothing was updated, don't play the animation
         }
@@ -149,6 +152,6 @@ public class BoardNode extends StackPane implements Observer {
 
         fadeTransition.play();
 
-        getChildren().add(messageNode);
+        root.getChildren().add(messageNode);
     }
 }

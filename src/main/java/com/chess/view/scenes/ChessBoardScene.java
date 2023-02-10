@@ -21,9 +21,8 @@ public class ChessBoardScene extends Scene {
     private static final Insets TOP_BAR_PADDING = new Insets(5, 5, 5, 5);
     private VBox root;
     private HBox topBar;
-    private Pane boardPane;
+    private Pane game;
     private Button homeButton;
-    private HBox boardContainer;
 
     public ChessBoardScene(double width, double height, GameMediator gameMediator) {
         super(new VBox(), width, height);
@@ -36,14 +35,12 @@ public class ChessBoardScene extends Scene {
         root = (VBox) getRoot();
         topBar = new HBox();
         homeButton = new Button();
-        boardPane = new Pane();
     }
 
     private void constructSceneGraph(GameMediator gameMediator) {
-        root.getChildren().addAll(topBar, boardPane);
+        game = new GameNode(gameMediator);
+        root.getChildren().addAll(topBar, game);
         topBar.getChildren().addAll(homeButton);
-        boardContainer = new GameNode(boardPane, gameMediator);
-        boardPane.getChildren().add(boardContainer);
     }
 
     private void buildComponents() {
@@ -87,9 +84,9 @@ public class ChessBoardScene extends Scene {
     }
 
     private void buildBoardComponent() {
-        VBox parent = (VBox) boardPane.getParent();
-        VBox.setVgrow(boardPane, Priority.ALWAYS);
-        boardPane.minWidthProperty().bind(parent.widthProperty());
-        boardPane.maxWidthProperty().bind(parent.widthProperty());
+        VBox parent = (VBox) game.getParent();
+        VBox.setVgrow(game, Priority.ALWAYS);
+        game.minWidthProperty().bind(parent.widthProperty());
+        game.maxWidthProperty().bind(parent.widthProperty());
     }
 }
