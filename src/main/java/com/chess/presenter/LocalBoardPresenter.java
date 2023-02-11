@@ -1,11 +1,11 @@
 package com.chess.presenter;
 
-import com.chess.view.nodes.ChessBoardNode;
+import com.chess.view.nodes.BoardNode;
 import com.chess.view.Observer;
 
-public class StandardChessBoardPresenter extends ChessBoardPresenter {
-    public StandardChessBoardPresenter() {
-        super();
+public class LocalBoardPresenter extends BoardPresenter {
+    public LocalBoardPresenter(GameMediator gameMediator) {
+        super(gameMediator);
     }
 
     @Override
@@ -15,7 +15,7 @@ public class StandardChessBoardPresenter extends ChessBoardPresenter {
 
         if (aTileIsSelectedAndGivenTileIsAvailable(row, col)) {
             for (Observer observer : observers)
-                ((ChessBoardNode) observer).movePieceAnimation(selected.getRow(), selected.getCol(), row, col);
+                ((BoardNode) observer).movePieceAnimation(selected.getRow(), selected.getCol(), row, col);
             animationIsPlaying = true;
             movements.add(new Movement(selected.getRow(), selected.getCol(), row, col));
             resetAvailableTiles();

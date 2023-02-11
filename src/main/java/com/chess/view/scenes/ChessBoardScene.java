@@ -1,12 +1,8 @@
 package com.chess.view.scenes;
 
-import com.chess.model.util.Colors;
-import com.chess.presenter.AITimedChessBoardPresenter;
-import com.chess.presenter.ChessBoardPresenter;
-import com.chess.presenter.StandardTimedChessBoardPresenter;
-import com.chess.view.nodes.ChessBoardNode;
-import com.chess.view.nodes.FullChessGameNode;
-import com.chess.view.nodes.TimerNode;
+import com.chess.presenter.BoardPresenter;
+import com.chess.presenter.GameMediator;
+import com.chess.view.nodes.GameNode;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -25,14 +21,13 @@ public class ChessBoardScene extends Scene {
     private static final Insets TOP_BAR_PADDING = new Insets(5, 5, 5, 5);
     private VBox root;
     private HBox topBar;
-    private Pane boardPane;
+    private Pane game;
     private Button homeButton;
-    private HBox boardContainer;
 
-    public ChessBoardScene(double width, double height, ChessBoardPresenter presenter) {
+    public ChessBoardScene(double width, double height, GameMediator gameMediator) {
         super(new VBox(), width, height);
         initializeComponents();
-        constructSceneGraph(presenter);
+        constructSceneGraph(gameMediator);
         buildComponents();
     }
 
@@ -40,17 +35,12 @@ public class ChessBoardScene extends Scene {
         root = (VBox) getRoot();
         topBar = new HBox();
         homeButton = new Button();
-        boardPane = new Pane();
     }
 
-    private void constructSceneGraph(ChessBoardPresenter presenter) {
-        root.getChildren().addAll(topBar, boardPane);
+    private void constructSceneGraph(GameMediator gameMediator) {
+        game = new GameNode(gameMediator);
+        root.getChildren().addAll(topBar, game);
         topBar.getChildren().addAll(homeButton);
-        if (presenter instanceof StandardTimedChessBoardPresenter)
-            boardContainer = new FullChessGameNode(boardPane, (StandardTimedChessBoardPresenter) presenter);
-        if (presenter instanceof AITimedChessBoardPresenter)
-            boardContainer = new FullChessGameNode(boardPane, (AITimedChessBoardPresenter) presenter);
-        boardPane.getChildren().add(boardContainer);
     }
 
     private void buildComponents() {
@@ -94,9 +84,9 @@ public class ChessBoardScene extends Scene {
     }
 
     private void buildBoardComponent() {
-        VBox parent = (VBox) boardPane.getParent();
-        VBox.setVgrow(boardPane, Priority.ALWAYS);
-        boardPane.minWidthProperty().bind(parent.widthProperty());
-        boardPane.maxWidthProperty().bind(parent.widthProperty());
+        VBox parent = (VBox) game.getParent();
+        VBox.setVgrow(game, Priority.ALWAYS);
+        game.minWidthProperty().bind(parent.widthProperty());
+        game.maxWidthProperty().bind(parent.widthProperty());
     }
 }

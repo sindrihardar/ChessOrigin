@@ -1,7 +1,5 @@
 package com.chess.view.nodes;
 
-import com.chess.model.util.Colors;
-import com.chess.presenter.ChessBoardPresenter;
 import com.chess.presenter.TimerPresenter;
 import javafx.animation.AnimationTimer;
 import javafx.scene.control.Label;
