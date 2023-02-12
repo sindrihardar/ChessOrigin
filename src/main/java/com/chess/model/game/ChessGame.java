@@ -301,6 +301,79 @@ public class ChessGame implements ChessGameInterface {
         return positionalHeuristic;
     }
 
+    @Override
+    public String getAlgebraicNotationForMove(Tile start, Tile end) {
+        // throw an exception if the move is invalid
+        if (!availableTilesCache.containsKey(getPieceAt(start)))
+            throw new IllegalArgumentException("Move is invalid.");
+
+        String notation = "";
+        // see if the move is "ambiguous"
+        // make a mapping of all the pieces that can land on a space
+        int occurrences = 0;
+        for (Piece key : availableTilesCache.keySet())
+            for (Tile value : availableTilesCache.get(key))
+                if (value == end)
+                    occurrences++;
+        if (occurrences > 1)
+            notation += getPieceNotation(getPieceAt(start));
+
+        // see if the move will put the other player in check
+        move(start.getRow(), start.getCol(), end.getRow(), end.getCol());
+        boolean putsItInCheck = !isCurrentPlayerInCheckmate() && isCurrentPlayerInCheck();
+        undoLastMove();
+
+        // check for promotion
+        boolean wasPromoted = getPieceAt(start) instanceof Pawn && !((Pawn) getPieceAt(start)).wasPromoted() && (end.getRow() == 0 || end.getRow() == 7);
+
+        // check for castling
+        if (Math.abs(start.getCol() - end.getCol()) > 1) {
+            if (end.getCol() > start.getCol())
+                return "0-0";
+            return "0-0-0";
+        }
+
+        // check for checkmate
+        move(start.getRow(), start.getCol(), end.getRow(), end.getCol());
+        boolean putsItInCheckmate = isCurrentPlayerInCheckmate();
+        undoLastMove();
+
+        notation += getFile(end);
+        notation += getRank(end);
+
+        if (wasPromoted)
+            notation += "Q";
+        if (putsItInCheck)
+            notation += "+";
+        if (putsItInCheckmate)
+            notation += "X";
+        return notation;
+    }
+
+    private char getFile(Tile tile) {
+        return (char) (tile.getCol() + 'a');
+    }
+
+    private char getRank(Tile tile) {
+        return (char) (8 - tile.getRow() + '0');
+    }
+
+    private String getPieceNotation(Piece pieceAt) {
+        if (pieceAt instanceof King)
+            return "K";
+        else if (pieceAt instanceof Queen)
+            return "Q";
+        else if (pieceAt instanceof Rook)
+            return "R";
+        else if (pieceAt instanceof Bishop)
+            return "B";
+        else if (pieceAt instanceof Knight)
+            return "N";
+        else if (pieceAt instanceof Pawn)
+            return "P";
+        throw new IllegalArgumentException("Piece does not exist.");
+    }
+
     private List<Pieces> convertListToEnumeration(List<Piece> pieces) {
         List<Pieces> converted = new LinkedList<>();
         for (Piece p : pieces)
