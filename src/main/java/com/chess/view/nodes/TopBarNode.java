@@ -1,13 +1,19 @@
 package com.chess.view.nodes;
 
 import com.chess.view.scenes.HomeScene;
+import com.chess.view.scenes.UpgradedHomeScene;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class TopBarNode extends Pane {
@@ -31,9 +37,18 @@ public class TopBarNode extends Pane {
         root.maxWidthProperty().bind(widthProperty());
         root.setStyle(TOP_BAR_STYLE);
         root.setPadding(TOP_BAR_PADDING);
+        root.setAlignment(Pos.CENTER_LEFT);
         buildHomeButton();
         getChildren().add(root);
         root.getChildren().add(homeButton);
+        Label title = new Label("Chess");
+        title.setFont(new Font("Impact", 20));
+        title.setAlignment(Pos.CENTER);
+        title.setTextAlignment(TextAlignment.CENTER);
+        title.minWidthProperty().bind(root.widthProperty().subtract(homeButton.widthProperty().multiply(2)));
+        title.maxWidthProperty().bind(root.widthProperty().subtract(homeButton.widthProperty().multiply(2)));
+        HBox.setHgrow(title, Priority.ALWAYS);
+        root.getChildren().add(title);
     }
 
     private void buildHomeButton() {
@@ -54,8 +69,7 @@ public class TopBarNode extends Pane {
 
         homeButton.setOnMouseClicked(mouseEvent -> {
             Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-            stage.setScene(new HomeScene(getWidth(), getHeight()));
-            stage.show();
+            stage.setScene(new UpgradedHomeScene(stage.getScene().getWidth(), stage.getScene().getHeight()));
         });
         homeButton.setOnMouseEntered(mouseEvent -> homeButton.setStyle(HIGHLIGHTED_TOP_BAR_BUTTON_STYLE));
         homeButton.setOnMouseExited(mouseEvent -> homeButton.setStyle(TOP_BAR_STYLE));

@@ -1,6 +1,7 @@
 package com.chess.presenter;
 
 import com.chess.model.ai.AIInterface;
+import com.chess.model.ai.Bleu;
 import com.chess.model.ai.Cheddar;
 import com.chess.model.util.Tile;
 import com.chess.model.util.Colors;
@@ -14,9 +15,14 @@ import javafx.event.EventHandler;
 public class AIBoardPresenter extends BoardPresenter {
     private AIInterface bot;
 
-    public AIBoardPresenter(GameMediator gameMediator) {
+    public AIBoardPresenter(GameMediator gameMediator, String botName) {
         super(gameMediator);
-        this.bot = new Cheddar(game);
+        if (botName.equals("Bleu"))
+            this.bot = new Bleu(game);
+        else if (botName.equals("Cheddar"))
+            this.bot = new Cheddar(game);
+        else
+            throw new IllegalArgumentException("Invalid botName.");
     }
 
     @Override

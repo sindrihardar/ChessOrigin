@@ -8,6 +8,10 @@ public class LocalBoardPresenter extends BoardPresenter {
         super(gameMediator);
     }
 
+    public LocalBoardPresenter() {
+        super();
+    }
+
     @Override
     public void click(int row, int col) {
         if (animationIsPlaying || super.isGameInStalemate() || super.isPlayerInCheckmate()) // clicking should not affect the board if the game is over
