@@ -32,6 +32,10 @@ public abstract class BoardPresenter implements Observable {
         updateFlags();
     }
 
+    public BoardPresenter() {
+        this(null);
+    }
+
     private void setUpState() {
         boardState = game.getBoardState();
         selected = null;

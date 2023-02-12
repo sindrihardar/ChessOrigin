@@ -6,6 +6,7 @@ import com.chess.view.Observer;
 import javafx.animation.FadeTransition;
 import javafx.animation.PathTransition;
 import javafx.beans.binding.Bindings;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -17,6 +18,7 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 public class BoardNode extends Pane implements Observer {
@@ -42,7 +44,7 @@ public class BoardNode extends Pane implements Observer {
         root.maxHeightProperty().bind(root.minHeightProperty());
         root.minWidthProperty().bind(root.minHeightProperty());
         root.maxWidthProperty().bind(root.minWidthProperty());
-        root.layoutXProperty().bind(Bindings.max(Bindings.min(widthProperty(), heightProperty()).multiply(BOARD_PADDING_PERCENTAGE), widthProperty().divide(2).subtract(root.widthProperty().divide(2))));
+        root.layoutXProperty().bind(Bindings.max(Bindings.min(widthProperty(), heightProperty()).multiply(BOARD_PADDING_PERCENTAGE / 2), widthProperty().divide(2).subtract(root.widthProperty().divide(2))));
         root.layoutYProperty().bind(heightProperty().divide(2).subtract(root.heightProperty().divide(2)));
 
         board = new TilePane();
@@ -78,21 +80,35 @@ public class BoardNode extends Pane implements Observer {
         board.getChildren().add(tileNode);
     }
 
-    private void buildMessageNode(StackPane parent, String message) {
+    public void buildMessageNode(String message) {
         messageNode = new StackPane();
         Rectangle background = new Rectangle();
 
         // build background for the message
         background.setFill(MESSAGE_COLOR);
-        background.widthProperty().bind(parent.widthProperty().divide(2));
-        background.heightProperty().bind(parent.heightProperty().divide(3));
+        background.widthProperty().bind(root.widthProperty().divide(2));
+        background.heightProperty().bind(root.heightProperty().divide(3));
 
         // build the message itself
         Label label = new Label(message);
-        label.styleProperty().bind(Bindings.concat("-fx-font-size: ", background.heightProperty().divide(4), "; -fx-font-family: " + MESSAGE_FONT + ";"));
+        label.setStyle("-fx-font-size: " + 50 + "; -fx-font-family: " + MESSAGE_FONT + ";");
+        background.widthProperty().bind(label.widthProperty().add(50));
+        background.heightProperty().bind(label.heightProperty().add(50));
+        label.setAlignment(Pos.CENTER);
+        label.setWrapText(true);
+        label.setTextAlignment(TextAlignment.CENTER);
+        label.maxWidthProperty().bind(board.widthProperty().subtract(100));
+        //label.styleProperty().bind(Bindings.concat("-fx-font-size: ", background.heightProperty().divide(4), "; -fx-font-family: " + MESSAGE_FONT + ";"));
         messageNode.getChildren().add(background);
         messageNode.getChildren().add(label);
-        messageNode.setOpacity(0.0);
+        background.setOpacity(0.8);
+    }
+
+    public void displayMessageNode() {
+        if (messageNode == null)
+            throw new IllegalArgumentException("Message node is null!");
+        messageNode.setViewOrder(-1);
+        root.getChildren().add(messageNode);
     }
 
     public void movePieceAnimation(int row1, int col1, int row2, int col2) {
@@ -131,15 +147,15 @@ public class BoardNode extends Pane implements Observer {
     @Override
     public void update() {
         if (presenter.isGameInStalemate()) {
-            buildMessageNode(root, "Stalemate!");
+            buildMessageNode( "Stalemate!");
         } else if (presenter.isPlayerInCheckmate() && presenter.getCurrentPlayersColor() == Colors.BLACK) {
-            buildMessageNode(root, "White won!");
+            buildMessageNode( "White won!");
         } else if (presenter.isPlayerInCheckmate() && presenter.getCurrentPlayersColor() == Colors.WHITE) {
-            buildMessageNode(root, "Black won!");
+            buildMessageNode( "Black won!");
         } else if (presenter.isWhiteOutOfTime()) {
-            buildMessageNode(root, "Black won!");
+            buildMessageNode("Black won!");
         } else if (presenter.isBlackOutOfTime()) {
-            buildMessageNode(root, "White won!");
+            buildMessageNode( "White won!");
         } else {
             return; // if nothing was updated, don't play the animation
         }
@@ -152,6 +168,6 @@ public class BoardNode extends Pane implements Observer {
 
         fadeTransition.play();
 
-        root.getChildren().add(messageNode);
+        displayMessageNode();
     }
 }

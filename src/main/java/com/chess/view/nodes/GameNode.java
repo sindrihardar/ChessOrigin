@@ -2,9 +2,6 @@ package com.chess.view.nodes;
 
 import com.chess.presenter.GameMediator;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.adapter.JavaBeanDoubleProperty;
-import javafx.beans.property.adapter.JavaBeanDoublePropertyBuilder;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
@@ -13,7 +10,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 public class GameNode extends Pane {
-    private static final double TIME_BOX_SPACE_PERCENTAGE = 0.3;
+    private static final double TIME_BOX_SPACE_PERCENTAGE = 0.4;
+    private VBox infoBox;
     private HBox root;
     private BoardNode board;
     private TimerNode whiteTimer, blackTimer;
@@ -40,18 +38,18 @@ public class GameNode extends Pane {
         board.maxWidthProperty().bind(widthProperty().multiply(1 - TIME_BOX_SPACE_PERCENTAGE));
         root.getChildren().add(board);
 
-        VBox timerBox = new VBox();
+        infoBox = new VBox();
         Pane emptySpace = new Pane();
-        root.getChildren().add(timerBox);
-        timerBox.getChildren().add(blackTimer);
-        timerBox.getChildren().add(emptySpace);
-        timerBox.getChildren().add(whiteTimer);
-        timerBox.minHeightProperty().bind(heightProperty());
-        timerBox.maxHeightProperty().bind(heightProperty());
-        timerBox.setAlignment(Pos.CENTER);
-        timerBox.paddingProperty().bind(Bindings.createObjectBinding(() -> new Insets(heightProperty().divide(8).doubleValue()), heightProperty().divide(8)));
-        timerBox.minWidthProperty().bind(widthProperty().multiply(TIME_BOX_SPACE_PERCENTAGE));
-        timerBox.maxWidthProperty().bind(widthProperty().multiply(TIME_BOX_SPACE_PERCENTAGE));
+        root.getChildren().add(infoBox);
+        infoBox.getChildren().add(new PlayerInfoNode(blackTimer, "Player 2"));
+        infoBox.getChildren().add(emptySpace);
+        infoBox.getChildren().add(new PlayerInfoNode(whiteTimer, "Player 1"));
+        infoBox.minHeightProperty().bind(root.heightProperty());
+        infoBox.maxHeightProperty().bind(root.heightProperty());
+        infoBox.setAlignment(Pos.CENTER);
+        infoBox.paddingProperty().setValue(new Insets(50, 0, 50, 0));
+        infoBox.minWidthProperty().bind(widthProperty().multiply(TIME_BOX_SPACE_PERCENTAGE));
+        infoBox.maxWidthProperty().bind(widthProperty().multiply(TIME_BOX_SPACE_PERCENTAGE));
 
         VBox.setVgrow(emptySpace, Priority.ALWAYS);
         HBox.setHgrow(board, Priority.ALWAYS);

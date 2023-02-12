@@ -30,7 +30,7 @@ public class TimerNode extends StackPane {
         getChildren().addAll(background, label);
     }
 
-    private String getTimerText(long remainingMillis) {
+    public static String getTimerText(long remainingMillis) {
         long remainingSeconds = (remainingMillis / 1000) % 60;
         long remainingMinutes = (remainingMillis / 1000) / 60;
         String remainingMinutesText = "", remainingSecondsText = "";

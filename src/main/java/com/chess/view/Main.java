@@ -1,16 +1,16 @@
 package com.chess.view;
 
-import com.chess.view.scenes.HomeScene;
+import com.chess.view.scenes.UpgradedHomeScene;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    private static final int MAX_HEIGHT = 600, MAX_WIDTH = 600, MIN_HEIGHT = 400, MIN_WIDTH = 400;
+    private static final int MAX_HEIGHT = 750, MAX_WIDTH = 1050, MIN_HEIGHT = 500, MIN_WIDTH = 700;
 
     @Override
     public void start(Stage stage) {
-        Scene scene = new HomeScene(MIN_WIDTH, MIN_HEIGHT);
+        Scene scene = new UpgradedHomeScene(MIN_WIDTH, MIN_HEIGHT);
         stage.setTitle("Chess");
         stage.setScene(scene);
         setUpStage(stage);
