@@ -22,6 +22,7 @@ public abstract class BoardPresenter implements Observable {
     protected List<Observer> observers;
     protected boolean animationIsPlaying;
     protected Queue<Movement> movements;
+    protected List<String> movementNotations;
     private boolean isGameOver, isGameInStalemate, isPlayerInCheckmate, didWhiteWin, whiteIsOutOfTime, blackIsOutOfTime;
 
     public BoardPresenter(GameMediator gameMediator) {
@@ -48,6 +49,7 @@ public abstract class BoardPresenter implements Observable {
         blackIsOutOfTime = false;
         observers = new LinkedList<>();
         movements = new LinkedList<>();
+        movementNotations = new LinkedList<>();
     }
 
     private void initializeTilePresenters() {
@@ -111,6 +113,10 @@ public abstract class BoardPresenter implements Observable {
 
     public Colors getCurrentPlayersColor() {
         return game.getCurrentPlayerColor();
+    }
+
+    public List<String> getMovementNotations() {
+        return movementNotations;
     }
 
     /*
@@ -178,6 +184,7 @@ public abstract class BoardPresenter implements Observable {
     public void executeQueuedMovement() {
         while (movements.size() > 0) {
             Movement movement = movements.poll();
+            String notation = game.getAlgebraicNotationForMove(Tile.getTile(movement.startRow, movement.startCol), Tile.getTile(movement.endRow, movement.endCol));
             game.move(movement.startRow, movement.startCol, movement.endRow, movement.endCol);
             resetHoveredOverTiles();
             resetAvailableTiles();              // reset available spaces
@@ -185,6 +192,7 @@ public abstract class BoardPresenter implements Observable {
             updateTilePresenterPieces();        // update the state of each of the tiles (which in turn updates the view)
             updateTilePresenterSelectability(); // updates the state of each tile's select-ability
             updateFlags();                      // checks if the game is over
+            movementNotations.add(notation);
         }
         animationIsPlaying = false;
         if (gameMediator != null)

@@ -111,4 +111,12 @@ public interface ChessGameInterface {
      * @return the positional heuristic to be used in the bots' heuristic function.
      */
     int getPositionalHeuristic();
+
+    /**
+     * Gives the short algebraic notation for the given movement.
+     * @param start
+     * @param end
+     * @return
+     */
+    String getAlgebraicNotationForMove(Tile start, Tile end);
 }
