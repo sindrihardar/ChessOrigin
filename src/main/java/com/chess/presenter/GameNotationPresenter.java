@@ -8,10 +8,16 @@ import java.util.List;
 public class GameNotationPresenter implements Observable {
     private List<String> movementNotations;
     private List<Observer> observers;
+    private boolean gameIsOver;
 
     public GameNotationPresenter() {
         movementNotations = new LinkedList<>();
         observers = new LinkedList<>();
+        gameIsOver = false;
+    }
+
+    public boolean isGameOver() {
+        return gameIsOver;
     }
 
     public void addToMovementNotations(String movementNotation) {
@@ -25,6 +31,11 @@ public class GameNotationPresenter implements Observable {
 
     public String getLastMovement() {
         return movementNotations.get(movementNotations.size() - 1);
+    }
+
+    public void gameIsOver() {
+        gameIsOver = true;
+        notifyObservers();
     }
 
     @Override

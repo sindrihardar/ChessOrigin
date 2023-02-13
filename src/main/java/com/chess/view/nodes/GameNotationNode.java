@@ -25,8 +25,21 @@ public class GameNotationNode extends ScrollPane implements Observer {
 
     @Override
     public void update() {
-        if (gameNotationPresenter.getSizeOfMovementNotations() <= notationCount)
+        if (gameNotationPresenter.getSizeOfMovementNotations() < notationCount)
             throw new RuntimeException("Notation count is off.");
+
+        if (gameNotationPresenter.isGameOver()) {
+            if (root.getChildren().size() != 0 && ((HBox) root.getChildren().get(root.getChildren().size() - 1)).getChildren().size() == 2) {
+                HBox row = new HBox();
+                row.getChildren().add(new Label("1-0"));
+                root.getChildren().add(row);
+            } else if (root.getChildren().size() == 0 || ((HBox) root.getChildren().get(root.getChildren().size() - 1)).getChildren().size() == 3) {
+                HBox row = new HBox();
+                row.getChildren().add(new Label("0-1"));
+                root.getChildren().add(row);
+            }
+            return;
+        }
 
         if (root.getChildren().size() == 0 || ((HBox) root.getChildren().get(root.getChildren().size() - 1)).getChildren().size() == 3) {
             HBox row = new HBox();
