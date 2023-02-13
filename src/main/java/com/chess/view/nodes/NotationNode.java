@@ -1,6 +1,6 @@
 package com.chess.view.nodes;
 
-import com.chess.presenter.GameNotationPresenter;
+import com.chess.presenter.NotationPresenter;
 import com.chess.view.Observer;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -10,13 +10,13 @@ import javafx.scene.layout.VBox;
 
 public class NotationNode extends ScrollPane implements Observer {
     private int notationCount;
-    private GameNotationPresenter gameNotationPresenter;
+    private NotationPresenter notationPresenter;
     private VBox root;
 
-    public NotationNode(GameNotationPresenter gameNotationPresenter) {
+    public NotationNode(NotationPresenter notationPresenter) {
         notationCount = 0;
-        this.gameNotationPresenter = gameNotationPresenter;
-        gameNotationPresenter.attach(this);
+        this.notationPresenter = notationPresenter;
+        notationPresenter.attach(this);
         root = new VBox();
         root.setPadding(new Insets(10, 10, 10, 10));
         getChildren().add(root);
@@ -25,10 +25,10 @@ public class NotationNode extends ScrollPane implements Observer {
 
     @Override
     public void update() {
-        if (gameNotationPresenter.getSizeOfMovementNotations() < notationCount)
+        if (notationPresenter.getSizeOfMovementNotations() < notationCount)
             throw new RuntimeException("Notation count is off.");
 
-        if (gameNotationPresenter.isGameOver()) {
+        if (notationPresenter.isGameOver()) {
             if (root.getChildren().size() != 0 && ((HBox) root.getChildren().get(root.getChildren().size() - 1)).getChildren().size() == 2) {
                 HBox row = new HBox();
                 row.getChildren().add(new Label("1-0"));
@@ -47,13 +47,13 @@ public class NotationNode extends ScrollPane implements Observer {
             numberLabel.setMinWidth(30);
             numberLabel.setMaxWidth(30);
             row.getChildren().add(numberLabel);
-            Label label = new Label(gameNotationPresenter.getLastMovement());
+            Label label = new Label(notationPresenter.getLastMovement());
             label.setMinWidth(50);
             label.setMaxWidth(50);
             row.getChildren().add(label);
             root.getChildren().add(row);
         } else {
-            ((HBox) root.getChildren().get(root.getChildren().size() - 1)).getChildren().add(new Label(gameNotationPresenter.getLastMovement()));
+            ((HBox) root.getChildren().get(root.getChildren().size() - 1)).getChildren().add(new Label(notationPresenter.getLastMovement()));
         }
 
         notationCount++;

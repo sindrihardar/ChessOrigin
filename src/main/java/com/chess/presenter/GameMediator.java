@@ -5,7 +5,7 @@ import com.chess.model.util.Colors;
 public class GameMediator implements Mediator {
     private BoardPresenter boardPresenter;
     private TimerPresenter currentTimerPresenter, whiteTimerPresenter, blackTimerPresenter;
-    private GameNotationPresenter gameNotationPresenter;
+    private NotationPresenter notationPresenter;
 
     public GameMediator(MediatorConstructionFlags flag, int duration, String botName) {
         if (flag == MediatorConstructionFlags.TIMED_LOCAL)
@@ -16,7 +16,7 @@ public class GameMediator implements Mediator {
         this.blackTimerPresenter = new TimerPresenter(duration, Colors.BLACK, this);
         currentTimerPresenter = whiteTimerPresenter;
         currentTimerPresenter.start();
-        gameNotationPresenter = new GameNotationPresenter();
+        notationPresenter = new NotationPresenter();
     }
 
     public GameMediator(MediatorConstructionFlags flag, int duration) {
@@ -39,8 +39,8 @@ public class GameMediator implements Mediator {
         return blackTimerPresenter;
     }
 
-    public GameNotationPresenter getGameNotationPresenter() {
-        return gameNotationPresenter;
+    public NotationPresenter getGameNotationPresenter() {
+        return notationPresenter;
     }
 
     @Override
@@ -50,8 +50,8 @@ public class GameMediator implements Mediator {
             if (boardPresenter.isPlayerInCheckmate() || boardPresenter.isGameInStalemate()) {
                 whiteTimerPresenter.gameIsOver();
                 blackTimerPresenter.gameIsOver();
-                gameNotationPresenter.addToMovementNotations(boardPresenter.getMovementNotations().get(boardPresenter.getMovementNotations().size() - 1));
-                gameNotationPresenter.gameIsOver();
+                notationPresenter.addToMovementNotations(boardPresenter.getMovementNotations().get(boardPresenter.getMovementNotations().size() - 1));
+                notationPresenter.gameIsOver();
                 return;
             } else if (boardPresenter.getCurrentPlayersColor() == Colors.WHITE && currentTimerPresenter != whiteTimerPresenter) {
                 currentTimerPresenter.stop();
@@ -62,12 +62,12 @@ public class GameMediator implements Mediator {
                 currentTimerPresenter = blackTimerPresenter;
                 currentTimerPresenter.start();
             }
-            gameNotationPresenter.addToMovementNotations(boardPresenter.getMovementNotations().get(boardPresenter.getMovementNotations().size() - 1));
+            notationPresenter.addToMovementNotations(boardPresenter.getMovementNotations().get(boardPresenter.getMovementNotations().size() - 1));
         } else if (o instanceof TimerPresenter) {
             TimerPresenter timerPresenter = (TimerPresenter) o;
             if (timerPresenter.isGameOver()) {
                 boardPresenter.timerRanOutForColor(timerPresenter.getColor());
-                gameNotationPresenter.gameIsOver();
+                notationPresenter.gameIsOver();
             }
         } else {
             throw new IllegalArgumentException("Mediator notifier isn't a valid sender.");

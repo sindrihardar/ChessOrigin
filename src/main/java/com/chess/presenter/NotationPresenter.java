@@ -5,12 +5,12 @@ import com.chess.view.Observer;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GameNotationPresenter implements Observable {
+public class NotationPresenter implements Observable {
     private List<String> movementNotations;
     private List<Observer> observers;
     private boolean gameIsOver;
 
-    public GameNotationPresenter() {
+    public NotationPresenter() {
         movementNotations = new LinkedList<>();
         observers = new LinkedList<>();
         gameIsOver = false;
