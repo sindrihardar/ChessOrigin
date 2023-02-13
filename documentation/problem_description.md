@@ -45,7 +45,10 @@ The game will be played according to standard chess game rules as follows:
 ## User Interface
 
 The user interface is composed of two types of screens, the home screen and the chess board screen.
-The home screen will contain two buttons, one of which will take you to the game screen to play locally, the other will take you to the game screen to play against the computer.
+The home screen will allow the user to select whether they would like to play locally or against the computer.
+If they'd like to play against the computer, they get to choose which bot they'd like to play against.
+They also get to select the time limit that each player has.
+Once they've selected the time limit, they can move on to the game screen.
 There's a home icon/button in the top left corner of the game screen which takes the user back to the home screen.
 
 #### Game Screen
