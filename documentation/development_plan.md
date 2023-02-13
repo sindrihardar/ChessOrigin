@@ -1,11 +1,10 @@
 # Software Development Plan
 
 ## Description
-I'll be following a software development process as I build this project in order to catch problems before they become difficult to fix.
 
 My vision for this project is that someday it will be a fleshed out chess application. 
 It'll allow players to play on the same device against one another, to play against the computer, and to play against people on other devices.
-It'll have a variety of features so that users can keep track of their blunders and mistakes, and they can go back and look at those.
+It'll have a variety of features so that users can keep track of their blunders and mistakes, and they can go back and look at them.
 
 These are high aspirations, and an application that has these features would take a long time to develop. 
 With a waterfall development process, I would have to design the entire application before implementing any of the code, which means I won't write code for a very long time.
@@ -50,3 +49,6 @@ Here are the following phases that I'll be going through for this project:
 | 2           | Added a home screen.                          | 2b77c9e96747f1d60a7113aa59083541477f9af0 |
 | 3           | Added an option to play against the computer. | 4d579b41846534e3667a22c30ea1c709395fb77e |
 | 4           | Added animations to piece movement.           | ace6e12acb4db4aa01cca333d81b806bd42b6f46 |
+| 5           | Added timers for the players.                 | c1ccc1aee0ed7c10e7cf9ef8450b390ccbc32474 |
+| 6           | Redesigned the user interface.                | d2b02a95630268e819cf827447ae486555fc9295 |
+| 7           | Added algebraic notation.                     | 31963d9f0d9f532377ceb9d1b2c40e9d44f7aa17 |

@@ -3,11 +3,16 @@
 ## Description
 
 This is a Chess desktop application developed using Java and the JavaFX framework. 
-It allows users to play against one another locally, or against an AI bot (a.k.a. the computer).
+It allows users to play against one another locally, or against a bot.
+The game supports the vast majority of chess rules, such as castling, en passant, promotion, etc.
+Additionally, the game supports the use of timers for time limits, and there's a sidebar that shows the algebraic notation for the moves made.
 
 ## Purpose
 
-The purpose of this project is to showcase what I've learned during my time in the OMSCS program regarding software development, architecture, and design. 
+The purpose of this project is to show that I can build a non-trivial application, and that I can manage and build off of a complex code base.
+The courses I've taken so far have only had small projects to work on, and the instructions are usually laid out very clearly.
+I wanted to build something of my own that showcases my abilities as a software developer.
+
 I used the following classes and books to learn the concepts that I've applied to this project:
 
 ### Classes:
@@ -29,16 +34,10 @@ I recommend reading the planning document to get an idea of what software develo
 Before diving into the source code, I would recommend referring to the design document to build an understanding of how these components and classes relate to one another.
 
 ## TODO
- - Update the heuristic function for the bot so that it is updated whenever a move is made.
- - Create bots that use different heuristic functions.
- - Add a screen that allows the user to select which bot they'd like to play against.
- - Export the game to a jar file so that it can be played without downloading the code.
- - Add backgrounds and themes to the user interface.
- - Add animations to moves.
- - Allow the user's piece to move BEFORE the bot starts to make its move.
- - Add saving functionality for the game.
- - Add list of moves made to the side of the screen.
- - Allow user to select which piece they'd like to promote a pawn to.
- - Add a button to reset the state of the game.
- - Move tables from the code to files that can be written to and read from.
+ - The timer currently goes negative when the computer sleeps. Timer should expire when the computer turns back on.
+ - Implement support on Windows OS.
+ - Add UCI functionality to support open-source chess bots that can be added to the game.
+ - Add pictures to the player's profiles.
+ - Add a reset button that resets the game.
+ - Highlight the current player's timer.
  

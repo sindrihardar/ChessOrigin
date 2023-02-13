@@ -18,17 +18,25 @@ It also allows me to test the presenter to make sure data is being presented in 
 ### Class Diagram - View Component
 ![](resources/class_diagram_view_component.png)
 
-The view component consists of a HomeScene and a ChessBoardScene, which is composed of ChessBoardTileNodes.
-The ChessBoardScene and the ChessBoardTileNodes implement the Observer interface.
-We can then attach these objects to presenters so that when the presenters' states are updated, the view is updated as well.
+The view component consists of a HomeScene and a ChessBoardScene.
+The ChessBoardScene consists of a board, timers, and a scrollable pane that shows the game's algebraic notation.
+The user can select a variety of options from the HomeScene, and once they're finished they'll be taken to the ChessBoardScene to play a game.
+
+I coupled the view and the presenter components using the Observer pattern.
+The view nodes act as observers of the presenters. 
+When a node is clicked on, the presenter handles the event by passing it on to the model.
+When the model updates, the presenters update, and those changes will automatically update the view since those nodes are attached to the presenters as observers.
 
 More details on the Observer design pattern can be found in *Design Patterns*.
 
 ### Class Diagram - Presenter Component
 ![](resources/class_diagram_presenter_component.png)
 
-The presenter component consists of presenters for the chess board and each tile in the chess board.
-Each of these implements the Observable interface so that each time the state of these presenters is modified, the corresponding observers are updated.
+The presenter component consists of presenters for the chess board, timers, and notation.
+The GameMediator controls the interactions between these three presenters.
+More details on the Mediator design pattern can be found in *Design Patterns*.
+These presenters implement the Observable design pattern, and have view nodes attached to them as Observers.
+When the state of a presenter changes, it updates it's Observers so that the view changes.
 
 ### Class Diagram - Model Component
 ![](resources/class_diagram_model_component.png)
@@ -48,9 +56,6 @@ More details on the Builder and Command design patterns can be found in *Design 
 The AIInterface defines how the AIBots (like Cheddar) can interact with the ChessGameInterface.
 The only thing an AIBot needs to do is make a move based on the state of a ChessGame. 
 Thus, that is the only method defined in the interface.
-
-The Cheddar AI bot will use an iterative deepening minimax algorithm with alpha-beta pruning. 
-It'll stop executing after the 5-second limit.
 
 ## Behavioral
 
