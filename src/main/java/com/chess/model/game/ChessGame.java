@@ -338,6 +338,12 @@ public class ChessGame implements ChessGameInterface {
         boolean putsItInCheckmate = isCurrentPlayerInCheckmate();
         undoLastMove();
 
+        // check to see if there was a capture
+        if (getPieceAt(start) instanceof Pawn && !((Pawn) getPieceAt(start)).wasPromoted() && getPieceAt(end) != null)
+            notation += getFile(start);
+        if (getPieceAt(end) != null)
+            notation += "x";
+
         notation += getFile(end);
         notation += getRank(end);
 
