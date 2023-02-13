@@ -327,7 +327,7 @@ public class ChessGame implements ChessGameInterface {
         boolean wasPromoted = getPieceAt(start) instanceof Pawn && !((Pawn) getPieceAt(start)).wasPromoted() && (end.getRow() == 0 || end.getRow() == 7);
 
         // check for castling
-        if (Math.abs(start.getCol() - end.getCol()) > 1) {
+        if (getPieceAt(start) instanceof King && Math.abs(start.getCol() - end.getCol()) > 1) {
             if (end.getCol() > start.getCol())
                 return "0-0";
             return "0-0-0";

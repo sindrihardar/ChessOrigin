@@ -5,6 +5,7 @@ import com.chess.model.util.Colors;
 public class GameMediator implements Mediator {
     private BoardPresenter boardPresenter;
     private TimerPresenter currentTimerPresenter, whiteTimerPresenter, blackTimerPresenter;
+    private GameNotationPresenter gameNotationPresenter;
 
     public GameMediator(MediatorConstructionFlags flag, int duration, String botName) {
         if (flag == MediatorConstructionFlags.TIMED_LOCAL)
@@ -15,6 +16,7 @@ public class GameMediator implements Mediator {
         this.blackTimerPresenter = new TimerPresenter(duration, Colors.BLACK, this);
         currentTimerPresenter = whiteTimerPresenter;
         currentTimerPresenter.start();
+        gameNotationPresenter = new GameNotationPresenter();
     }
 
     public GameMediator(MediatorConstructionFlags flag, int duration) {
@@ -37,6 +39,10 @@ public class GameMediator implements Mediator {
         return blackTimerPresenter;
     }
 
+    public GameNotationPresenter getGameNotationPresenter() {
+        return gameNotationPresenter;
+    }
+
     @Override
     public void notify(Object o) {
         if (o instanceof BoardPresenter) {
@@ -53,6 +59,7 @@ public class GameMediator implements Mediator {
                 currentTimerPresenter = blackTimerPresenter;
                 currentTimerPresenter.start();
             }
+            gameNotationPresenter.addToMovementNotations(boardPresenter.getMovementNotations().get(boardPresenter.getMovementNotations().size() - 1));
         } else if (o instanceof TimerPresenter) {
             TimerPresenter timerPresenter = (TimerPresenter) o;
             if (timerPresenter.isGameOver())
