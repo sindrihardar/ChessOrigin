@@ -375,8 +375,10 @@ public class ChessGame implements ChessGameInterface {
             return "B";
         else if (pieceAt instanceof Knight)
             return "N";
-        else if (pieceAt instanceof Pawn)
+        else if (pieceAt instanceof Pawn && !((Pawn) pieceAt).wasPromoted())
             return "P";
+        else if (pieceAt instanceof Pawn)
+            return getPieceNotation(((Pawn) pieceAt).getPromotedPiece());
         throw new IllegalArgumentException("Piece does not exist.");
     }
 

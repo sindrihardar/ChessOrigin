@@ -8,12 +8,12 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-public class GameNotationNode extends ScrollPane implements Observer {
+public class NotationNode extends ScrollPane implements Observer {
     private int notationCount;
     private GameNotationPresenter gameNotationPresenter;
     private VBox root;
 
-    public GameNotationNode(GameNotationPresenter gameNotationPresenter) {
+    public NotationNode(GameNotationPresenter gameNotationPresenter) {
         notationCount = 0;
         this.gameNotationPresenter = gameNotationPresenter;
         gameNotationPresenter.attach(this);

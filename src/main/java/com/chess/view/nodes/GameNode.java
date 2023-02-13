@@ -1,7 +1,6 @@
 package com.chess.view.nodes;
 
 import com.chess.presenter.GameMediator;
-import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
@@ -15,7 +14,7 @@ public class GameNode extends Pane {
     private HBox root;
     private BoardNode board;
     private TimerNode whiteTimer, blackTimer;
-    private GameNotationNode gameNotationNode;
+    private NotationNode notationNode;
     private GameMediator gameMediator;
 
     public GameNode(GameMediator gameMediator) {
@@ -23,7 +22,7 @@ public class GameNode extends Pane {
         board = new BoardNode(gameMediator.getBoardPresenter());
         whiteTimer = new TimerNode(gameMediator.getWhiteTimerPresenter());
         blackTimer = new TimerNode(gameMediator.getBlackTimerPresenter());
-        gameNotationNode = new GameNotationNode(gameMediator.getGameNotationPresenter());
+        notationNode = new NotationNode(gameMediator.getGameNotationPresenter());
         build();
     }
 
@@ -48,9 +47,9 @@ public class GameNode extends Pane {
         blackPlayerInfoNode.minHeightProperty().bind(infoBox.heightProperty().divide(5));
         blackPlayerInfoNode.maxHeightProperty().bind(infoBox.heightProperty().divide(5));
         infoBox.getChildren().add(blackPlayerInfoNode);
-        infoBox.getChildren().add(gameNotationNode);
-        gameNotationNode.minWidthProperty().bind(infoBox.widthProperty().multiply(4.0 / 5));
-        gameNotationNode.maxWidthProperty().bind(infoBox.widthProperty().multiply(4.0 / 5));
+        infoBox.getChildren().add(notationNode);
+        notationNode.minWidthProperty().bind(infoBox.widthProperty().multiply(4.0 / 5));
+        notationNode.maxWidthProperty().bind(infoBox.widthProperty().multiply(4.0 / 5));
         PlayerInfoNode whitePlayerInfoNode = new PlayerInfoNode(whiteTimer, "Player 1");
         whitePlayerInfoNode.minWidthProperty().bind(infoBox.widthProperty());
         whitePlayerInfoNode.maxWidthProperty().bind(infoBox.widthProperty());
@@ -64,7 +63,7 @@ public class GameNode extends Pane {
         infoBox.minWidthProperty().bind(widthProperty().multiply(TIME_BOX_SPACE_PERCENTAGE));
         infoBox.maxWidthProperty().bind(widthProperty().multiply(TIME_BOX_SPACE_PERCENTAGE));
 
-        VBox.setVgrow(gameNotationNode, Priority.ALWAYS);
+        VBox.setVgrow(notationNode, Priority.ALWAYS);
         HBox.setHgrow(board, Priority.ALWAYS);
     }
 }
