@@ -1,37 +1,41 @@
-package com.chess.view.scenes;
+package vidmot;
 
-import com.chess.presenter.GameMediator;
-import com.chess.view.nodes.GameNode;
-import com.chess.view.nodes.TopBarNode;
-import javafx.geometry.HPos;
-import javafx.geometry.VPos;
+import javafx.application.Application;
+import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.stage.Stage;
+
+
+import presenter.GameMediator;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
-
-import static javafx.geometry.HPos.*;
-import static javafx.geometry.VPos.CENTER;
+import vidmot.nodes.GameNode;
+import vidmot.nodes.TopBarNode;
 
 public class ChessBoardScene extends Scene {
-    private Pane root;
+
     private TopBarNode topBar;
+
+    @FXML
+    private AnchorPane fxChessBoard;
     private Pane game;
 
-    public ChessBoardScene(double width, double height, GameMediator gameMediator) {
-        super(new Pane(), width, height);
+    public ChessBoardScene(GameMediator gameMediator) {
+        super(new AnchorPane(), 400, 400);
         initializeComponents();
         constructSceneGraph(gameMediator);
         buildComponents();
     }
 
-
-
     private void initializeComponents() {
-        root = (Pane) getRoot();
+        fxChessBoard = (AnchorPane) getRoot();
+        fxChessBoard.setPadding(new Insets(0, 0, 10, 10));
     }
 
     private void constructSceneGraph(GameMediator gameMediator) {
         game = new GameNode(gameMediator);
-        root.getChildren().addAll(game);
+        fxChessBoard.getChildren().add(game);
     }
 
     private void buildComponents() {
@@ -39,8 +43,7 @@ public class ChessBoardScene extends Scene {
     }
 
     private void buildBoardComponent() {
-        Pane parent = (Pane) game.getParent();
-        Pane.layoutInArea(game, 0, 0, parent.getWidth(), parent.getHeight(), 0, HPos, VPos.CENTER);
+        AnchorPane parent = (AnchorPane) game.getParent();
         game.minWidthProperty().bind(parent.widthProperty());
         game.maxWidthProperty().bind(parent.widthProperty());
     }

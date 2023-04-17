@@ -1,0 +1,41 @@
+.root{
+    -fx-background-color: #0f4519; //dökkgrænn
+}
+
+.fxtitle{
+    -fx-font-size: 20px;
+    -fx-font-family: "Impact";
+    -fx-text-fill: #4d4c4c; //ljósgrár
+}
+
+
+.fxHiglightedSoundButton{
+    -fx-background-color: #1a7a2c; //dökkgrænn
+-fx-text-fill: #d6d6d6; //ljósgrár
+-fx-font-family: "Impact";
+}
+
+.fxSoundButton{
+    -fx-background-color: #0f4519; //dökkgrænn
+-fx-text-fill: #d6d6d6; //ljósgrár
+-fx-font-family: "Impact";
+}
+
+.fxHomeButton{
+    -fx-background-color: #0f4519; //dökkgrænn
+-fx-text-fill: #d6d6d6; //ljósgrár
+-fx-font-family: "Impact";
+}
+
+
+.fxTheme{
+    -fx-text-fill: #d6d6d6; //ljósgrár
+-fx-background-color: #0f4519; //dökkgrænn
+}
+
+.fxHiglightedHomeButton{
+    -fx-background-color: #1a7a2c; //dökkgrænn
+-fx-text-fill: #d6d6d6; //ljósgrár
+-fx-font-family: "Impact";
+}
+

@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
@@ -53,7 +54,7 @@ public class BoardNode extends Pane implements Observer {
     }
 
     private void buildBoard() {
-        StackPane parent = (StackPane) board.getParent();
+        Pane parent = (Pane) board.getParent();
         board.setPrefColumns(8);
         board.setPrefRows(8);
         board.minHeightProperty().bind(parent.maxWidthProperty());

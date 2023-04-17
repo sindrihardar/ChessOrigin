@@ -1,8 +1,13 @@
 package com.chess.view;
 
+import com.chess.presenter.GameMediator;
+import com.chess.presenter.MediatorConstructionFlags;
+import com.chess.view.scenes.ChessBoardScene;
 import com.chess.view.scenes.HomeScene;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -10,7 +15,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        Scene scene = new HomeScene(MIN_WIDTH, MIN_HEIGHT);
+        Scene scene = new ChessBoardScene(700.0, 700.0, new GameMediator(MediatorConstructionFlags.TIMED_LOCAL));
         stage.setTitle("Chess");
         stage.setScene(scene);
         setUpStage(stage);
